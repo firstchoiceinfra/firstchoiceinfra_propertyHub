@@ -1,323 +1,628 @@
 import streamlit as st
 import random
 
-# =========================================================
+# ============================================================
 # FIRSTCHOICE INFRA PROPERTY HUB
-# PREMIUM PROPERTY LISTING / POST PROPERTY
-# =========================================================
+# MULTICOLOR PREMIUM POST PROPERTY PAGE
+# ============================================================
 
 st.set_page_config(
-    page_title="Post Your Property | FirstChoice Property Hub",
+    page_title="Post Property | FirstChoice Property Hub",
     page_icon="🏡",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# =========================================================
+# ============================================================
 # SESSION STATE
-# =========================================================
+# ============================================================
 
-defaults = {
-    "listing_submitted": False,
-    "listing_id": ""
+if "listing_submitted" not in st.session_state:
+    st.session_state.listing_submitted = False
+
+if "listing_id" not in st.session_state:
+    st.session_state.listing_id = ""
+
+
+# ============================================================
+# PREMIUM MULTICOLOR CSS
+# ============================================================
+
+st.markdown("""
+<style>
+
+/* ================= GLOBAL ================= */
+
+.stApp {
+    background:
+    linear-gradient(
+        135deg,
+        #f7f9ff 0%,
+        #fff7f2 35%,
+        #f7f2ff 70%,
+        #f1fbff 100%
+    );
 }
 
-for key, value in defaults.items():
-    if key not in st.session_state:
-        st.session_state[key] = value
+header {
+    visibility: hidden;
+}
+
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+/* ================= BRAND HEADER ================= */
+
+.brand-box {
+    background:
+    linear-gradient(
+        135deg,
+        #071952,
+        #088395,
+        #35A29F
+    );
+
+    padding: 20px 30px;
+
+    border-radius: 20px;
+
+    color: white;
+
+    box-shadow:
+    0 12px 35px rgba(7,25,82,0.22);
+
+    margin-bottom: 25px;
+}
+
+.brand-name {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.brand-tagline {
+    color: #DFFFD8;
+    font-size: 13px;
+    letter-spacing: 3px;
+}
+
+/* ================= HERO ================= */
+
+.hero {
+    background:
+    linear-gradient(
+        120deg,
+        #071952,
+        #088395 45%,
+        #35A29F 75%,
+        #F2C94C
+    );
+
+    padding: 55px 45px;
+
+    border-radius: 32px;
+
+    color: white;
+
+    margin-bottom: 30px;
+
+    box-shadow:
+    0 25px 60px rgba(7,25,82,0.25);
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.hero:before {
+    content: "";
+
+    position: absolute;
+
+    width: 300px;
+    height: 300px;
+
+    background:
+    rgba(255,255,255,0.12);
+
+    border-radius: 50%;
+
+    right: -80px;
+    top: -100px;
+}
+
+.hero:after {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    background:
+    rgba(242,201,76,0.30);
+
+    border-radius: 50%;
+
+    right: 180px;
+    bottom: -100px;
+}
+
+.hero h1 {
+    font-size: 46px;
+
+    font-weight: 900;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+.hero p {
+    font-size: 17px;
+
+    line-height: 1.7;
+
+    max-width: 750px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+.hero-badge {
+    display: inline-block;
+
+    background:
+    rgba(255,255,255,0.18);
+
+    padding: 9px 18px;
+
+    border-radius: 30px;
+
+    font-weight: 700;
+
+    margin-bottom: 15px;
+}
+
+/* ================= SECTION TITLE ================= */
+
+.section-title {
+    font-size: 29px;
+
+    font-weight: 900;
+
+    color: #071952;
+
+    margin-top: 35px;
+}
+
+.section-subtitle {
+    color: #667085;
+
+    font-size: 15px;
+
+    margin-bottom: 22px;
+}
+
+/* ================= COLOR CARDS ================= */
+
+.color-card {
+    padding: 28px 20px;
+
+    border-radius: 22px;
+
+    color: white;
+
+    min-height: 145px;
+
+    box-shadow:
+    0 12px 30px rgba(0,0,0,0.10);
+
+    text-align: center;
+}
+
+.card-blue {
+    background:
+    linear-gradient(
+        135deg,
+        #2563EB,
+        #06B6D4
+    );
+}
+
+.card-purple {
+    background:
+    linear-gradient(
+        135deg,
+        #7C3AED,
+        #EC4899
+    );
+}
+
+.card-orange {
+    background:
+    linear-gradient(
+        135deg,
+        #F97316,
+        #EF4444
+    );
+}
+
+.card-green {
+    background:
+    linear-gradient(
+        135deg,
+        #059669,
+        #22C55E
+    );
+}
+
+.card-gold {
+    background:
+    linear-gradient(
+        135deg,
+        #B7791F,
+        #F2C94C
+    );
+}
+
+.card-sky {
+    background:
+    linear-gradient(
+        135deg,
+        #0284C7,
+        #38BDF8
+    );
+}
+
+.card-icon {
+    font-size: 42px;
+}
+
+.card-title {
+    font-weight: 900;
+
+    font-size: 18px;
+
+    margin-top: 8px;
+}
+
+/* ================= WHITE PANEL ================= */
+
+.panel {
+    background:
+    rgba(255,255,255,0.95);
+
+    padding: 30px;
+
+    border-radius: 25px;
+
+    box-shadow:
+    0 12px 40px rgba(31,41,55,0.08);
+
+    border:
+    1px solid rgba(255,255,255,0.7);
+
+    margin-bottom: 25px;
+}
+
+/* ================= MEDIA ================= */
+
+.media-photo {
+    background:
+    linear-gradient(
+        135deg,
+        #DBEAFE,
+        #E0E7FF
+    );
+
+    padding: 28px;
+
+    border-radius: 22px;
+
+    text-align: center;
+
+    border:
+    2px dashed #6366F1;
+}
+
+.media-video {
+    background:
+    linear-gradient(
+        135deg,
+        #FCE7F3,
+        #F3E8FF
+    );
+
+    padding: 28px;
+
+    border-radius: 22px;
+
+    text-align: center;
+
+    border:
+    2px dashed #EC4899;
+}
+
+.media-icon {
+    font-size: 48px;
+}
+
+.media-title {
+    font-size: 20px;
+
+    font-weight: 900;
+
+    color: #071952;
+}
+
+/* ================= TRUST ================= */
+
+.trust {
+    background:
+    linear-gradient(
+        135deg,
+        #064E3B,
+        #059669,
+        #34D399
+    );
+
+    padding: 30px;
+
+    color: white;
+
+    border-radius: 25px;
+
+    box-shadow:
+    0 15px 40px rgba(5,150,105,0.25);
+}
+
+/* ================= PREVIEW ================= */
+
+.preview {
+    background: white;
+
+    border-radius: 25px;
+
+    overflow: hidden;
+
+    box-shadow:
+    0 15px 45px rgba(0,0,0,0.12);
+}
+
+.preview-top {
+    background:
+    linear-gradient(
+        135deg,
+        #7C3AED,
+        #2563EB,
+        #06B6D4
+    );
+
+    color: white;
+
+    padding: 30px;
+}
+
+.preview-price {
+    color: #FDE047;
+
+    font-size: 30px;
+
+    font-weight: 900;
+}
+
+.feature-box {
+    background:
+    linear-gradient(
+        135deg,
+        #FFF7ED,
+        #FFEDD5
+    );
+
+    padding: 15px;
+
+    border-radius: 15px;
+
+    text-align: center;
+
+    color: #9A3412;
+
+    font-weight: 800;
+}
+
+/* ================= SUCCESS ================= */
+
+.success {
+    background:
+    linear-gradient(
+        135deg,
+        #4C1D95,
+        #7C3AED,
+        #EC4899
+    );
+
+    color: white;
+
+    padding: 55px;
+
+    border-radius: 30px;
+
+    text-align: center;
+
+    box-shadow:
+    0 25px 60px rgba(124,58,237,0.30);
+}
+
+.listing-id {
+    font-size: 34px;
+
+    color: #FDE047;
+
+    font-weight: 900;
+
+    letter-spacing: 3px;
+}
+
+/* ================= FOOTER ================= */
+
+.footer {
+    background:
+    linear-gradient(
+        135deg,
+        #071952,
+        #1E1B4B
+    );
+
+    color: white;
+
+    padding: 45px;
+
+    border-radius: 25px;
+
+    text-align: center;
+
+    margin-top: 60px;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 
-# =========================================================
-# PREMIUM CSS
-# =========================================================
+# ============================================================
+# BRAND
+# ============================================================
 
-st.markdown(
-    """
-    <style>
+st.markdown("""
+<div class="brand-box">
 
-    .stApp {
-        background:
-        linear-gradient(
-            135deg,
-            #f5f7fb 0%,
-            #eef2f7 50%,
-            #ffffff 100%
-        );
-    }
+<div class="brand-name">
+🏠 FIRSTCHOICE INFRA
+</div>
 
-    #MainMenu {
-        visibility: hidden;
-    }
+<div class="brand-tagline">
+PROPERTY HUB • INDIA'S NEXT-GENERATION REAL ESTATE MARKETPLACE
+</div>
 
-    header {
-        visibility: hidden;
-    }
-
-    footer {
-        visibility: hidden;
-    }
-
-    .brand {
-        font-size: 28px;
-        font-weight: 800;
-        color: #0b1f3a;
-        letter-spacing: 1px;
-    }
-
-    .brand-sub {
-        font-size: 13px;
-        color: #b08d35;
-        letter-spacing: 2px;
-        font-weight: 600;
-    }
-
-    .hero {
-        background:
-        linear-gradient(
-            135deg,
-            rgba(7, 27, 52, 0.98),
-            rgba(18, 63, 115, 0.95)
-        );
-
-        padding: 55px 45px;
-
-        border-radius: 28px;
-
-        color: white;
-
-        box-shadow:
-        0px 20px 50px rgba(11,31,58,0.20);
-
-        margin-top: 25px;
-        margin-bottom: 35px;
-    }
-
-    .hero h1 {
-        font-size: 42px;
-        font-weight: 800;
-    }
-
-    .hero p {
-        font-size: 17px;
-        opacity: 0.9;
-    }
-
-    .section-title {
-        color: #0b1f3a;
-        font-size: 26px;
-        font-weight: 800;
-        margin-top: 30px;
-        margin-bottom: 18px;
-    }
-
-    .premium-card {
-        background: rgba(255,255,255,0.96);
-
-        padding: 30px;
-
-        border-radius: 22px;
-
-        box-shadow:
-        0px 10px 35px rgba(0,0,0,0.07);
-
-        border: 1px solid rgba(0,0,0,0.04);
-
-        margin-bottom: 25px;
-    }
-
-    .info-card {
-        background:
-        linear-gradient(
-            135deg,
-            #0b1f3a,
-            #173f70
-        );
-
-        color: white;
-
-        padding: 25px;
-
-        border-radius: 18px;
-
-        margin-bottom: 20px;
-    }
-
-    .verified {
-        background: #eaf8f0;
-        color: #18794e;
-
-        padding: 12px 18px;
-
-        border-radius: 12px;
-
-        font-weight: 700;
-    }
-
-    .pending {
-        background: #fff7e6;
-        color: #9a6700;
-
-        padding: 12px 18px;
-
-        border-radius: 12px;
-
-        font-weight: 700;
-    }
-
-    .success-card {
-        background:
-        linear-gradient(
-            135deg,
-            #0b1f3a,
-            #173f70
-        );
-
-        color: white;
-
-        padding: 40px;
-
-        border-radius: 25px;
-
-        text-align: center;
-
-        box-shadow:
-        0px 20px 50px rgba(11,31,58,0.25);
-    }
-
-    .listing-id {
-        font-size: 32px;
-        font-weight: 800;
-        color: #e3bd63;
-        letter-spacing: 2px;
-    }
-
-    .footer {
-        margin-top: 60px;
-
-        padding: 35px;
-
-        background: #071b34;
-
-        color: white;
-
-        border-radius: 22px;
-
-        text-align: center;
-    }
-
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+</div>
+""", unsafe_allow_html=True)
 
 
-# =========================================================
-# HEADER
-# =========================================================
-
-header1, header2 = st.columns([3, 1])
-
-with header1:
-
-    st.markdown(
-        """
-        <div class="brand">
-        🏠 FIRSTCHOICE INFRA
-        </div>
-
-        <div class="brand-sub">
-        PROPERTY HUB
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with header2:
-
-    st.markdown(
-        """
-        <div style="
-        text-align:right;
-        color:#0b1f3a;
-        font-weight:600;
-        padding-top:10px;
-        ">
-        🇮🇳 India's Smart Real Estate Marketplace
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-# =========================================================
+# ============================================================
 # HERO
-# =========================================================
+# ============================================================
+
+st.markdown("""
+<div class="hero">
+
+<div class="hero-badge">
+🚀 LIST YOUR PROPERTY • REACH INDIA
+</div>
+
+<h1>
+Turn Your Property Into Opportunity
+</h1>
+
+<p>
+Showcase your home, plot, commercial space or land
+to genuine buyers, tenants and investors through
+the FirstChoice Infra Property Hub.
+</p>
+
+<p>
+📸 Premium Photos &nbsp;&nbsp;
+🎬 Video Listings &nbsp;&nbsp;
+📍 Smart Location &nbsp;&nbsp;
+🛡️ Verified Profiles
+</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+# ============================================================
+# QUICK STATS
+# ============================================================
+
+q1, q2, q3, q4 = st.columns(4)
+
+quick_cards = [
+    ("🏡", "Residential", "Homes & Apartments", "card-blue"),
+    ("🏢", "Commercial", "Shops & Offices", "card-purple"),
+    ("🌳", "Plots", "Land & Development", "card-orange"),
+    ("🌾", "Agricultural", "Farm & Agriculture", "card-green")
+]
+
+for col, item in zip(
+    [q1, q2, q3, q4],
+    quick_cards
+):
+
+    with col:
+
+        st.markdown(
+            f"""
+            <div class="color-card {item[3]}">
+
+            <div class="card-icon">
+            {item[0]}
+            </div>
+
+            <div class="card-title">
+            {item[1]}
+            </div>
+
+            <div>
+            {item[2]}
+            </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+# ============================================================
+# BASIC INFORMATION
+# ============================================================
 
 st.markdown(
-    """
-    <div class="hero">
-
-        <h1>List Your Property With Confidence</h1>
-
-        <p>
-        Reach genuine buyers, tenants and investors
-        across India's growing real estate marketplace.
-        </p>
-
-        <p>
-        📸 Photos &nbsp; • &nbsp;
-        🎬 Property Video &nbsp; • &nbsp;
-        📍 Location &nbsp; • &nbsp;
-        🛡️ Verification
-        </p>
-
-    </div>
-    """,
+    '<div class="section-title">🏠 Property Information</div>',
     unsafe_allow_html=True
 )
 
-
-# =========================================================
-# PROGRESS
-# =========================================================
-
-st.progress(
-    0.20,
-    text="Step 1 of 5 — Property Information"
-)
-
-
-# =========================================================
-# SECTION 1 — LISTING PURPOSE
-# =========================================================
-
 st.markdown(
-    '<div class="section-title">🏠 What would you like to do?</div>',
+    '<div class="section-subtitle">Tell us what you want to list.</div>',
     unsafe_allow_html=True
 )
 
 st.markdown(
-    '<div class="premium-card">',
+    '<div class="panel">',
     unsafe_allow_html=True
 )
 
-purpose_col1, purpose_col2 = st.columns(2)
+c1, c2 = st.columns(2)
 
-with purpose_col1:
+with c1:
 
-    listing_purpose = st.radio(
-        "Listing Purpose",
+    listing_purpose = st.selectbox(
+        "What do you want to do?",
         [
             "Sell Property",
             "Rent / Lease Property"
-        ],
-        horizontal=True
+        ]
     )
 
-with purpose_col2:
+with c2:
 
-    seller_type = st.selectbox(
-        "I am a",
+    listed_by = st.selectbox(
+        "You are",
         [
             "Property Owner",
             "Real Estate Agent / Broker",
@@ -326,32 +631,12 @@ with purpose_col2:
         ]
     )
 
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
-)
+c3, c4 = st.columns(2)
 
-
-# =========================================================
-# SECTION 2 — PROPERTY CATEGORY
-# =========================================================
-
-st.markdown(
-    '<div class="section-title">🏘️ Property Category</div>',
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    '<div class="premium-card">',
-    unsafe_allow_html=True
-)
-
-category_col1, category_col2 = st.columns(2)
-
-with category_col1:
+with c3:
 
     property_category = st.selectbox(
-        "Category",
+        "Property Category",
         [
             "Residential",
             "Commercial",
@@ -360,7 +645,7 @@ with category_col1:
         ]
     )
 
-with category_col2:
+with c4:
 
     property_type = st.selectbox(
         "Property Type",
@@ -388,9 +673,9 @@ st.markdown(
 )
 
 
-# =========================================================
-# SECTION 3 — PROPERTY LOCATION
-# =========================================================
+# ============================================================
+# LOCATION
+# ============================================================
 
 st.markdown(
     '<div class="section-title">📍 Property Location</div>',
@@ -398,13 +683,18 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="premium-card">',
+    '<div class="section-subtitle">Help buyers discover your property.</div>',
     unsafe_allow_html=True
 )
 
-location_col1, location_col2 = st.columns(2)
+st.markdown(
+    '<div class="panel">',
+    unsafe_allow_html=True
+)
 
-with location_col1:
+l1, l2, l3 = st.columns(3)
+
+with l1:
 
     state = st.selectbox(
         "State",
@@ -418,32 +708,32 @@ with location_col1:
             "Tamil Nadu",
             "Uttar Pradesh",
             "Rajasthan",
-            "West Bengal",
             "Madhya Pradesh",
             "Other"
         ]
     )
 
+with l2:
+
     city = st.text_input(
         "City",
-        placeholder="Enter city"
+        placeholder="Example: Nagpur"
     )
 
-with location_col2:
+with l3:
 
     locality = st.text_input(
-        "Locality / Area",
-        placeholder="Enter locality or area"
+        "Locality",
+        placeholder="Example: Civil Lines"
     )
 
-    landmark = st.text_input(
-        "Nearby Landmark",
-        placeholder="Example: Near Metro Station"
-    )
+landmark = st.text_input(
+    "Nearby Landmark",
+    placeholder="Example: Near Airport / Metro / Highway"
+)
 
 address = st.text_area(
-    "Property Address",
-    placeholder="Enter complete property address"
+    "Complete Property Address"
 )
 
 st.markdown(
@@ -452,9 +742,9 @@ st.markdown(
 )
 
 
-# =========================================================
-# SECTION 4 — PROPERTY DETAILS
-# =========================================================
+# ============================================================
+# PROPERTY DETAILS
+# ============================================================
 
 st.markdown(
     '<div class="section-title">📐 Property Details</div>',
@@ -462,26 +752,26 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="premium-card">',
+    '<div class="panel">',
     unsafe_allow_html=True
 )
 
-detail_col1, detail_col2, detail_col3 = st.columns(3)
+d1, d2, d3, d4 = st.columns(4)
 
-with detail_col1:
+with d1:
 
     area = st.number_input(
-        "Property Area (Sq.Ft.)",
+        "Area Sq.Ft.",
         min_value=0,
         step=100
     )
 
-with detail_col2:
+with d2:
 
     bedrooms = st.selectbox(
         "Bedrooms",
         [
-            "Not Applicable",
+            "N/A",
             "1",
             "2",
             "3",
@@ -490,12 +780,12 @@ with detail_col2:
         ]
     )
 
-with detail_col3:
+with d3:
 
     bathrooms = st.selectbox(
         "Bathrooms",
         [
-            "Not Applicable",
+            "N/A",
             "1",
             "2",
             "3",
@@ -503,335 +793,310 @@ with detail_col3:
         ]
     )
 
-detail_col4, detail_col5, detail_col6 = st.columns(3)
-
-with detail_col4:
+with d4:
 
     furnishing = st.selectbox(
         "Furnishing",
         [
-            "Not Applicable",
+            "N/A",
             "Unfurnished",
             "Semi Furnished",
             "Fully Furnished"
         ]
     )
 
-with detail_col5:
-
-    parking = st.selectbox(
-        "Parking",
-        [
-            "No Parking",
-            "Bike Parking",
-            "Car Parking",
-            "Multiple Parking"
-        ]
-    )
-
-with detail_col6:
-
-    possession = st.selectbox(
-        "Possession Status",
-        [
-            "Ready to Move",
-            "Under Construction",
-            "New Launch",
-            "Resale"
-        ]
-    )
-
 st.markdown(
     '</div>',
     unsafe_allow_html=True
 )
 
 
-# =========================================================
-# SECTION 5 — PRICE
-# =========================================================
+# ============================================================
+# MEDIA
+# ============================================================
 
 st.markdown(
-    '<div class="section-title">💰 Pricing & Financial Details</div>',
+    '<div class="section-title">📸 Create a Powerful Listing</div>',
     unsafe_allow_html=True
 )
 
 st.markdown(
-    '<div class="premium-card">',
+    '<div class="section-subtitle">Properties with great photos and videos attract more attention.</div>',
     unsafe_allow_html=True
 )
 
-price_col1, price_col2 = st.columns(2)
+m1, m2 = st.columns(2)
 
-with price_col1:
+with m1:
 
-    price = st.number_input(
-        "Expected Price (₹)",
-        min_value=0,
-        step=100000
-    )
+    st.markdown("""
+    <div class="media-photo">
 
-with price_col2:
+    <div class="media-icon">
+    📸
+    </div>
 
-    negotiable = st.radio(
-        "Price Negotiable?",
-        [
-            "Yes",
-            "No"
+    <div class="media-title">
+    Upload Property Photos
+    </div>
+
+    <p>
+    Showcase rooms, exterior, interiors and surroundings.
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+    photos = st.file_uploader(
+        "Choose Photos",
+        type=[
+            "jpg",
+            "jpeg",
+            "png",
+            "webp"
         ],
-        horizontal=True
+        accept_multiple_files=True
     )
 
-if listing_purpose == "Rent / Lease Property":
+with m2:
 
-    rent = st.number_input(
-        "Monthly Rent (₹)",
-        min_value=0,
-        step=1000
+    st.markdown("""
+    <div class="media-video">
+
+    <div class="media-icon">
+    🎬
+    </div>
+
+    <div class="media-title">
+    Upload Property Video
+    </div>
+
+    <p>
+    Give buyers a virtual walkthrough of your property.
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+    video = st.file_uploader(
+        "Choose Video",
+        type=[
+            "mp4",
+            "mov",
+            "avi"
+        ]
     )
 
-    deposit = st.number_input(
-        "Security Deposit (₹)",
-        min_value=0,
-        step=1000
-    )
 
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
-)
-
-
-# =========================================================
-# SECTION 6 — MEDIA
-# =========================================================
-
-st.markdown(
-    '<div class="section-title">📸 Property Photos & 🎬 Video</div>',
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    '<div class="premium-card">',
-    unsafe_allow_html=True
-)
-
-st.info(
-    "High-quality photos and videos increase buyer confidence and property engagement."
-)
-
-photos = st.file_uploader(
-    "Upload Property Photos",
-    type=[
-        "jpg",
-        "jpeg",
-        "png",
-        "webp"
-    ],
-    accept_multiple_files=True
-)
-
-video = st.file_uploader(
-    "Upload Property Video",
-    type=[
-        "mp4",
-        "mov",
-        "avi"
-    ]
-)
+# ============================================================
+# PHOTO PREVIEW
+# ============================================================
 
 if photos:
 
-    st.success(
-        f"{len(photos)} property photo(s) selected."
+    st.markdown(
+        "### 🖼️ Your Property Gallery"
     )
 
-    image_cols = st.columns(
+    image_columns = st.columns(
         min(len(photos), 4)
     )
 
-    for i, photo in enumerate(
+    for i, image in enumerate(
         photos[:4]
     ):
 
-        with image_cols[i]:
+        with image_columns[i]:
 
             st.image(
-                photo,
+                image,
                 use_container_width=True
             )
 
+
 if video:
 
-    st.success(
-        "Property video uploaded successfully."
+    st.markdown(
+        "### 🎬 Property Video Preview"
     )
 
     st.video(
         video
     )
 
+
+# ============================================================
+# PRICE
+# ============================================================
+
+st.markdown(
+    '<div class="section-title">💰 Pricing & Investment</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    '<div class="panel">',
+    unsafe_allow_html=True
+)
+
+pr1, pr2 = st.columns(2)
+
+with pr1:
+
+    price = st.number_input(
+        "Expected Price ₹",
+        min_value=0,
+        step=100000
+    )
+
+with pr2:
+
+    negotiable = st.selectbox(
+        "Price Negotiable?",
+        [
+            "Yes",
+            "No"
+        ]
+    )
+
+if listing_purpose == "Rent / Lease Property":
+
+    rr1, rr2 = st.columns(2)
+
+    with rr1:
+
+        rent = st.number_input(
+            "Monthly Rent ₹",
+            min_value=0,
+            step=1000
+        )
+
+    with rr2:
+
+        deposit = st.number_input(
+            "Security Deposit ₹",
+            min_value=0,
+            step=1000
+        )
+
 st.markdown(
     '</div>',
     unsafe_allow_html=True
 )
 
 
-# =========================================================
-# SECTION 7 — AMENITIES
-# =========================================================
+# ============================================================
+# AMENITIES
+# ============================================================
 
 st.markdown(
-    '<div class="section-title">✨ Property Amenities</div>',
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    '<div class="premium-card">',
+    '<div class="section-title">✨ Premium Property Features</div>',
     unsafe_allow_html=True
 )
 
 amenities = st.multiselect(
-    "Select Available Amenities",
+    "Choose Property Amenities",
     [
-        "Swimming Pool",
-        "Gym",
-        "Club House",
-        "Garden",
-        "Children's Play Area",
-        "24x7 Security",
-        "CCTV",
-        "Lift",
-        "Power Backup",
-        "Visitor Parking",
-        "Gated Community",
-        "Water Supply",
-        "Internet Connectivity",
-        "Fire Safety"
+        "🏊 Swimming Pool",
+        "🏋️ Gym",
+        "🏡 Club House",
+        "🌳 Garden",
+        "🧒 Children's Play Area",
+        "🛡️ 24x7 Security",
+        "📹 CCTV",
+        "🛗 Lift",
+        "⚡ Power Backup",
+        "🚗 Visitor Parking",
+        "🏘️ Gated Community",
+        "💧 Water Supply",
+        "🌐 Internet Connectivity",
+        "🔥 Fire Safety"
     ]
 )
 
 description = st.text_area(
     "Property Description",
-    placeholder="Describe your property, location advantages, nearby facilities and unique features..."
+    placeholder="Describe the property's location, features, connectivity and unique advantages..."
 )
 
+
+# ============================================================
+# COLORFUL FEATURE STRIP
+# ============================================================
+
+f1, f2, f3, f4 = st.columns(4)
+
+features = [
+    ("📍", "Prime Location", "card-blue"),
+    ("🛡️", "Trust & Safety", "card-green"),
+    ("📸", "Visual Listing", "card-purple"),
+    ("💎", "Premium Reach", "card-gold")
+]
+
+for col, feature in zip(
+    [f1, f2, f3, f4],
+    features
+):
+
+    with col:
+
+        st.markdown(
+            f"""
+            <div class="color-card {feature[2]}">
+
+            <div class="card-icon">
+            {feature[0]}
+            </div>
+
+            <div class="card-title">
+            {feature[1]}
+            </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+# ============================================================
+# TRUST
+# ============================================================
+
 st.markdown(
-    '</div>',
+    '<div class="section-title">🛡️ FirstChoice Verification</div>',
     unsafe_allow_html=True
 )
 
+st.markdown("""
+<div class="trust">
 
-# =========================================================
-# SECTION 8 — OWNER DETAILS
-# =========================================================
+<h2>
+Build Buyer Confidence
+</h2>
 
-st.markdown(
-    '<div class="section-title">👤 Contact & Ownership Details</div>',
-    unsafe_allow_html=True
-)
+<p>
+FirstChoice Property Hub is designed to create a trusted
+real estate marketplace where property owners, buyers,
+agents and developers can connect.
+</p>
 
-st.markdown(
-    '<div class="premium-card">',
-    unsafe_allow_html=True
-)
+<p>
+📱 Mobile Verification
+&nbsp;&nbsp; • &nbsp;&nbsp;
+🪪 Identity Verification
+&nbsp;&nbsp; • &nbsp;&nbsp;
+📄 Property Verification
+&nbsp;&nbsp; • &nbsp;&nbsp;
+🛡️ Trusted Listing
+</p>
 
-owner_col1, owner_col2 = st.columns(2)
+</div>
+""", unsafe_allow_html=True)
 
-with owner_col1:
-
-    owner_name = st.text_input(
-        "Owner / Contact Person Name"
-    )
-
-    owner_mobile = st.text_input(
-        "Mobile Number",
-        max_chars=10
-    )
-
-with owner_col2:
-
-    owner_email = st.text_input(
-        "Email Address"
-    )
-
-    contact_preference = st.selectbox(
-        "Preferred Contact Method",
-        [
-            "Phone Call",
-            "WhatsApp",
-            "Email",
-            "Phone + WhatsApp"
-        ]
-    )
-
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
-)
-
-
-# =========================================================
-# SECTION 9 — VERIFICATION
-# =========================================================
-
-st.markdown(
-    '<div class="section-title">🛡️ Property Verification</div>',
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    '<div class="premium-card">',
-    unsafe_allow_html=True
-)
-
-verify_col1, verify_col2, verify_col3 = st.columns(3)
-
-with verify_col1:
-
-    st.markdown(
-        """
-        <div class="verified">
-        📱 Mobile Verification
-        <br>
-        Required
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with verify_col2:
-
-    st.markdown(
-        """
-        <div class="pending">
-        🪪 Identity Verification
-        <br>
-        Pending
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-with verify_col3:
-
-    st.markdown(
-        """
-        <div class="pending">
-        📄 Property Documents
-        <br>
-        Verification Required
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-st.info(
-    "In the production version, property documents and identity information will be securely verified through authorized verification services."
-)
+st.markdown("<br>", unsafe_allow_html=True)
 
 documents = st.file_uploader(
-    "Upload Supporting Property Documents (Optional Demo)",
+    "Upload Supporting Property Documents",
     type=[
         "pdf",
         "jpg",
@@ -841,143 +1106,158 @@ documents = st.file_uploader(
     accept_multiple_files=True
 )
 
+
+# ============================================================
+# LIVE PREVIEW
+# ============================================================
+
 st.markdown(
-    '</div>',
+    '<div class="section-title">👁️ Live Listing Preview</div>',
     unsafe_allow_html=True
 )
 
+pv1, pv2 = st.columns([1.4, 1])
 
-# =========================================================
-# SECTION 10 — PREVIEW
-# =========================================================
+with pv1:
+
+    if photos:
+
+        st.image(
+            photos[0],
+            use_container_width=True
+        )
+
+    else:
+
+        st.markdown("""
+        <div style="
+        height:350px;
+        background:
+        linear-gradient(
+            135deg,
+            #DBEAFE,
+            #E0E7FF,
+            #FCE7F3
+        );
+        border-radius:25px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:80px;
+        ">
+        🏡
+        </div>
+        """, unsafe_allow_html=True)
+
+with pv2:
+
+    st.markdown(
+        f"""
+        <div class="preview">
+
+        <div class="preview-top">
+
+        <h2>
+        {property_type}
+        </h2>
+
+        <p>
+        📍 {locality if locality else "Your Locality"},
+        {city if city else "Your City"}
+        </p>
+
+        <div class="preview-price">
+        ₹ {price:,}
+        </div>
+
+        </div>
+
+        <div style="padding:25px;">
+
+        <div class="feature-box">
+        📐 {area} Sq.Ft.
+        </div>
+
+        <br>
+
+        <div class="feature-box">
+        🛏️ {bedrooms} Bedrooms
+        </div>
+
+        <br>
+
+        <div class="feature-box">
+        🛁 {bathrooms} Bathrooms
+        </div>
+
+        <br>
+
+        <div class="feature-box">
+        ✨ {len(amenities)} Amenities
+        </div>
+
+        </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+# ============================================================
+# SUBMIT
+# ============================================================
 
 st.markdown(
-    '<div class="section-title">👁️ Listing Preview</div>',
+    '<div class="section-title">🚀 Publish Your Property</div>',
     unsafe_allow_html=True
 )
 
-preview_col1, preview_col2 = st.columns(2)
-
-with preview_col1:
-
-    st.markdown(
-        '<div class="premium-card">',
-        unsafe_allow_html=True
-    )
-
-    st.subheader(
-        property_type if property_type else "Your Property"
-    )
-
-    st.write(
-        f"📍 {locality}, {city}"
-    )
-
-    st.write(
-        f"🏠 {property_category}"
-    )
-
-    st.write(
-        f"📐 {area} Sq.Ft."
-    )
-
-    st.write(
-        f"💰 ₹ {price:,}"
-    )
-
-    st.write(
-        f"✨ Amenities: {', '.join(amenities) if amenities else 'Not selected'}"
-    )
-
-    st.markdown(
-        '</div>',
-        unsafe_allow_html=True
-    )
-
-with preview_col2:
-
-    st.markdown(
-        '<div class="premium-card">',
-        unsafe_allow_html=True
-    )
-
-    st.subheader(
-        "Verification Status"
-    )
-
-    st.success(
-        "📱 Mobile: Ready for Verification"
-    )
-
-    st.warning(
-        "🪪 Identity: Pending"
-    )
-
-    st.warning(
-        "📄 Property Documents: Pending"
-    )
-
-    st.info(
-        "Your listing will be reviewed before publication."
-    )
-
-    st.markdown(
-        '</div>',
-        unsafe_allow_html=True
-    )
-
-
-# =========================================================
-# SUBMIT LISTING
-# =========================================================
-
-st.markdown(
-    '<div class="section-title">🚀 Submit Property Listing</div>',
-    unsafe_allow_html=True
+agree = st.checkbox(
+    "I confirm that the information provided is accurate and I agree to property verification."
 )
 
-submit_col1, submit_col2 = st.columns(2)
+b1, b2 = st.columns(2)
 
-with submit_col1:
+with b1:
 
     save_draft = st.button(
-        "💾 Save as Draft",
+        "💾 SAVE AS DRAFT",
         use_container_width=True
     )
 
-with submit_col2:
+with b2:
 
-    submit_listing = st.button(
-        "🚀 Submit for Verification",
+    submit = st.button(
+        "🚀 SUBMIT PROPERTY",
         use_container_width=True
     )
 
 
 if save_draft:
 
-    st.info(
-        "Your property listing has been saved as a draft."
+    st.success(
+        "💾 Property saved as draft."
     )
 
 
-if submit_listing:
+if submit:
 
-    if (
-        not city
-        or not locality
-        or not address
-        or not owner_name
-        or not owner_mobile
-        or not price
-    ):
+    if not agree:
+
+        st.warning(
+            "⚠️ Please confirm the information before submitting."
+        )
+
+    elif not city or not locality or not address or not price:
 
         st.error(
-            "Please complete the required property, location, pricing and contact details."
+            "❌ Please complete location, address and pricing information."
         )
 
     else:
 
-        listing_id = (
+        st.session_state.listing_id = (
             "FCPH-"
             + str(
                 random.randint(
@@ -987,98 +1267,66 @@ if submit_listing:
             )
         )
 
-        st.session_state.listing_id = listing_id
-
         st.session_state.listing_submitted = True
 
 
-# =========================================================
+# ============================================================
 # SUCCESS
-# =========================================================
+# ============================================================
 
 if st.session_state.listing_submitted:
 
     st.markdown(
-        """
-        <div class="success-card">
-
-        <h1>🎉 Property Submitted Successfully!</h1>
-
-        <p>
-        Your property has been submitted for verification.
-        </p>
-
-        <p>
-        Once approved, your listing can be published
-        on FirstChoice Infra Property Hub.
-        </p>
-
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
         f"""
-        <div class="info-card">
+        <div class="success">
 
-        <div>
-        YOUR PROPERTY LISTING ID
-        </div>
+        <h1>
+        🎉 Your Property Is On Its Way!
+        </h1>
+
+        <p>
+        Your listing has been successfully submitted
+        for FirstChoice verification.
+        </p>
 
         <div class="listing-id">
         {st.session_state.listing_id}
         </div>
 
-        <br>
-
-        <div>
-        Status: ⏳ Pending Verification
-        </div>
+        <p>
+        ⏳ Verification Pending
+        </p>
 
         </div>
         """,
         unsafe_allow_html=True
     )
 
-    st.success(
-        "📱 Mobile Verification — Pending"
-    )
 
-    st.warning(
-        "🪪 Identity Verification — Pending"
-    )
-
-    st.warning(
-        "📄 Property Document Verification — Pending"
-    )
-
-
-# =========================================================
+# ============================================================
 # FOOTER
-# =========================================================
+# ============================================================
 
-st.markdown(
-    """
-    <div class="footer">
+st.markdown("""
+<div class="footer">
 
-    <h2>FIRSTCHOICE INFRA PROPERTY HUB</h2>
+<h2>
+🏠 FIRSTCHOICE INFRA PROPERTY HUB
+</h2>
 
-    <p>
-    India's Smart Real Estate Marketplace
-    </p>
+<p>
+India's Next-Generation Real Estate Marketplace
+</p>
 
-    <p>
-    Buy • Sell • Rent • Invest
-    </p>
+<p>
+Buy • Sell • Rent • Invest • Discover
+</p>
 
-    <br>
+<hr>
 
-    <small>
-    © FirstChoice Infra Property Hub
-    </small>
+<small>
+© FirstChoice Infra Property Hub
+</small>
 
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+</div>
+""", unsafe_allow_html=True)
