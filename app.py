@@ -1,8 +1,8 @@
 import streamlit as st
 
-# -------------------------------------------------
-# PAGE CONFIG
-# -------------------------------------------------
+# =====================================================
+# PAGE CONFIGURATION
+# =====================================================
 
 st.set_page_config(
     page_title="FirstChoice Infra Property Hub",
@@ -11,9 +11,9 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# -------------------------------------------------
+# =====================================================
 # CUSTOM CSS
-# -------------------------------------------------
+# =====================================================
 
 st.markdown(
     """
@@ -44,14 +44,6 @@ st.markdown(
     .hero p {
         font-size: 18px;
         opacity: 0.9;
-    }
-
-    .search-box {
-        background: white;
-        padding: 25px;
-        border-radius: 18px;
-        box-shadow: 0px 5px 20px rgba(0,0,0,0.08);
-        margin-bottom: 30px;
     }
 
     .section-title {
@@ -97,9 +89,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# -------------------------------------------------
+# =====================================================
 # HEADER
-# -------------------------------------------------
+# =====================================================
 
 col1, col2 = st.columns([3, 1])
 
@@ -114,117 +106,121 @@ with col1:
     )
 
 with col2:
-if st.button("🔐 Login / Register", use_container_width=True):
-    st.switch_page("pages/1_Login_Register.py")   
-# -------------------------------------------------
+    if st.button(
+        "🔐 Login / Register",
+        use_container_width=True
+    ):
+        st.switch_page(
+            "pages/1_Login_Register.py"
+        )
+
+# =====================================================
 # HERO SECTION
-# -------------------------------------------------
+# =====================================================
 
 st.markdown(
     """
     <div class="hero">
 
-    <h1>Find Your Perfect Property</h1>
+        <h1>Find Your Perfect Property</h1>
 
-    <p>
-    Buy • Rent • Sell • New Projects • Plots • Commercial
-    </p>
+        <p>
+        Buy • Rent • Sell • New Projects • Plots • Commercial
+        </p>
 
-    <p>
-    India's Smart Property Marketplace
-    </p>
+        <p>
+        India's Smart Property Marketplace
+        </p>
 
     </div>
     """,
     unsafe_allow_html=True
 )
 
-# -------------------------------------------------
+# =====================================================
 # SEARCH SECTION
-# -------------------------------------------------
+# =====================================================
 
 st.markdown(
     '<div class="section-title">🔍 Search Properties</div>',
     unsafe_allow_html=True
 )
 
-with st.container():
+search_col1, search_col2, search_col3 = st.columns(3)
 
-    search_col1, search_col2, search_col3 = st.columns(3)
+with search_col1:
+    purpose = st.selectbox(
+        "Looking For",
+        [
+            "Buy",
+            "Rent",
+            "New Projects",
+            "Plots & Land",
+            "Commercial"
+        ]
+    )
 
-    with search_col1:
-        purpose = st.selectbox(
-            "Looking For",
-            [
-                "Buy",
-                "Rent",
-                "New Projects",
-                "Plots & Land",
-                "Commercial"
-            ]
+with search_col2:
+    property_type = st.selectbox(
+        "Property Type",
+        [
+            "All Properties",
+            "Apartment",
+            "Villa",
+            "Independent House",
+            "Plot",
+            "Office",
+            "Shop",
+            "Warehouse",
+            "Agricultural Land"
+        ]
+    )
+
+with search_col3:
+    location = st.text_input(
+        "📍 City / Locality",
+        placeholder="Enter city or locality"
+    )
+
+col4, col5, col6 = st.columns(3)
+
+with col4:
+    min_budget = st.number_input(
+        "Minimum Budget (₹)",
+        min_value=0,
+        step=100000
+    )
+
+with col5:
+    max_budget = st.number_input(
+        "Maximum Budget (₹)",
+        min_value=0,
+        step=100000
+    )
+
+with col6:
+    search_button = st.button(
+        "🔍 Search Property",
+        use_container_width=True
+    )
+
+if search_button:
+
+    if location:
+
+        st.success(
+            f"Searching {purpose} properties in {location}"
         )
 
-    with search_col2:
-        property_type = st.selectbox(
-            "Property Type",
-            [
-                "All Properties",
-                "Apartment",
-                "Villa",
-                "Independent House",
-                "Plot",
-                "Office",
-                "Shop",
-                "Warehouse",
-                "Agricultural Land"
-            ]
+    else:
+
+        st.warning(
+            "Please enter a city or locality."
         )
 
-    with search_col3:
-        location = st.text_input(
-            "📍 City / Locality",
-            placeholder="Enter city or locality"
-        )
-
-    col4, col5, col6 = st.columns(3)
-
-    with col4:
-        min_budget = st.number_input(
-            "Minimum Budget (₹)",
-            min_value=0,
-            step=100000
-        )
-
-    with col5:
-        max_budget = st.number_input(
-            "Maximum Budget (₹)",
-            min_value=0,
-            step=100000
-        )
-
-    with col6:
-        search_button = st.button(
-            "🔍 Search Property",
-            use_container_width=True
-        )
-
-    if search_button:
-
-        if location:
-
-            st.success(
-                f"Searching {purpose} properties in {location}"
-            )
-
-        else:
-
-            st.warning(
-                "Please enter a city or locality."
-            )
-
-# -------------------------------------------------
+# =====================================================
 # PROPERTY CATEGORIES
-# -------------------------------------------------
+# =====================================================
 
 st.markdown(
     '<div class="section-title">🏘️ Explore Properties</div>',
@@ -250,20 +246,20 @@ for i, category in enumerate(categories):
             f"""
             <div class="category-card">
 
-            <div class="category-icon">
-            {category[0]}
-            </div>
+                <div class="category-icon">
+                    {category[0]}
+                </div>
 
-            <b>{category[1]}</b>
+                <b>{category[1]}</b>
 
             </div>
             """,
             unsafe_allow_html=True
         )
 
-# -------------------------------------------------
+# =====================================================
 # FEATURED PROPERTIES
-# -------------------------------------------------
+# =====================================================
 
 st.markdown(
     '<div class="section-title">⭐ Featured Properties</div>',
@@ -305,13 +301,13 @@ for i, property_data in enumerate(properties):
             f"""
             <div class="property-card">
 
-            <h3>{property_data["title"]}</h3>
+                <h3>{property_data["title"]}</h3>
 
-            <p>📍 {property_data["location"]}</p>
+                <p>📍 {property_data["location"]}</p>
 
-            <h3>{property_data["price"]}</h3>
+                <h3>{property_data["price"]}</h3>
 
-            <p>📐 {property_data["area"]}</p>
+                <p>📐 {property_data["area"]}</p>
 
             </div>
             """,
@@ -328,9 +324,9 @@ for i, property_data in enumerate(properties):
                 "Property Details Page will open here."
             )
 
-# -------------------------------------------------
+# =====================================================
 # WHY FIRSTCHOICE PROPERTY HUB
-# -------------------------------------------------
+# =====================================================
 
 st.markdown(
     '<div class="section-title">✨ Why FirstChoice Property Hub?</div>',
@@ -359,20 +355,20 @@ for col, feature in zip(
             f"""
             <div class="category-card">
 
-            <div class="category-icon">
-            {feature[0]}
-            </div>
+                <div class="category-icon">
+                    {feature[0]}
+                </div>
 
-            <b>{feature[1]}</b>
+                <b>{feature[1]}</b>
 
             </div>
             """,
             unsafe_allow_html=True
         )
 
-# -------------------------------------------------
+# =====================================================
 # POST PROPERTY
-# -------------------------------------------------
+# =====================================================
 
 st.markdown(
     '<div class="section-title">🏠 Want to Sell or Rent Your Property?</div>',
@@ -398,23 +394,23 @@ with post_col2:
             "Property Listing Module will be added next."
         )
 
-# -------------------------------------------------
+# =====================================================
 # FOOTER
-# -------------------------------------------------
+# =====================================================
 
 st.markdown(
     """
     <div class="footer">
 
-    <h3>FirstChoice Infra Property Hub</h3>
+        <h3>FirstChoice Infra Property Hub</h3>
 
-    <p>
-    India's Smart Real Estate Marketplace
-    </p>
+        <p>
+        India's Smart Real Estate Marketplace
+        </p>
 
-    <p>
-    Buy • Sell • Rent • Invest
-    </p>
+        <p>
+        Buy • Sell • Rent • Invest
+        </p>
 
     </div>
     """,
