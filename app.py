@@ -114,9 +114,8 @@ with col1:
     )
 
 with col2:
-    if st.button("🔐 Login / Register", use_container_width=True):
-        st.info("Login & Registration module coming next.")
-
+if st.button("🔐 Login / Register", use_container_width=True):
+    st.switch_page("pages/1_Login_Register.py")   
 # -------------------------------------------------
 # HERO SECTION
 # -------------------------------------------------
