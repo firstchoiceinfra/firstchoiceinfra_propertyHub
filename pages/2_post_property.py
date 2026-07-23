@@ -1,15 +1,41 @@
 import streamlit as st
+from datetime import datetime
+import uuid
+
 
 # ============================================================
 # PAGE 2 — POST PROPERTY
 # FIRSTCHOICE INFRA PROPERTY HUB
+# COPY-PASTE READY VERSION
 # ============================================================
+
 
 st.set_page_config(
     page_title="Post Your Property | FirstChoice Property Hub",
     page_icon="🏡",
     layout="wide"
 )
+
+
+# ============================================================
+# PROPERTY DATA STORE
+# ============================================================
+
+if "properties" not in st.session_state:
+    st.session_state.properties = []
+
+
+if "property_likes" not in st.session_state:
+    st.session_state.property_likes = []
+
+
+if "property_interests" not in st.session_state:
+    st.session_state.property_interests = []
+
+
+if "property_enquiries" not in st.session_state:
+    st.session_state.property_enquiries = []
+
 
 # ============================================================
 # PREMIUM MULTICOLOUR DESIGN
@@ -40,6 +66,7 @@ header {
 footer {
     visibility: hidden;
 }
+
 
 /* MAIN TITLE */
 
@@ -72,6 +99,7 @@ footer {
 .main-title p {
     font-size: 17px;
 }
+
 
 /* SECTION TITLE */
 
@@ -110,6 +138,7 @@ footer {
     color: #E0E7FF;
 }
 
+
 /* CARD */
 
 .form-card {
@@ -126,6 +155,7 @@ footer {
 
     margin-bottom: 25px;
 }
+
 
 /* TRUST CARD */
 
@@ -149,6 +179,7 @@ footer {
     0 15px 45px
     rgba(5,150,105,0.22);
 }
+
 
 /* FINAL CARD */
 
@@ -176,6 +207,67 @@ footer {
     rgba(124,58,237,0.25);
 }
 
+
+/* SUCCESS PROPERTY ID CARD */
+
+.property-id-card {
+
+    padding: 30px;
+
+    border-radius: 28px;
+
+    color: white;
+
+    background:
+    linear-gradient(
+        135deg,
+        #047857,
+        #059669,
+        #10B981
+    );
+
+    box-shadow:
+    0 18px 50px
+    rgba(5,150,105,0.25);
+
+    margin-top: 25px;
+}
+
+
+.property-id-card h1 {
+
+    font-size: 36px;
+
+    font-weight: 900;
+
+}
+
+
+/* INFO CARD */
+
+.info-card {
+
+    padding: 28px;
+
+    border-radius: 25px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #EFF6FF,
+        #F5F3FF
+    );
+
+    border: 1px solid #DBEAFE;
+
+    box-shadow:
+    0 10px 30px
+    rgba(37,99,235,0.08);
+
+    margin-top: 20px;
+
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -200,11 +292,24 @@ Reach genuine buyers, tenants and investors.
 📸 Photos &nbsp; • &nbsp;
 🎥 Video &nbsp; • &nbsp;
 📍 Location &nbsp; • &nbsp;
-🛡️ Verification
+🛡️ Verification &nbsp; • &nbsp;
+📩 Smart Enquiry Routing
 </p>
 
 </div>
 """, unsafe_allow_html=True)
+
+
+# ============================================================
+# IMPORTANT PROPERTY CONNECTION SYSTEM
+# ============================================================
+
+st.info(
+    "🔗 Every property will receive a unique Property ID. "
+    "All Likes, Interests, Enquiries and future Site Visit Requests "
+    "will be connected to this Property ID and routed to the original "
+    "person who posted the property."
+)
 
 
 # ============================================================
@@ -766,7 +871,7 @@ agree = st.checkbox(
 
 
 # ============================================================
-# SUBMIT
+# FINAL SUBMIT CARD
 # ============================================================
 
 st.markdown("""
@@ -780,14 +885,27 @@ st.markdown("""
 Review your information and submit your listing.
 </p>
 
+<p>
+❤️ Likes • 🔥 Interests • 📩 Enquiries
+will automatically remain connected to your Property ID.
+</p>
+
 </div>
 """, unsafe_allow_html=True)
 
+
+# ============================================================
+# SUBMIT PROPERTY
+# ============================================================
 
 if st.button(
     "🚀 SUBMIT PROPERTY LISTING",
     use_container_width=True
 ):
+
+    # --------------------------------------------------------
+    # VALIDATION
+    # --------------------------------------------------------
 
     if not property_title:
 
@@ -801,13 +919,22 @@ if st.button(
             "Please enter the City."
         )
 
+    elif not locality:
+
+        st.error(
+            "Please enter the Locality."
+        )
+
     elif not mobile:
 
         st.error(
             "Please enter your current mobile number."
         )
 
-    elif len(mobile) != 10 or not mobile.isdigit():
+    elif (
+        len(mobile) != 10
+        or not mobile.isdigit()
+    ):
 
         st.error(
             "Please enter a valid 10-digit mobile number."
@@ -821,10 +948,415 @@ if st.button(
 
     else:
 
+        # ====================================================
+        # GENERATE UNIQUE PROPERTY ID
+        # ====================================================
+
+        property_id = (
+            "FC-PROP-"
+            +
+            uuid.uuid4()
+            .hex[:8]
+            .upper()
+        )
+
+
+        # ====================================================
+        # IDENTIFY ORIGINAL PROPERTY POSTER
+        # ====================================================
+        #
+        # Production में यह Login System से आएगा.
+        #
+        # अभी:
+        # user_id available है तो वही poster_id होगा.
+        # नहीं तो mobile number fallback रहेगा.
+        #
+        # ====================================================
+
+        poster_id = st.session_state.get(
+            "user_id",
+            mobile
+        )
+
+
+        poster_name = st.session_state.get(
+            "user_name",
+            mobile
+        )
+
+
+        # ====================================================
+        # PROPERTY RECORD
+        # ====================================================
+
+        property_data = {
+
+            # ----------------------------------------------
+            # PRIMARY IDENTIFICATION
+            # ----------------------------------------------
+
+            "property_id":
+            property_id,
+
+            "poster_id":
+            poster_id,
+
+            "poster_name":
+            poster_name,
+
+            "poster_mobile":
+            mobile,
+
+            "poster_role":
+            profile_type,
+
+
+            # ----------------------------------------------
+            # PROPERTY DETAILS
+            # ----------------------------------------------
+
+            "property_title":
+            property_title,
+
+            "property_type":
+            property_type,
+
+            "purpose":
+            purpose,
+
+            "bhk":
+            bhk,
+
+            "area":
+            area,
+
+            "property_age":
+            property_age,
+
+            "description":
+            description,
+
+
+            # ----------------------------------------------
+            # LOCATION
+            # ----------------------------------------------
+
+            "state":
+            state,
+
+            "city":
+            city,
+
+            "locality":
+            locality,
+
+            "pincode":
+            pincode,
+
+            "address":
+            address,
+
+
+            # ----------------------------------------------
+            # PRICE
+            # ----------------------------------------------
+
+            "price":
+            price,
+
+            "price_negotiable":
+            price_negotiable,
+
+            "maintenance":
+            maintenance,
+
+
+            # ----------------------------------------------
+            # AMENITIES
+            # ----------------------------------------------
+
+            "amenities":
+            amenities,
+
+
+            # ----------------------------------------------
+            # MEDIA
+            #
+            # Production version में uploaded files
+            # cloud/database storage में save होंगे.
+            # ----------------------------------------------
+
+            "photo_count":
+            len(photos)
+            if photos
+            else 0,
+
+            "video_uploaded":
+            True
+            if video
+            else False,
+
+            "video_url":
+            video_url,
+
+
+            # ----------------------------------------------
+            # VERIFICATION
+            # ----------------------------------------------
+
+            "identity_type":
+            identity_type,
+
+            "verification_status":
+            "Pending",
+
+
+            # ----------------------------------------------
+            # CONTACT
+            # ----------------------------------------------
+
+            "contact_options":
+            contact_options,
+
+
+            # ----------------------------------------------
+            # LISTING STATUS
+            # ----------------------------------------------
+
+            "listing_status":
+            "Pending Review",
+
+            "created_at":
+            datetime.now().strftime(
+                "%d-%m-%Y %I:%M %p"
+            )
+
+        }
+
+
+        # ====================================================
+        # SAVE PROPERTY
+        # ====================================================
+
+        st.session_state.properties.append(
+            property_data
+        )
+
+
+        # ====================================================
+        # SAVE LAST PROPERTY ID
+        # ====================================================
+
+        st.session_state[
+            "last_property_id"
+        ] = property_id
+
+
+        # ====================================================
+        # SUCCESS MESSAGE
+        # ====================================================
+
         st.success(
             "🎉 Your property listing has been submitted successfully!"
         )
 
+
+        # ====================================================
+        # PROPERTY ID DISPLAY
+        # ====================================================
+
+        st.markdown(
+            f"""
+            <div class="property-id-card">
+
+            <p>
+            🆔 Your Unique Property ID
+            </p>
+
+            <h1>
+            {property_id}
+            </h1>
+
+            <p>
+            Keep this Property ID for tracking your property listing.
+            </p>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+        # ====================================================
+        # POSTER CONNECTION CONFIRMATION
+        # ====================================================
+
+        st.markdown(
+            f"""
+            <div class="info-card">
+
+            <h3>
+            🔗 Smart Property Connection Activated
+            </h3>
+
+            <p>
+            <b>Property ID:</b>
+            {property_id}
+            </p>
+
+            <p>
+            <b>Property Posted By:</b>
+            {poster_name}
+            </p>
+
+            <p>
+            <b>Poster ID:</b>
+            {poster_id}
+            </p>
+
+            <p>
+            ❤️ Likes, 🔥 Interests and 📩 Enquiries
+            received for this property will be connected
+            to this Property ID and routed to the original
+            property poster.
+            </p>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
         st.info(
             "Next step: Mobile OTP verification and listing review."
         )
+
+
+# ============================================================
+# CURRENT SESSION PROPERTY LISTINGS
+# ============================================================
+
+if st.session_state.properties:
+
+    st.markdown("""
+    <div class="section-title">
+
+    <h2>
+    🏡 Your Property Listings
+    </h2>
+
+    <p>
+    Properties created in the current session.
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+
+    current_user_id = st.session_state.get(
+        "user_id",
+        None
+    )
+
+
+    # Only show properties belonging
+    # to current poster when user_id exists
+
+    if current_user_id:
+
+        my_properties = [
+
+            p
+
+            for p in st.session_state.properties
+
+            if p["poster_id"]
+            ==
+            current_user_id
+
+        ]
+
+    else:
+
+        my_properties = (
+            st.session_state.properties
+        )
+
+
+    for property_item in my_properties:
+
+        st.markdown(
+            f"""
+            <div class="info-card">
+
+            <h3>
+            🏠 {property_item['property_title']}
+            </h3>
+
+            <p>
+            🆔 <b>Property ID:</b>
+            {property_item['property_id']}
+            </p>
+
+            <p>
+            📍 {property_item['city']},
+            {property_item['locality']}
+            </p>
+
+            <p>
+            💰 ₹{property_item['price']:,.0f}
+            </p>
+
+            <p>
+            📊 Status:
+            {property_item['listing_status']}
+            </p>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+# ============================================================
+# IMPORTANT SYSTEM FLOW
+# ============================================================
+
+st.markdown("""
+<div class="trust-card">
+
+<h2>
+🔐 Property Owner Connection System
+</h2>
+
+<p>
+Every published property has a unique Property ID and
+Original Poster ID.
+</p>
+
+<p>
+❤️ If someone Likes the property → Like is linked to Property ID.
+</p>
+
+<p>
+🔥 If someone Shows Interest → Interest is linked to Property ID
+and Original Poster ID.
+</p>
+
+<p>
+📩 If someone sends an Enquiry → Enquiry is routed to the
+Original Property Poster.
+</p>
+
+<p>
+📅 Future Site Visit Request → Will also be linked to the
+same Property ID and Original Poster.
+</p>
+
+<p>
+💬 Property Collaboration → Page 25 will use the same
+Property ID to connect communication, tasks and follow-ups.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
