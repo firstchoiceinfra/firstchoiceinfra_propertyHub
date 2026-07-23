@@ -9,5 +9,5 @@ st.set_page_config(
 st.title("⚖️ Smart Property Legal Verification Center")
 
 st.info(
-    "Property Legal Verification Center is under development."
+    "This page is currently under development."
 )
