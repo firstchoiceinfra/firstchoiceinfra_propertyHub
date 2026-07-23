@@ -1,20 +1,22 @@
 import streamlit as st
 
 # ============================================================
+# PAGE 4 — PROPERTY SEARCH & DISCOVERY
+# MERGED FROM:
+# 04_property_search.py
+# 9_Property_Search.py
 # FIRSTCHOICE INFRA PROPERTY HUB
-# PAGE 9 - INDIA PROPERTY SEARCH ENGINE
-# PREMIUM REAL ESTATE DISCOVERY PLATFORM
 # ============================================================
 
 st.set_page_config(
-    page_title="Search Properties | FirstChoice Property Hub",
+    page_title="Property Search | FirstChoice Property Hub",
     page_icon="🔎",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
 # ============================================================
-# PREMIUM CSS
+# PREMIUM MULTICOLOUR UI
 # ============================================================
 
 st.markdown("""
@@ -24,10 +26,10 @@ st.markdown("""
     background:
     linear-gradient(
         135deg,
-        #F7F9FF 0%,
-        #FFF7F3 35%,
-        #F7F1FF 70%,
-        #EFFCFF 100%
+        #F5F7FF 0%,
+        #FFF7ED 35%,
+        #FDF4FF 70%,
+        #ECFEFF 100%
     );
 }
 
@@ -48,7 +50,9 @@ BRAND
 ============================================================ */
 
 .brand {
-
+    padding: 25px 35px;
+    border-radius: 28px;
+    color: white;
     background:
     linear-gradient(
         135deg,
@@ -57,125 +61,67 @@ BRAND
         #7C3AED,
         #EC4899
     );
-
-    padding: 20px 32px;
-
-    border-radius: 24px;
-
-    color: white;
-
     box-shadow:
-    0 18px 50px
-    rgba(37,99,235,0.22);
+    0 20px 60px
+    rgba(37,99,235,0.25);
+    margin-bottom: 25px;
 }
 
 .brand-title {
-
-    font-size: 28px;
-
+    font-size: 34px;
     font-weight: 900;
-
     letter-spacing: 2px;
 }
 
 .brand-subtitle {
-
-    font-size: 11px;
-
-    letter-spacing: 4px;
-
+    margin-top: 8px;
+    font-size: 13px;
+    letter-spacing: 2px;
     color: #FDE68A;
 }
 
 /* ============================================================
-HERO SEARCH
+HERO
 ============================================================ */
 
 .hero {
-
-    margin-top: 28px;
-
-    padding: 55px 45px;
-
-    border-radius: 32px;
-
+    padding: 50px;
+    border-radius: 34px;
     color: white;
-
     background:
     linear-gradient(
         135deg,
         #071952,
         #2563EB,
         #7C3AED,
-        #EC4899
+        #DB2777
     );
-
     box-shadow:
     0 25px 70px
     rgba(37,99,235,0.25);
-
-    position: relative;
-
-    overflow: hidden;
+    margin-bottom: 30px;
 }
 
-.hero::after {
-
-    content: "";
-
-    position: absolute;
-
-    width: 350px;
-
-    height: 350px;
-
-    right: -100px;
-
-    top: -170px;
-
-    border-radius: 50%;
-
-    background:
-    rgba(255,255,255,0.12);
-}
-
-.hero-title {
-
+.hero h1 {
     font-size: 46px;
-
     font-weight: 900;
-
-    position: relative;
-
-    z-index: 2;
 }
 
-.hero-subtitle {
-
-    font-size: 17px;
-
-    color:
-    rgba(255,255,255,0.88);
-
-    position: relative;
-
-    z-index: 2;
+.hero p {
+    font-size: 18px;
+    line-height: 1.7;
 }
 
 /* ============================================================
-SECTION HEADER
+SECTION
 ============================================================ */
 
-.section-header {
-
-    margin-top: 35px;
-
+.section {
+    margin-top: 30px;
     margin-bottom: 22px;
-
-    padding: 22px 30px;
-
-    border-radius: 22px;
-
+    padding: 25px 30px;
+    border-radius: 25px;
+    color: white;
     background:
     linear-gradient(
         135deg,
@@ -184,59 +130,33 @@ SECTION HEADER
         #7C3AED,
         #EC4899
     );
-
-    color: white;
-
     box-shadow:
-    0 12px 35px
-    rgba(37,99,235,0.18);
-
-    position: relative;
-
-    overflow: hidden;
+    0 14px 40px
+    rgba(37,99,235,0.20);
 }
 
-.section-header::after {
-
-    content: "";
-
-    position: absolute;
-
-    width: 150px;
-
-    height: 150px;
-
-    right: -50px;
-
-    top: -75px;
-
-    border-radius: 50%;
-
-    background:
-    rgba(255,255,255,0.12);
-}
-
-.section-title {
-
-    font-size: 27px;
-
+.section h2 {
+    margin: 0;
+    font-size: 28px;
     font-weight: 900;
-
-    position: relative;
-
-    z-index: 2;
 }
 
-.section-subtitle {
+.section p {
+    margin-bottom: 0;
+}
 
-    font-size: 13px;
+/* ============================================================
+SEARCH CARD
+============================================================ */
 
-    color:
-    rgba(255,255,255,0.82);
-
-    position: relative;
-
-    z-index: 2;
+.search-card {
+    padding: 32px;
+    border-radius: 30px;
+    background: white;
+    box-shadow:
+    0 15px 45px
+    rgba(0,0,0,0.08);
+    margin-bottom: 30px;
 }
 
 /* ============================================================
@@ -244,32 +164,35 @@ PROPERTY CARD
 ============================================================ */
 
 .property-card {
-
-    background: white;
-
-    border-radius: 28px;
-
-    overflow: hidden;
-
-    margin-bottom: 25px;
-
-    box-shadow:
-    0 15px 40px
-    rgba(0,0,0,0.08);
-}
-
-.property-image {
-
-    width: 100%;
-
-    height: 230px;
-
-    object-fit: cover;
-}
-
-.property-content {
-
     padding: 25px;
+    border-radius: 26px;
+    background: white;
+    box-shadow:
+    0 12px 35px
+    rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+/* ============================================================
+CITY CARD
+============================================================ */
+
+.city-card {
+    padding: 30px;
+    border-radius: 25px;
+    color: white;
+    min-height: 170px;
+    background:
+    linear-gradient(
+        135deg,
+        #071952,
+        #2563EB,
+        #7C3AED
+    );
+    box-shadow:
+    0 12px 35px
+    rgba(37,99,235,0.18);
+    margin-bottom: 20px;
 }
 
 /* ============================================================
@@ -277,24 +200,16 @@ BADGES
 ============================================================ */
 
 .badge {
-
     display: inline-block;
-
     padding: 7px 14px;
-
     border-radius: 30px;
-
     font-size: 11px;
-
     font-weight: 800;
-
     color: white;
-
     margin-right: 5px;
 }
 
 .verified {
-
     background:
     linear-gradient(
         135deg,
@@ -304,7 +219,6 @@ BADGES
 }
 
 .premium {
-
     background:
     linear-gradient(
         135deg,
@@ -314,7 +228,6 @@ BADGES
 }
 
 .featured {
-
     background:
     linear-gradient(
         135deg,
@@ -324,72 +237,65 @@ BADGES
 }
 
 /* ============================================================
-SEARCH BOX
+TRUST CARD
 ============================================================ */
 
-.search-box {
-
-    background: white;
-
-    padding: 30px;
-
-    border-radius: 28px;
-
+.trust-card {
+    padding: 25px;
+    border-radius: 25px;
+    color: white;
+    background:
+    linear-gradient(
+        135deg,
+        #047857,
+        #059669,
+        #10B981
+    );
     box-shadow:
-    0 15px 45px
-    rgba(0,0,0,0.08);
+    0 15px 40px
+    rgba(5,150,105,0.20);
 }
 
 /* ============================================================
-CITY CARD
+AI CARD
 ============================================================ */
 
-.city-card {
-
-    padding: 30px;
-
-    border-radius: 25px;
-
+.ai-card {
+    padding: 35px;
+    border-radius: 30px;
     color: white;
+    background:
+    linear-gradient(
+        135deg,
+        #4C1D95,
+        #7C3AED,
+        #C026D3,
+        #DB2777
+    );
+    box-shadow:
+    0 20px 60px
+    rgba(124,58,237,0.25);
+}
 
-    min-height: 170px;
+/* ============================================================
+CTA
+============================================================ */
 
+.cta {
+    padding: 40px;
+    border-radius: 30px;
+    color: white;
+    text-align: center;
     background:
     linear-gradient(
         135deg,
         #071952,
         #2563EB,
-        #7C3AED
-    );
-
-    box-shadow:
-    0 12px 35px
-    rgba(37,99,235,0.18);
-}
-
-/* ============================================================
-PREMIUM
-============================================================ */
-
-.premium-card {
-
-    padding: 40px;
-
-    border-radius: 30px;
-
-    color: white;
-
-    background:
-    linear-gradient(
-        135deg,
-        #071952,
-        #4C1D95,
         #7C3AED,
         #EC4899
     );
-
     box-shadow:
-    0 22px 60px
+    0 20px 60px
     rgba(124,58,237,0.25);
 }
 
@@ -398,22 +304,17 @@ FOOTER
 ============================================================ */
 
 .footer {
-
     margin-top: 60px;
-
     padding: 45px;
-
-    border-radius: 28px;
-
+    border-radius: 30px;
     color: white;
-
     text-align: center;
-
     background:
     linear-gradient(
         135deg,
         #071952,
-        #1E1B4B
+        #1E1B4B,
+        #4C1D95
     );
 }
 
@@ -429,11 +330,11 @@ st.markdown("""
 <div class="brand">
 
 <div class="brand-title">
-🏠 FIRSTCHOICE INFRA
+🏠 FIRSTCHOICE INFRA PROPERTY HUB
 </div>
 
 <div class="brand-subtitle">
-PROPERTY HUB • INDIA'S SMART REAL ESTATE MARKETPLACE
+INDIA'S SMART REAL ESTATE MARKETPLACE
 </div>
 
 </div>
@@ -447,73 +348,81 @@ PROPERTY HUB • INDIA'S SMART REAL ESTATE MARKETPLACE
 st.markdown("""
 <div class="hero">
 
-<div class="hero-title">
-🔎 Find Your Perfect Property
-</div>
+<h1>
+🔎 Discover Your Perfect Property
+</h1>
 
-<div class="hero-subtitle">
-Discover verified homes, plots, villas, apartments,
-commercial spaces and investment opportunities across India.
-</div>
+<p>
+Search smarter. Explore better. Find homes, apartments,
+villas, plots, commercial spaces and investment opportunities
+across India.
+</p>
+
+<p>
+🏠 Buy &nbsp; • &nbsp;
+🔑 Rent &nbsp; • &nbsp;
+🏢 Commercial &nbsp; • &nbsp;
+🌳 Land & Plot &nbsp; • &nbsp;
+📈 Investment
+</p>
 
 </div>
 """, unsafe_allow_html=True)
 
 
 # ============================================================
-# SEARCH ENGINE
+# SMART PROPERTY SEARCH
 # ============================================================
 
 st.markdown("""
-<div class="section-header">
+<div class="section">
 
-<div class="section-title">
-🇮🇳 India Property Search
-</div>
+<h2>
+🇮🇳 Smart India Property Search
+</h2>
 
-<div class="section-subtitle">
-Search thousands of real estate opportunities across India.
-</div>
+<p>
+Use multiple filters to discover properties matching
+your budget, location, lifestyle and investment goals.
+</p>
 
 </div>
 """, unsafe_allow_html=True)
 
 
 st.markdown(
-    '<div class="search-box">',
+    '<div class="search-card">',
     unsafe_allow_html=True
 )
 
 
-# BUY / RENT / COMMERCIAL
+# ============================================================
+# TRANSACTION TYPE
+# ============================================================
 
 transaction_type = st.radio(
-
-    "I am looking to",
-
+    "🎯 I am looking to",
     [
         "🏡 Buy",
         "🔑 Rent",
         "🏢 Commercial",
-        "🌱 Land / Plot"
+        "🌱 Land / Plot",
+        "📈 Investment",
+        "🤝 Joint Venture"
     ],
-
     horizontal=True
-
 )
 
 
+# ============================================================
 # LOCATION
+# ============================================================
 
-l1,l2,l3 = st.columns(3)
-
+l1, l2, l3 = st.columns(3)
 
 with l1:
-
     state = st.selectbox(
-
-        "State",
-
+        "🇮🇳 State",
         [
             "All India",
             "Maharashtra",
@@ -528,16 +437,11 @@ with l1:
             "Tamil Nadu",
             "Goa"
         ]
-
     )
 
-
 with l2:
-
     city = st.selectbox(
-
-        "City",
-
+        "🌆 City",
         [
             "All Cities",
             "Nagpur",
@@ -551,54 +455,43 @@ with l2:
             "Ahmedabad",
             "Jaipur"
         ]
-
     )
-
 
 with l3:
-
     locality = st.text_input(
-
-        "Locality / Area",
-
-        placeholder="Enter locality or landmark"
-
+        "📍 Locality / Area / PIN Code",
+        placeholder="Enter locality, area or PIN Code"
     )
 
 
+# ============================================================
 # PROPERTY TYPE
+# ============================================================
 
-p1,p2,p3,p4 = st.columns(4)
-
+p1, p2, p3 = st.columns(3)
 
 with p1:
-
     property_type = st.selectbox(
-
-        "Property Type",
-
+        "🏠 Property Type",
         [
-            "All Types",
+            "Any Property",
             "Apartment",
+            "Flat",
             "Villa",
             "Independent House",
             "Plot",
+            "Residential Land",
             "Farm Land",
             "Office",
             "Shop",
             "Warehouse",
             "Industrial Property"
         ]
-
     )
 
-
 with p2:
-
     bhk = st.selectbox(
-
-        "BHK",
-
+        "🛏️ Configuration / BHK",
         [
             "Any",
             "1 BHK",
@@ -607,16 +500,45 @@ with p2:
             "4 BHK",
             "5+ BHK"
         ]
+    )
 
+with p3:
+    property_age = st.selectbox(
+        "🏗️ Property Age",
+        [
+            "Any",
+            "New Construction",
+            "0–1 Year",
+            "1–5 Years",
+            "5–10 Years",
+            "10+ Years"
+        ]
     )
 
 
-with p3:
+# ============================================================
+# BUDGET
+# ============================================================
 
-    budget = st.selectbox(
+b1, b2, b3 = st.columns(3)
 
-        "Budget",
+with b1:
+    min_price = st.number_input(
+        "💰 Minimum Budget (₹)",
+        min_value=0,
+        step=100000
+    )
 
+with b2:
+    max_price = st.number_input(
+        "💰 Maximum Budget (₹)",
+        min_value=0,
+        step=100000
+    )
+
+with b3:
+    budget_range = st.selectbox(
+        "💰 Quick Budget Range",
         [
             "Any Budget",
             "Under ₹25 Lakh",
@@ -626,68 +548,116 @@ with p3:
             "₹3 - ₹5 Crore",
             "Above ₹5 Crore"
         ]
-
     )
 
 
-with p4:
+# ============================================================
+# AREA
+# ============================================================
 
-    area = st.selectbox(
+a1, a2, a3 = st.columns(3)
 
-        "Area",
+with a1:
+    min_area = st.number_input(
+        "📐 Minimum Area (Sq.Ft.)",
+        min_value=0,
+        step=100
+    )
 
+with a2:
+    max_area = st.number_input(
+        "📐 Maximum Area (Sq.Ft.)",
+        min_value=0,
+        step=100
+    )
+
+with a3:
+    area_range = st.selectbox(
+        "📐 Quick Area Range",
         [
             "Any Area",
-            "Under 500 Sq.Ft",
-            "500 - 1000 Sq.Ft",
-            "1000 - 2000 Sq.Ft",
-            "2000 - 5000 Sq.Ft",
-            "Above 5000 Sq.Ft"
+            "Under 500 Sq.Ft.",
+            "500 - 1000 Sq.Ft.",
+            "1000 - 2000 Sq.Ft.",
+            "2000 - 5000 Sq.Ft.",
+            "Above 5000 Sq.Ft."
         ]
-
     )
 
 
-# VERIFICATION
+# ============================================================
+# VERIFICATION FILTERS
+# ============================================================
 
-v1,v2,v3 = st.columns(3)
-
+v1, v2, v3 = st.columns(3)
 
 with v1:
-
     verified_only = st.checkbox(
-
-        "🛡️ Verified Listings Only"
-
+        "🛡️ Verified Properties Only"
     )
-
 
 with v2:
-
-    aadhaar_verified = st.checkbox(
-
+    identity_verified = st.checkbox(
         "🪪 Identity Verified Owner"
-
     )
-
 
 with v3:
-
     mobile_verified = st.checkbox(
-
         "📱 Mobile Verified"
-
     )
 
 
+# ============================================================
+# ADVANCED FILTERS
+# ============================================================
+
+with st.expander(
+    "⚙️ Advanced Search Filters"
+):
+
+    af1, af2, af3 = st.columns(3)
+
+    with af1:
+        amenities = st.multiselect(
+            "✨ Amenities",
+            [
+                "Parking",
+                "Swimming Pool",
+                "Gym",
+                "Garden",
+                "Security",
+                "Lift",
+                "Power Backup",
+                "Water Supply",
+                "Internet"
+            ]
+        )
+
+    with af2:
+        listing_by = st.selectbox(
+            "👤 Listed By",
+            [
+                "Everyone",
+                "Owner",
+                "Agent / Broker",
+                "Builder / Developer"
+            ]
+        )
+
+    with af3:
+        verified_property = st.checkbox(
+            "📄 Property Documents Verified"
+        )
+
+
+# ============================================================
+# SEARCH BUTTON
+# ============================================================
+
 search_button = st.button(
-
     "🔎 SEARCH PROPERTIES",
-
     use_container_width=True
-
 )
-
 
 st.markdown(
     '</div>',
@@ -697,8 +667,9 @@ st.markdown(
 
 if search_button:
 
-    st.success(
+    st.session_state.search_done = True
 
+    st.success(
         f"""
         Searching properties for:
         {transaction_type} •
@@ -706,7 +677,6 @@ if search_button:
         {city} •
         {property_type}
         """
-
     )
 
 
@@ -715,39 +685,31 @@ if search_button:
 # ============================================================
 
 st.markdown("""
-<div class="section-header">
+<div class="section">
 
-<div class="section-title">
+<h2>
 🌆 Explore Popular Indian Cities
-</div>
+</h2>
 
-<div class="section-subtitle">
+<p>
 Discover high-demand real estate markets across India.
-</div>
+</p>
 
 </div>
 """, unsafe_allow_html=True)
 
 
 cities = [
-
-    ("🏙️","Mumbai","Luxury & Premium Homes"),
-
-    ("🌆","Pune","IT & Residential Growth"),
-
-    ("🏡","Nagpur","Plots & Investment"),
-
-    ("🏢","Bengaluru","Technology & Rentals"),
-
-    ("🌇","Hyderabad","IT & New Projects"),
-
-    ("🏙️","Delhi NCR","Luxury & Commercial")
-
+    ("🏙️", "Mumbai", "Luxury & Premium Homes"),
+    ("🌆", "Pune", "IT & Residential Growth"),
+    ("🏡", "Nagpur", "Plots & Investment"),
+    ("🏢", "Bengaluru", "Technology & Rentals"),
+    ("🌇", "Hyderabad", "IT & New Projects"),
+    ("🏙️", "Delhi NCR", "Luxury & Commercial")
 ]
 
 
 city_cols = st.columns(3)
-
 
 for index, city_item in enumerate(cities):
 
@@ -774,251 +736,248 @@ for index, city_item in enumerate(cities):
             unsafe_allow_html=True
         )
 
-        st.write("")
-
 
 # ============================================================
 # PROPERTY RESULTS
 # ============================================================
 
-st.markdown("""
-<div class="section-header">
+if st.session_state.get(
+    "search_done",
+    False
+):
 
-<div class="section-title">
-🏆 Recommended Properties
-</div>
+    st.markdown("""
+    <div class="section">
 
-<div class="section-subtitle">
-Premium properties selected for your discovery.
-</div>
+    <h2>
+    🏆 Recommended Properties
+    </h2>
 
-</div>
-""", unsafe_allow_html=True)
+    <p>
+    Properties selected according to your search preferences.
+    </p>
 
-
-properties = [
-
-    {
-
-        "name":
-        "Premium 3 BHK Luxury Apartment",
-
-        "location":
-        "Civil Lines, Nagpur",
-
-        "price":
-        "₹1.25 Cr",
-
-        "type":
-        "Apartment",
-
-        "verified":
-        True,
-
-        "premium":
-        True,
-
-        "featured":
-        True,
-
-        "image":
-        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85"
-
-    },
-
-    {
-
-        "name":
-        "Modern Luxury Villa",
-
-        "location":
-        "Baner, Pune",
-
-        "price":
-        "₹2.80 Cr",
-
-        "type":
-        "Villa",
-
-        "verified":
-        True,
-
-        "premium":
-        True,
-
-        "featured":
-        False,
-
-        "image":
-        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85"
-
-    },
-
-    {
-
-        "name":
-        "Premium Residential Plot",
-
-        "location":
-        "Wardha Road, Nagpur",
-
-        "price":
-        "₹48 Lakh",
-
-        "type":
-        "Plot",
-
-        "verified":
-        True,
-
-        "premium":
-        False,
-
-        "featured":
-        True,
-
-        "image":
-        "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=85"
-
-    }
-
-]
+    </div>
+    """, unsafe_allow_html=True)
 
 
-for index, property_item in enumerate(properties):
-
-
-    st.markdown(
-
-        f"""
-        <div class="property-card">
-
-        <img
-        class="property-image"
-        src="{property_item['image']}"
-        >
-
-        <div class="property-content">
-
-        <span class="badge verified">
-        🛡️ Verified
-        </span>
+    properties = [
 
         {
-        '<span class="badge premium">⭐ Premium</span>'
-        if property_item["premium"]
-        else ""
-        }
+            "name":
+            "Premium 3 BHK Luxury Apartment",
+
+            "location":
+            "Civil Lines, Nagpur, Maharashtra",
+
+            "price":
+            "₹1.25 Cr",
+
+            "type":
+            "Apartment",
+
+            "details":
+            "3 BHK • 1,850 Sq.Ft. • New Construction",
+
+            "verified":
+            True,
+
+            "premium":
+            True,
+
+            "featured":
+            True,
+
+            "image":
+            "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=85"
+        },
 
         {
-        '<span class="badge featured">🔥 Featured</span>'
-        if property_item["featured"]
-        else ""
+            "name":
+            "Modern 4 BHK Premium Villa",
+
+            "location":
+            "Baner, Pune, Maharashtra",
+
+            "price":
+            "₹2.80 Cr",
+
+            "type":
+            "Villa",
+
+            "details":
+            "4 BHK • 2,800 Sq.Ft. • New Construction",
+
+            "verified":
+            True,
+
+            "premium":
+            True,
+
+            "featured":
+            False,
+
+            "image":
+            "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85"
+        },
+
+        {
+            "name":
+            "Premium Residential Plot",
+
+            "location":
+            "Wardha Road, Nagpur, Maharashtra",
+
+            "price":
+            "₹48 Lakh",
+
+            "type":
+            "Residential Plot",
+
+            "details":
+            "2,000 Sq.Ft. • Investment Opportunity",
+
+            "verified":
+            True,
+
+            "premium":
+            False,
+
+            "featured":
+            True,
+
+            "image":
+            "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=85"
         }
-
-        <h2>
-        {property_item['name']}
-        </h2>
-
-        <p>
-        📍 {property_item['location']}
-        </p>
-
-        <h2 style="color:#7C3AED;">
-        {property_item['price']}
-        </h2>
-
-        <p>
-        🏠 {property_item['type']}
-        </p>
-
-        </div>
-
-        </div>
-        """,
-
-        unsafe_allow_html=True
-
-    )
+    ]
 
 
-    b1,b2,b3,b4 = st.columns(4)
+    for index, property_item in enumerate(properties):
+
+        col1, col2 = st.columns([1, 2])
+
+        with col1:
+
+            st.image(
+                property_item["image"],
+                caption=property_item["name"],
+                use_container_width=True
+            )
+
+        with col2:
+
+            badges = """
+            <span class="badge verified">
+            🛡️ Verified
+            </span>
+            """
+
+            if property_item["premium"]:
+
+                badges += """
+                <span class="badge premium">
+                ⭐ Premium
+                </span>
+                """
+
+            if property_item["featured"]:
+
+                badges += """
+                <span class="badge featured">
+                🔥 Featured
+                </span>
+                """
 
 
-    with b1:
+            st.markdown(
+                f"""
+                <div class="property-card">
 
-        if st.button(
+                {badges}
 
-            "🏡 View Details",
+                <h2>
+                {property_item["name"]}
+                </h2>
 
-            key=f"view_{index}",
+                <p>
+                📍 {property_item["location"]}
+                </p>
 
-            use_container_width=True
+                <h2 style="color:#7C3AED;">
+                {property_item["price"]}
+                </h2>
 
-        ):
+                <p>
+                🏠 {property_item["type"]}
+                </p>
 
-            st.info(
+                <p>
+                📐 {property_item["details"]}
+                </p>
 
-                f"Opening {property_item['name']}"
+                <p>
+                🛡️ Verified Listing
+                &nbsp; • &nbsp;
+                ⭐ FirstChoice Trust Signal
+                </p>
 
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
 
-    with b2:
+            b1, b2, b3, b4 = st.columns(4)
 
-        if st.button(
+            with b1:
 
-            "❤️ Save",
+                if st.button(
+                    "🏡 View Details",
+                    key=f"view_{index}",
+                    use_container_width=True
+                ):
 
-            key=f"save_{index}",
+                    st.info(
+                        f"Opening {property_item['name']}"
+                    )
 
-            use_container_width=True
+            with b2:
 
-        ):
+                if st.button(
+                    "❤️ Save",
+                    key=f"save_{index}",
+                    use_container_width=True
+                ):
 
-            st.success(
+                    st.success(
+                        "Property saved to your favourites."
+                    )
 
-                "Property saved to your favourites."
+            with b3:
 
-            )
+                if st.button(
+                    "⚖️ Compare",
+                    key=f"compare_{index}",
+                    use_container_width=True
+                ):
 
+                    st.info(
+                        "Property added to comparison."
+                    )
 
-    with b3:
+            with b4:
 
-        if st.button(
+                if st.button(
+                    "📅 Site Visit",
+                    key=f"visit_{index}",
+                    use_container_width=True
+                ):
 
-            "⚖️ Compare",
+                    st.success(
+                        "Site visit request started."
+                    )
 
-            key=f"compare_{index}",
-
-            use_container_width=True
-
-        ):
-
-            st.info(
-
-                "Property added to comparison."
-
-            )
-
-
-    with b4:
-
-        if st.button(
-
-            "📅 Site Visit",
-
-            key=f"visit_{index}",
-
-            use_container_width=True
-
-        ):
-
-            st.success(
-
-                "Site visit request started."
-
-            )
+        st.divider()
 
 
 # ============================================================
@@ -1026,65 +985,75 @@ for index, property_item in enumerate(properties):
 # ============================================================
 
 st.markdown("""
-<div class="section-header">
+<div class="section">
 
-<div class="section-title">
+<h2>
 🛡️ FirstChoice Verified Properties
-</div>
+</h2>
 
-<div class="section-subtitle">
-Our future verification system will help buyers discover trusted listings.
-</div>
+<p>
+Our verification ecosystem will help buyers discover
+trusted property listings.
+</p>
 
 </div>
 """, unsafe_allow_html=True)
 
 
-trust1,trust2,trust3 = st.columns(3)
-
+trust1, trust2, trust3 = st.columns(3)
 
 with trust1:
 
-    st.info(
+    st.markdown("""
+    <div class="trust-card">
 
-        """
-        🪪 **Identity Verification**
+    <h2>
+    🪪 Identity Verification
+    </h2>
 
-        Owner identity verification
-        will be connected with secure
-        KYC infrastructure.
-        """
+    <p>
+    Owner identity verification can be
+    connected with secure KYC infrastructure.
+    </p>
 
-    )
+    </div>
+    """, unsafe_allow_html=True)
 
 
 with trust2:
 
-    st.success(
+    st.markdown("""
+    <div class="trust-card">
 
-        """
-        📱 **Mobile Verification**
+    <h2>
+    📱 Mobile Verification
+    </h2>
 
-        Property owners and agents
-        can verify their mobile number.
-        """
+    <p>
+    Property owners and agents can verify
+    their mobile number.
+    </p>
 
-    )
+    </div>
+    """, unsafe_allow_html=True)
 
 
 with trust3:
 
-    st.warning(
+    st.markdown("""
+    <div class="trust-card">
 
-        """
-        📄 **Property Verification**
+    <h2>
+    📄 Property Verification
+    </h2>
 
-        Property documents and ownership
-        verification will be integrated
-        in the production backend.
-        """
+    <p>
+    Property documents and ownership verification
+    can be integrated with the production backend.
+    </p>
 
-    )
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ============================================================
@@ -1092,29 +1061,29 @@ with trust3:
 # ============================================================
 
 st.markdown("""
-<div class="section-header">
+<div class="section">
 
-<div class="section-title">
+<h2>
 🤖 Smart Property Discovery
-</div>
+</h2>
 
-<div class="section-subtitle">
+<p>
 Your future personalised real estate discovery assistant.
-</div>
+</p>
 
 </div>
 """, unsafe_allow_html=True)
 
 
 st.markdown("""
-<div class="premium-card">
+<div class="ai-card">
 
 <h2>
 🎯 Find Properties That Match Your Lifestyle
 </h2>
 
 <p>
-FirstChoice Property Hub will use your preferred city,
+FirstChoice Property Hub can use your preferred city,
 budget, property type, location and saved properties
 to recommend relevant listings.
 </p>
@@ -1133,17 +1102,42 @@ commercial properties and investment opportunities.
 
 
 if st.button(
-
-    "🚀 Explore Smart Recommendations",
-
+    "🚀 EXPLORE SMART RECOMMENDATIONS",
     use_container_width=True
-
 ):
 
     st.info(
-
         "Smart recommendation engine will be connected in the production backend."
+    )
 
+
+# ============================================================
+# POST PROPERTY REQUIREMENT
+# ============================================================
+
+st.markdown("""
+<div class="cta">
+
+<h2>
+🏡 Can't Find What You're Looking For?
+</h2>
+
+<p>
+Post your requirement and let property owners,
+agents and builders contact you.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+if st.button(
+    "📢 POST YOUR PROPERTY REQUIREMENT",
+    use_container_width=True
+):
+
+    st.success(
+        "Requirement posting module will be connected to the backend."
     )
 
 
