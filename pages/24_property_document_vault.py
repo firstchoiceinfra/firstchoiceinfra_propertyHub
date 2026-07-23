@@ -1,8 +1,10 @@
 import streamlit as st
-from datetime import datetime
+from datetime import datetime, date
 
 # ============================================================
 # PAGE 24 — SMART PROPERTY DOCUMENT VAULT
+# MERGED VERSION:
+# PAGE 15 + PAGE 24 + PAGE 31
 # FIRSTCHOICE INFRA PROPERTY HUB
 # ============================================================
 
@@ -42,6 +44,10 @@ footer {
     visibility: hidden;
 }
 
+/* ============================================================
+   HERO
+   ============================================================ */
+
 .hero {
     padding: 52px;
     border-radius: 36px;
@@ -73,6 +79,10 @@ footer {
     line-height: 1.8;
 }
 
+/* ============================================================
+   SECTION
+   ============================================================ */
+
 .section {
     margin-top: 32px;
     margin-bottom: 22px;
@@ -103,6 +113,10 @@ footer {
     font-weight: 900;
 }
 
+/* ============================================================
+   CARD
+   ============================================================ */
+
 .card {
     padding: 28px;
     border-radius: 26px;
@@ -124,6 +138,10 @@ footer {
     margin-bottom: 20px;
 }
 
+/* ============================================================
+   AI CARD
+   ============================================================ */
+
 .ai-card {
     padding: 32px;
     border-radius: 30px;
@@ -141,7 +159,13 @@ footer {
     box-shadow:
     0 18px 55px
     rgba(124,58,237,0.25);
+
+    margin-bottom: 25px;
 }
+
+/* ============================================================
+   SUCCESS CARD
+   ============================================================ */
 
 .success-card {
     padding: 32px;
@@ -156,7 +180,17 @@ footer {
         #059669,
         #10B981
     );
+
+    box-shadow:
+    0 18px 50px
+    rgba(5,150,105,0.25);
+
+    margin-bottom: 25px;
 }
+
+/* ============================================================
+   WARNING CARD
+   ============================================================ */
 
 .warning-card {
     padding: 30px;
@@ -171,6 +205,58 @@ footer {
         #F59E0B,
         #F97316
     );
+
+    box-shadow:
+    0 18px 50px
+    rgba(245,158,11,0.22);
+
+    margin-top: 25px;
+}
+
+/* ============================================================
+   INFO CARD
+   ============================================================ */
+
+.info-card {
+    padding: 25px;
+    border-radius: 25px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #EFF6FF,
+        #F5F3FF,
+        #FDF2F8
+    );
+
+    border: 1px solid #E0E7FF;
+
+    min-height: 180px;
+
+    box-shadow:
+    0 10px 30px
+    rgba(0,0,0,0.05);
+
+    margin-bottom: 20px;
+}
+
+/* ============================================================
+   DOCUMENT CARD
+   ============================================================ */
+
+.document-card {
+    padding: 24px;
+    border-radius: 24px;
+
+    background: white;
+
+    border: 1px solid #E5E7EB;
+
+    box-shadow:
+    0 10px 30px
+    rgba(0,0,0,0.06);
+
+    margin-bottom: 18px;
 }
 
 </style>
@@ -189,12 +275,12 @@ st.markdown("""
 </h1>
 
 <p>
-A secure digital transaction workspace to organise,
-upload and track important property documents.
+A secure digital property transaction workspace to organise,
+upload, verify and track important property documents.
 </p>
 
 <p>
-📁 Upload • 🏷️ Categorise • 🔍 Track • 📊 Status • 🤝 Share
+📁 Upload • 🏷️ Categorise • 🔍 Verify • 📊 Track • 🤝 Share
 </p>
 
 </div>
@@ -224,9 +310,8 @@ through transaction completion.
 </p>
 
 <p>
-The current page provides document organisation and tracking.
-Secure cloud storage, encryption and role-based access can
-be connected to the production backend later.
+The platform combines document vault, preliminary
+verification checklist and transaction workflow management.
 </p>
 
 </div>
@@ -241,7 +326,7 @@ st.markdown("""
 <div class="section">
 
 <h2>
-🏡 Transaction Property Profile
+🏡 Property & Transaction Profile
 </h2>
 
 </div>
@@ -284,8 +369,14 @@ with c4:
     )
 
 
+property_location = st.text_input(
+    "📍 Property Location",
+    placeholder="Enter complete property location"
+)
+
+
 # ============================================================
-# TRANSACTION STAGE
+# TRANSACTION WORKFLOW
 # ============================================================
 
 st.markdown("""
@@ -316,6 +407,77 @@ transaction_stage = st.selectbox(
 
 
 # ============================================================
+# PRELIMINARY DOCUMENT CHECKLIST
+# PAGE 15 FEATURE
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+📋 Preliminary Document Verification Checklist
+</h2>
+
+<p>
+Select the documents available for this property.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+document_checklist = {
+
+    "Sale Deed / Title Document":
+    "Primary ownership document",
+
+    "Previous Sale Deed":
+    "Previous ownership history",
+
+    "Encumbrance Certificate":
+    "Helps identify registered encumbrances",
+
+    "Property Tax Receipt":
+    "Latest property tax information",
+
+    "Approved Building Plan":
+    "Building approval documentation",
+
+    "Completion / Occupancy Certificate":
+    "Applicable project completion documentation",
+
+    "Mutation / Revenue Record":
+    "Relevant land or revenue record",
+
+    "RERA Registration Details":
+    "Applicable for eligible real estate projects",
+
+    "Society / Association Documents":
+    "Applicable for apartments and societies",
+
+    "Identity & Ownership Proof":
+    "Seller identity and ownership verification"
+}
+
+
+selected_documents = []
+
+
+for title, description in document_checklist.items():
+
+    checked = st.checkbox(
+        f"📄 {title}",
+        key=f"verification_doc_{title}"
+    )
+
+    if checked:
+
+        selected_documents.append(
+            title
+        )
+
+
+# ============================================================
 # DOCUMENT UPLOAD
 # ============================================================
 
@@ -323,7 +485,48 @@ st.markdown("""
 <div class="section">
 
 <h2>
-📤 Upload Property Document
+📤 Upload Property Documents
+</h2>
+
+<p>
+Upload one or multiple documents for organised record keeping
+and preliminary verification.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+uploaded_files = st.file_uploader(
+    "📤 Upload PDF or Image Documents",
+    type=[
+        "pdf",
+        "png",
+        "jpg",
+        "jpeg",
+        "doc",
+        "docx"
+    ],
+    accept_multiple_files=True
+)
+
+
+if uploaded_files:
+
+    st.success(
+        f"📁 {len(uploaded_files)} document(s) selected for upload."
+    )
+
+
+# ============================================================
+# DOCUMENT VAULT DETAILS
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+🗃️ Add Document To Property Vault
 </h2>
 
 </div>
@@ -352,8 +555,8 @@ document_name = st.text_input(
 )
 
 
-uploaded_file = st.file_uploader(
-    "📤 Choose Document",
+single_uploaded_file = st.file_uploader(
+    "📤 Choose Document For Vault",
     type=[
         "pdf",
         "png",
@@ -361,19 +564,33 @@ uploaded_file = st.file_uploader(
         "jpeg",
         "doc",
         "docx"
-    ]
+    ],
+    key="vault_file_uploader"
 )
 
 
 document_status = st.selectbox(
     "📊 Document Status",
     [
+        "Pending",
         "Uploaded",
         "Under Review",
         "Verified",
         "Needs Correction",
+        "Requires Attention",
         "Rejected"
     ]
+)
+
+
+expiry_date = st.date_input(
+    "📅 Expiry / Review Date",
+    value=date.today()
+)
+
+
+confidential = st.checkbox(
+    "🔐 Mark This Document As Confidential"
 )
 
 
@@ -384,7 +601,7 @@ document_notes = st.text_area(
 
 
 # ============================================================
-# SESSION DOCUMENT STORAGE
+# SESSION STORAGE
 # ============================================================
 
 if "property_documents" not in st.session_state:
@@ -407,10 +624,10 @@ if st.button(
             "⚠️ Please enter a document name."
         )
 
-    elif uploaded_file is None:
+    elif single_uploaded_file is None:
 
         st.warning(
-            "⚠️ Please upload a document."
+            "⚠️ Please select a document first."
         )
 
     else:
@@ -424,10 +641,18 @@ if st.button(
             document_category,
 
             "File":
-            uploaded_file.name,
+            single_uploaded_file.name,
 
             "Status":
             document_status,
+
+            "Expiry / Review":
+            expiry_date.strftime(
+                "%d-%m-%Y"
+            ),
+
+            "Confidential":
+            "Yes" if confidential else "No",
 
             "Stage":
             transaction_stage,
@@ -447,7 +672,7 @@ if st.button(
         )
 
         st.success(
-            f"✅ {document_name} added to the Document Vault."
+            f"✅ {document_name} added to the Property Document Vault."
         )
 
 
@@ -459,7 +684,7 @@ st.markdown("""
 <div class="section">
 
 <h2>
-🗃️ My Property Document Vault
+🗂️ My Property Document Vault
 </h2>
 
 </div>
@@ -515,7 +740,11 @@ correction_docs = len(
     [
         d
         for d in documents
-        if d["Status"] == "Needs Correction"
+        if d["Status"]
+        in [
+            "Needs Correction",
+            "Requires Attention"
+        ]
     ]
 )
 
@@ -561,51 +790,238 @@ with a3:
 with a4:
 
     st.metric(
-        "⚠️ Needs Correction",
+        "⚠️ Attention Required",
         correction_docs
     )
 
 
 # ============================================================
-# DOCUMENT PROGRESS
+# DOCUMENT CHECKLIST ANALYTICS
 # ============================================================
 
-if total_docs > 0:
+total_checklist = len(
+    document_checklist
+)
 
-    progress = (
-        verified_docs
+
+available_checklist = len(
+    selected_documents
+)
+
+
+missing_checklist = (
+
+    total_checklist
+    -
+    available_checklist
+
+)
+
+
+if total_checklist > 0:
+
+    checklist_progress = (
+
+        available_checklist
         /
-        total_docs
+        total_checklist
+
     )
 
 else:
 
-    progress = 0
+    checklist_progress = 0
 
 
 st.markdown("""
 <div class="section">
 
 <h2>
-📈 Transaction Document Readiness
+📈 Property Document Readiness
 </h2>
 
 </div>
 """, unsafe_allow_html=True)
 
 
+d1, d2, d3 = st.columns(3)
+
+
+with d1:
+
+    st.metric(
+        "📄 Total Checklist",
+        total_checklist
+    )
+
+
+with d2:
+
+    st.metric(
+        "✅ Available",
+        available_checklist
+    )
+
+
+with d3:
+
+    st.metric(
+        "⚠️ Missing",
+        missing_checklist
+    )
+
+
 st.progress(
-    progress
+    checklist_progress
 )
 
 
-st.write(
-    f"Verified Document Progress: {progress * 100:.0f}%"
+st.caption(
+    f"Document availability: "
+    f"{checklist_progress * 100:.0f}%"
 )
 
 
 # ============================================================
-# DOCUMENT SHARING
+# VERIFICATION REQUEST
+# PAGE 15 FEATURE
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+🔍 Request Property Verification
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+v1, v2 = st.columns(2)
+
+
+with v1:
+
+    verification_type = st.selectbox(
+        "Verification Type",
+        [
+            "Preliminary Document Review",
+            "Title & Ownership Review",
+            "Legal Due Diligence",
+            "RERA Verification",
+            "Land Record Verification",
+            "Complete Property Verification"
+        ]
+    )
+
+
+with v2:
+
+    priority = st.selectbox(
+        "Request Priority",
+        [
+            "Standard",
+            "Priority",
+            "Urgent"
+        ]
+    )
+
+
+additional_notes = st.text_area(
+    "📝 Verification Questions / Concerns",
+    placeholder=
+    "Add any questions or concerns about this property..."
+)
+
+
+if st.button(
+    "🚀 SUBMIT VERIFICATION REQUEST",
+    use_container_width=True
+):
+
+    if not property_location:
+
+        st.error(
+            "⚠️ Please enter the property location."
+        )
+
+    elif not owner_name:
+
+        st.error(
+            "⚠️ Please enter the owner or seller name."
+        )
+
+    else:
+
+        st.success(
+            "🎉 Property verification request submitted successfully."
+        )
+
+        st.info(
+            f"Verification Type: {verification_type}"
+        )
+
+        st.info(
+            f"Priority: {priority}"
+        )
+
+        st.info(
+            "Professional verification should be performed by qualified "
+            "legal or property professionals where required."
+        )
+
+
+# ============================================================
+# DOCUMENT STATUS LIST
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+📑 Preliminary Document Status
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+for title, description in document_checklist.items():
+
+    if title in selected_documents:
+
+        status = "✅ Available"
+
+    else:
+
+        status = "⚠️ Not Added"
+
+
+    st.markdown(
+        f"""
+        <div class="document-card">
+
+        <h3>
+        📄 {title}
+        </h3>
+
+        <p>
+        {description}
+        </p>
+
+        <b>
+        {status}
+        </b>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+# ============================================================
+# CONTROLLED DOCUMENT SHARING
 # ============================================================
 
 st.markdown("""
@@ -659,7 +1075,8 @@ if st.button(
 
         st.success(
             "✅ Sharing request prepared for: "
-            + ", ".join(share_role)
+            +
+            ", ".join(share_role)
         )
 
         st.info(
@@ -695,8 +1112,8 @@ with alert1:
     </h3>
 
     <p>
-    Identify documents that have not yet been added
-    to the transaction workspace.
+    Identify important documents that have not yet
+    been added to the transaction workspace.
     </p>
 
     </div>
@@ -759,8 +1176,11 @@ summary = {
     "Property":
     property_name,
 
-    "Transaction ID":
+    "Property ID":
     property_id,
+
+    "Location":
+    property_location,
 
     "Buyer":
     buyer_name,
@@ -771,11 +1191,23 @@ summary = {
     "Current Stage":
     transaction_stage,
 
-    "Total Documents":
+    "Verification Type":
+    verification_type,
+
+    "Priority":
+    priority,
+
+    "Total Vault Documents":
     total_docs,
 
-    "Verified":
-    verified_docs
+    "Verified Vault Documents":
+    verified_docs,
+
+    "Checklist Documents Available":
+    available_checklist,
+
+    "Checklist Documents Missing":
+    missing_checklist
 
 }
 
@@ -797,7 +1229,8 @@ st.markdown("""
 </h2>
 
 <p>
-The production version can add advanced document intelligence.
+The production version can add advanced document intelligence
+and property risk analysis.
 </p>
 
 <p>
@@ -808,6 +1241,8 @@ The production version can add advanced document intelligence.
 📑 Duplicate Detection
 &nbsp; • &nbsp;
 ⚠️ Missing Document Alerts
+&nbsp; • &nbsp;
+🚨 Risk Detection
 &nbsp; • &nbsp;
 🔐 Encryption
 &nbsp; • &nbsp;
@@ -827,7 +1262,7 @@ can collaborate securely.
 
 
 # ============================================================
-# DISCLAIMER
+# SECURITY & LEGAL DISCLAIMER
 # ============================================================
 
 st.markdown("""
@@ -838,16 +1273,45 @@ st.markdown("""
 </h2>
 
 <p>
-This demo page provides document organisation and workflow
-features. It does not currently provide guaranteed secure
-cloud storage, encryption, legal certification or digital
-signature services.
+This page provides document organisation, checklist and
+preliminary verification workflow features.
+</p>
+
+<p>
+It does not currently provide guaranteed secure cloud storage,
+encryption, legal certification, title certification or
+digital signature services.
 </p>
 
 <p>
 For production deployment, documents should be stored using
 secure backend storage with authentication, authorisation,
 encryption and audit logging.
+</p>
+
+<p>
+Property buyers should obtain independent professional legal
+and technical due diligence before completing a transaction.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+# ============================================================
+# FOOTER
+# ============================================================
+
+st.markdown("""
+<div class="success-card">
+
+<h2>
+🌐 FirstChoice Property Hub
+</h2>
+
+<p>
+Building a more transparent, secure and intelligent
+real-estate experience.
 </p>
 
 </div>
