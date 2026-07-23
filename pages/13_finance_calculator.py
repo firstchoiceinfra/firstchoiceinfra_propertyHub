@@ -1,13 +1,14 @@
 import streamlit as st
 
 # ============================================================
-# PAGE 13 — PROPERTY FINANCE & EMI CALCULATOR
+# PROPERTY FINANCE, LOAN & EMI CENTRE
+# MERGED PAGE 13 + PAGE 21
 # FIRSTCHOICE INFRA PROPERTY HUB
 # ============================================================
 
 st.set_page_config(
-    page_title="Property Finance | FirstChoice Property Hub",
-    page_icon="💰",
+    page_title="Property Finance & EMI Centre | FirstChoice Property Hub",
+    page_icon="🏦",
     layout="wide"
 )
 
@@ -41,50 +42,40 @@ footer {
     visibility: hidden;
 }
 
-/* HERO */
-
 .hero {
-    padding: 45px;
-    border-radius: 32px;
+    padding: 52px;
+    border-radius: 36px;
     color: white;
-
     background:
     linear-gradient(
         135deg,
-        #071952,
-        #2563EB,
+        #020617,
+        #1D4ED8,
         #7C3AED,
         #DB2777
     );
-
     box-shadow:
-    0 20px 65px
-    rgba(37,99,235,0.25);
-
-    margin-bottom: 30px;
+    0 24px 75px
+    rgba(37,99,235,0.32);
+    margin-bottom: 32px;
 }
 
 .hero h1 {
-    font-size: 44px;
+    font-size: 48px;
     font-weight: 900;
 }
 
 .hero p {
-    font-size: 18px;
+    font-size: 19px;
+    line-height: 1.8;
 }
 
-/* SECTION */
-
 .section {
-    margin-top: 30px;
-    margin-bottom: 20px;
-
-    padding: 25px 30px;
-
-    border-radius: 24px;
-
+    margin-top: 32px;
+    margin-bottom: 22px;
+    padding: 30px 34px;
+    border-radius: 28px;
     color: white;
-
     background:
     linear-gradient(
         135deg,
@@ -93,41 +84,33 @@ footer {
         #9333EA,
         #EC4899
     );
-
     box-shadow:
-    0 12px 35px
-    rgba(79,70,229,0.18);
+    0 14px 40px
+    rgba(79,70,229,0.22);
 }
 
 .section h2 {
     margin: 0;
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 900;
 }
-
-/* CARD */
 
 .card {
     padding: 30px;
     border-radius: 28px;
-
     background: white;
-
+    border: 1px solid #E0E7FF;
     box-shadow:
     0 15px 45px
     rgba(0,0,0,0.08);
-
     margin-bottom: 25px;
 }
 
-/* EMI RESULT */
-
 .result-card {
-    padding: 35px;
-    border-radius: 30px;
-
+    padding: 40px;
+    border-radius: 32px;
     color: white;
-
+    text-align: center;
     background:
     linear-gradient(
         135deg,
@@ -135,34 +118,76 @@ footer {
         #059669,
         #10B981
     );
-
     box-shadow:
-    0 20px 55px
-    rgba(5,150,105,0.25);
-
-    text-align: center;
+    0 20px 60px
+    rgba(5,150,105,0.28);
 }
 
 .result-card h1 {
-    font-size: 42px;
+    font-size: 48px;
     font-weight: 900;
 }
 
-/* INFO */
-
-.info-card {
-    padding: 25px;
-    border-radius: 25px;
-
+.value-card {
+    padding: 28px;
+    border-radius: 27px;
     background:
     linear-gradient(
         135deg,
-        #EFF6FF,
+        #FFFFFF,
         #F5F3FF,
-        #FDF2F8
+        #EFF6FF
     );
-
     border: 1px solid #E0E7FF;
+    box-shadow:
+    0 12px 35px
+    rgba(0,0,0,0.07);
+    min-height: 170px;
+    margin-bottom: 20px;
+}
+
+.ai-card {
+    padding: 32px;
+    border-radius: 30px;
+    color: white;
+    background:
+    linear-gradient(
+        135deg,
+        #4C1D95,
+        #7C3AED,
+        #C026D3
+    );
+    box-shadow:
+    0 18px 55px
+    rgba(124,58,237,0.25);
+}
+
+.bank-card {
+    padding: 28px;
+    border-radius: 26px;
+    background: white;
+    border: 1px solid #E5E7EB;
+    box-shadow:
+    0 12px 35px
+    rgba(0,0,0,0.07);
+    min-height: 170px;
+    margin-bottom: 20px;
+}
+
+.warning-card {
+    padding: 30px;
+    border-radius: 28px;
+    color: white;
+    background:
+    linear-gradient(
+        135deg,
+        #B45309,
+        #F59E0B,
+        #F97316
+    );
+    box-shadow:
+    0 18px 50px
+    rgba(245,158,11,0.22);
 }
 
 </style>
@@ -177,16 +202,17 @@ st.markdown("""
 <div class="hero">
 
 <h1>
-💰 Property Finance & EMI Planner
+🏦 Property Finance, Loan & EMI Centre
 </h1>
 
 <p>
-Plan your property purchase with a smarter understanding
-of your budget, loan requirement and estimated monthly EMI.
+Plan your property purchase with a complete finance,
+home loan and EMI planning dashboard.
 </p>
 
 <p>
-🏡 Property Price • 💳 Down Payment • 🏦 Loan • 📊 EMI • 📈 Interest
+🏡 Property Price • 💰 Down Payment • 🏦 Loan Amount •
+📊 EMI • 📈 Interest • 📅 Tenure • 💼 Affordability
 </p>
 
 </div>
@@ -198,14 +224,20 @@ of your budget, loan requirement and estimated monthly EMI.
 # ============================================================
 
 st.markdown("""
-<div class="section">
+<div class="ai-card">
 
 <h2>
-🧮 Smart Home Loan Calculator
+🤖 Smart Property Finance Planner
 </h2>
 
 <p>
-Adjust the values below to estimate your monthly property loan EMI.
+Calculate your estimated monthly EMI, total interest,
+total repayment, loan-to-value ratio and initial cash requirement.
+</p>
+
+<p>
+Use this calculator for preliminary planning before discussing
+financing options with a bank or financial institution.
 </p>
 
 </div>
@@ -213,27 +245,34 @@ Adjust the values below to estimate your monthly property loan EMI.
 
 
 # ============================================================
-# INPUT CARD
+# PROPERTY DETAILS
 # ============================================================
 
-st.markdown(
-    '<div class="card">',
-    unsafe_allow_html=True
-)
+st.markdown("""
+<div class="section">
+
+<h2>
+🏡 Property & Purchase Details
+</h2>
+
+<p>
+Enter your property purchase information.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
 
 
 c1, c2 = st.columns(2)
 
-
 with c1:
 
     property_price = st.number_input(
-        "🏡 Property Price (₹)",
+        "🏠 Property Price (₹)",
         min_value=100000,
         value=5000000,
         step=100000
     )
-
 
 with c2:
 
@@ -241,20 +280,28 @@ with c2:
         "💰 Down Payment (₹)",
         min_value=0,
         value=1000000,
-        step=100000
+        step=50000
     )
 
 
-loan_amount = max(
-    property_price - down_payment,
-    0
-)
+# ============================================================
+# LOAN DETAILS
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+🏦 Loan Details
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
 
 
-c3, c4 = st.columns(2)
+l1, l2, l3 = st.columns(3)
 
-
-with c3:
+with l1:
 
     interest_rate = st.number_input(
         "📈 Annual Interest Rate (%)",
@@ -264,164 +311,349 @@ with c3:
         step=0.1
     )
 
+with l2:
 
-with c4:
-
-    loan_years = st.slider(
+    tenure_years = st.slider(
         "📅 Loan Tenure (Years)",
         min_value=1,
         max_value=30,
         value=20
     )
 
+with l3:
 
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
+    processing_fee_percent = st.number_input(
+        "📋 Processing Fee (%)",
+        min_value=0.0,
+        max_value=10.0,
+        value=0.5,
+        step=0.1
+    )
+
+
+# ============================================================
+# LOAN CALCULATION
+# ============================================================
+
+loan_amount = max(
+    property_price - down_payment,
+    0
 )
-
-
-# ============================================================
-# EMI CALCULATION
-# ============================================================
-
-months = loan_years * 12
 
 monthly_rate = (
     interest_rate / 12 / 100
 )
 
+total_months = (
+    tenure_years * 12
+)
 
-if loan_amount <= 0:
 
-    emi = 0
-
-    total_payment = 0
-
-    total_interest = 0
-
-elif monthly_rate == 0:
-
-    emi = loan_amount / months
-
-    total_payment = loan_amount
-
-    total_interest = 0
-
-else:
+if loan_amount > 0 and monthly_rate > 0:
 
     emi = (
         loan_amount
         * monthly_rate
-        * (1 + monthly_rate) ** months
+        * (1 + monthly_rate) ** total_months
         /
         (
-            (1 + monthly_rate) ** months
-            - 1
+            (1 + monthly_rate) ** total_months - 1
         )
     )
 
-    total_payment = (
-        emi * months
+elif loan_amount > 0:
+
+    emi = (
+        loan_amount / total_months
     )
 
-    total_interest = (
-        total_payment
-        - loan_amount
-    )
+else:
+
+    emi = 0
 
 
-# ============================================================
-# RESULT
-# ============================================================
+total_payment = (
+    emi * total_months
+)
 
-st.markdown("""
-<div class="section">
+total_interest = (
+    total_payment - loan_amount
+)
 
-<h2>
-📊 Your Estimated Loan Plan
-</h2>
+processing_fee = (
+    loan_amount
+    * processing_fee_percent
+    / 100
+)
 
-</div>
-""", unsafe_allow_html=True)
+total_initial_cash = (
+    down_payment
+    + processing_fee
+)
 
+loan_to_value = (
 
-st.markdown(
-    f"""
-    <div class="result-card">
+    loan_amount
+    / property_price
+    * 100
 
-    <p>
-    Estimated Monthly EMI
-    </p>
+    if property_price > 0
 
-    <h1>
-    ₹{emi:,.0f}
-    </h1>
-
-    <p>
-    Estimated Loan Amount:
-    <b>₹{loan_amount:,.0f}</b>
-    </p>
-
-    </div>
-    """,
-    unsafe_allow_html=True
+    else 0
 )
 
 
-st.write("")
+# ============================================================
+# CALCULATE BUTTON
+# ============================================================
 
+if st.button(
+    "🚀 CALCULATE HOME LOAN & EMI",
+    use_container_width=True
+):
 
-r1, r2, r3 = st.columns(3)
-
-
-with r1:
-
-    st.metric(
-        "🏦 Loan Amount",
-        f"₹{loan_amount:,.0f}"
-    )
-
-
-with r2:
-
-    st.metric(
-        "💸 Total Interest",
-        f"₹{total_interest:,.0f}"
-    )
-
-
-with r3:
-
-    st.metric(
-        "💰 Total Payment",
-        f"₹{total_payment:,.0f}"
-    )
+    st.session_state.loan_calculated = True
 
 
 # ============================================================
-# LOAN SUMMARY
+# RESULTS
+# ============================================================
+
+if st.session_state.get(
+    "loan_calculated",
+    False
+):
+
+    st.markdown("""
+    <div class="section">
+
+    <h2>
+    📊 Your Complete Home Loan Summary
+    </h2>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+
+    st.markdown(
+        f"""
+        <div class="result-card">
+
+        <p>
+        Estimated Monthly EMI
+        </p>
+
+        <h1>
+        ₹{emi:,.0f}
+        </h1>
+
+        <p>
+        Loan Amount:
+        <b>₹{loan_amount:,.0f}</b>
+        </p>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+    st.write("")
+
+
+    r1, r2, r3, r4 = st.columns(4)
+
+
+    with r1:
+
+        st.markdown(
+            f"""
+            <div class="value-card">
+
+            <h3>
+            🏦 Loan Amount
+            </h3>
+
+            <h2>
+            ₹{loan_amount:,.0f}
+            </h2>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+    with r2:
+
+        st.markdown(
+            f"""
+            <div class="value-card">
+
+            <h3>
+            📈 Total Interest
+            </h3>
+
+            <h2>
+            ₹{total_interest:,.0f}
+            </h2>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+    with r3:
+
+        st.markdown(
+            f"""
+            <div class="value-card">
+
+            <h3>
+            💳 Total Repayment
+            </h3>
+
+            <h2>
+            ₹{total_payment:,.0f}
+            </h2>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+    with r4:
+
+        st.markdown(
+            f"""
+            <div class="value-card">
+
+            <h3>
+            📊 Loan-to-Value
+            </h3>
+
+            <h2>
+            {loan_to_value:.1f}%
+            </h2>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+# ============================================================
+# INITIAL PURCHASE FUNDING
+# ============================================================
+
+if st.session_state.get(
+    "loan_calculated",
+    False
+):
+
+    st.markdown("""
+    <div class="section">
+
+    <h2>
+    💰 Initial Purchase Funding
+    </h2>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+
+    q1, q2, q3 = st.columns(3)
+
+
+    with q1:
+
+        st.markdown(
+            f"""
+            <div class="value-card">
+
+            <h3>
+            💵 Down Payment
+            </h3>
+
+            <h2>
+            ₹{down_payment:,.0f}
+            </h2>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+    with q2:
+
+        st.markdown(
+            f"""
+            <div class="value-card">
+
+            <h3>
+            📋 Processing Fee
+            </h3>
+
+            <h2>
+            ₹{processing_fee:,.0f}
+            </h2>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+    with q3:
+
+        st.markdown(
+            f"""
+            <div class="value-card">
+
+            <h3>
+            💰 Estimated Initial Cash
+            </h3>
+
+            <h2>
+            ₹{total_initial_cash:,.0f}
+            </h2>
+
+            <p>
+            Down payment + processing fee
+            </p>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+# ============================================================
+# PROPERTY PURCHASE SUMMARY
 # ============================================================
 
 st.markdown("""
 <div class="section">
 
 <h2>
-📋 Purchase Summary
+📋 Property Purchase Summary
 </h2>
 
 </div>
 """, unsafe_allow_html=True)
 
 
-summary1, summary2 = st.columns(2)
+s1, s2 = st.columns(2)
 
 
-with summary1:
+with s1:
 
     st.markdown(
         f"""
-        <div class="info-card">
+        <div class="value-card">
 
         <h3>
         🏡 Property Value
@@ -432,7 +664,7 @@ with summary1:
         </h2>
 
         <p>
-        Your selected property price.
+        Selected property purchase value.
         </p>
 
         </div>
@@ -441,11 +673,11 @@ with summary1:
     )
 
 
-with summary2:
+with s2:
 
     st.markdown(
         f"""
-        <div class="info-card">
+        <div class="value-card">
 
         <h3>
         💰 Down Payment
@@ -466,29 +698,150 @@ with summary2:
 
 
 # ============================================================
-# AFFORDABILITY INDICATOR
+# LOAN COST BREAKDOWN
+# ============================================================
+
+if st.session_state.get(
+    "loan_calculated",
+    False
+):
+
+    st.markdown("""
+    <div class="section">
+
+    <h2>
+    📊 Loan Cost Breakdown
+    </h2>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+
+    chart_data = {
+
+        "Amount": [
+            loan_amount,
+            total_interest
+        ]
+
+    }
+
+
+    st.bar_chart(
+        chart_data
+    )
+
+
+# ============================================================
+# EMI AFFORDABILITY PLANNER
 # ============================================================
 
 st.markdown("""
 <div class="section">
 
 <h2>
-🎯 Loan Planning Insight
+💼 EMI Affordability Planner
 </h2>
+
+<p>
+Enter your approximate monthly household income to estimate
+the EMI burden.
+</p>
 
 </div>
 """, unsafe_allow_html=True)
 
 
+monthly_income = st.number_input(
+    "💼 Monthly Household Income (₹)",
+    min_value=0,
+    value=100000,
+    step=5000
+)
+
+
+emi_income_ratio = (
+
+    emi
+    / monthly_income
+    * 100
+
+    if monthly_income > 0
+
+    else 0
+)
+
+
+if st.session_state.get(
+    "loan_calculated",
+    False
+):
+
+    st.markdown(
+        f"""
+        <div class="value-card">
+
+        <h2>
+        📊 Estimated EMI-to-Income Ratio
+        </h2>
+
+        <h1>
+        {emi_income_ratio:.1f}%
+        </h1>
+
+        <p>
+        Monthly EMI: ₹{emi:,.0f}
+        <br>
+        Monthly Income: ₹{monthly_income:,.0f}
+        </p>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+    if emi_income_ratio <= 30:
+
+        st.success(
+            "✅ The estimated EMI is within a relatively comfortable range based on the income entered."
+        )
+
+    elif emi_income_ratio <= 45:
+
+        st.info(
+            "📊 The estimated EMI represents a moderate portion of the income entered."
+        )
+
+    else:
+
+        st.warning(
+            "⚠️ The estimated EMI represents a high portion of the income entered. Consider reviewing the loan amount or tenure."
+        )
+
+
+# ============================================================
+# DOWN PAYMENT INSIGHT
+# ============================================================
+
 if property_price > 0:
 
     down_payment_percentage = (
         down_payment
-        /
-        property_price
-        *
-        100
+        / property_price
+        * 100
     )
+
+
+    st.markdown("""
+    <div class="section">
+
+    <h2>
+    🎯 Down Payment Planning Insight
+    </h2>
+
+    </div>
+    """, unsafe_allow_html=True)
 
 
     if down_payment_percentage >= 30:
@@ -515,40 +868,147 @@ if property_price > 0:
 
 
 # ============================================================
-# FUTURE FINANCE FEATURES
+# HOME FINANCE DISCOVERY CENTRE
 # ============================================================
 
 st.markdown("""
 <div class="section">
 
 <h2>
-🚀 Future Property Finance Tools
+🏦 Home Finance Discovery Centre
 </h2>
 
 <p>
-FirstChoice Property Hub can expand this module into a complete
-property financial planning ecosystem.
+Explore common financing categories and understand the
+factors that may affect your home loan.
 </p>
 
 </div>
 """, unsafe_allow_html=True)
 
 
-f1, f2, f3 = st.columns(3)
+b1, b2, b3 = st.columns(3)
+
+
+with b1:
+
+    st.markdown("""
+    <div class="bank-card">
+
+    <h2>
+    🏦 Bank Loan
+    </h2>
+
+    <p>
+    Explore home loan products from banks
+    and compare eligibility requirements.
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+
+with b2:
+
+    st.markdown("""
+    <div class="bank-card">
+
+    <h2>
+    💳 Housing Finance
+    </h2>
+
+    <p>
+    Explore housing finance companies
+    and available financing options.
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+
+with b3:
+
+    st.markdown("""
+    <div class="bank-card">
+
+    <h2>
+    📄 Loan Documents
+    </h2>
+
+    <p>
+    Understand common documents required
+    during the home loan application process.
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+
+# ============================================================
+# HOME LOAN DOCUMENT CHECKLIST
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+📋 Home Loan Document Checklist
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+documents = [
+
+    "🪪 Identity Proof",
+    "🏠 Address Proof",
+    "💼 Income Proof",
+    "🏦 Bank Statements",
+    "📄 Property Documents",
+    "📑 Sale Agreement",
+    "💰 Down Payment Proof"
+
+]
+
+
+for index, document in enumerate(documents):
+
+    st.checkbox(
+        document,
+        key=f"loan_document_{index}"
+    )
+
+
+# ============================================================
+# SMART FINANCE FEATURES
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+🚀 Smart Finance Features
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+f1, f2, f3, f4 = st.columns(4)
 
 
 with f1:
 
     st.markdown("""
-    <div class="info-card">
+    <div class="value-card">
 
     <h3>
-    🏦 Loan Comparison
+    🧮 EMI Calculator
     </h3>
 
     <p>
-    Compare home loan offers, interest rates
-    and estimated EMI from multiple lenders.
+    Estimate monthly loan repayment.
     </p>
 
     </div>
@@ -558,15 +1018,14 @@ with f1:
 with f2:
 
     st.markdown("""
-    <div class="info-card">
+    <div class="value-card">
 
     <h3>
-    📊 Investment Calculator
+    📊 Loan Comparison
     </h3>
 
     <p>
-    Estimate rental yield, appreciation
-    and long-term investment potential.
+    Compare different interest rates and tenures.
     </p>
 
     </div>
@@ -576,15 +1035,31 @@ with f2:
 with f3:
 
     st.markdown("""
-    <div class="info-card">
+    <div class="value-card">
 
     <h3>
-    🤖 AI Finance Assistant
+    💼 Affordability
     </h3>
 
     <p>
-    Future AI tools can help users understand
-    affordability and property investment scenarios.
+    Understand the estimated EMI burden.
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+
+with f4:
+
+    st.markdown("""
+    <div class="value-card">
+
+    <h3>
+    📄 Document Centre
+    </h3>
+
+    <p>
+    Track your loan document checklist.
     </p>
 
     </div>
@@ -592,11 +1067,63 @@ with f3:
 
 
 # ============================================================
+# FUTURE AI HOME FINANCE
+# ============================================================
+
+st.markdown("""
+<div class="ai-card">
+
+<h2>
+🚀 Future AI Home Finance Engine
+</h2>
+
+<p>
+The future version of Property Hub can connect users with
+a complete digital property financing journey.
+</p>
+
+<p>
+🤖 AI Loan Eligibility
+&nbsp; • &nbsp;
+🏦 Lender Matching
+&nbsp; • &nbsp;
+📊 Loan Comparison
+&nbsp; • &nbsp;
+📄 Digital Documents
+&nbsp; • &nbsp;
+🔐 Secure Application Tracking
+</p>
+
+<p>
+Users can discover a property, calculate affordability,
+explore financing options and track their home loan journey
+from one integrated platform.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+# ============================================================
 # DISCLAIMER
 # ============================================================
 
-st.warning(
-    "⚠️ This calculator provides an estimate for planning purposes only. "
-    "Actual EMI, interest rate, loan eligibility, taxes and charges "
-    "depend on the lender and applicable regulations."
-)
+st.markdown("""
+<div class="warning-card">
+
+<h2>
+⚠️ Important Finance Disclaimer
+</h2>
+
+<p>
+The EMI, interest and affordability calculations shown here
+are illustrative estimates based on the information entered.
+</p>
+
+<p>
+Actual loan approval, interest rate, eligibility, processing
+fees and terms are determined by the respective lender.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
