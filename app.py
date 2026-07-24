@@ -2,7 +2,7 @@ import streamlit as st
 
 # ============================================================
 # FIRSTCHOICE INFRA PROPERTY HUB
-# MAIN APPLICATION
+# MAIN HOME PAGE
 # ============================================================
 
 st.set_page_config(
@@ -42,8 +42,6 @@ footer {
     visibility: hidden;
 }
 
-/* SIDEBAR */
-
 [data-testid="stSidebar"] {
     background:
     linear-gradient(
@@ -57,8 +55,6 @@ footer {
 [data-testid="stSidebar"] * {
     color: white !important;
 }
-
-/* BRAND */
 
 .brand {
     padding: 45px;
@@ -117,51 +113,6 @@ footer {
 
 
 # ============================================================
-# PAGE NAVIGATION
-# ============================================================
-
-home_page = st.Page(
-    "app.py",
-    title="Home",
-    icon="🏠",
-    default=True
-)
-
-login_page = st.Page(
-    "pages/01_Login_Register.py",
-    title="Login & Registration",
-    icon="🔐"
-)
-
-search_page = st.Page(
-    "pages/02_Property_Search.py",
-    title="Property Search",
-    icon="🔎"
-)
-
-post_property_page = st.Page(
-    "pages/03_Post_Property.py",
-    title="Post Property",
-    icon="🏡"
-)
-
-
-# ============================================================
-# NAVIGATION SYSTEM
-# ============================================================
-
-pg = st.navigation(
-    [
-        home_page,
-        login_page,
-        search_page,
-        post_property_page
-    ],
-    position="sidebar"
-)
-
-
-# ============================================================
 # SIDEBAR BRAND
 # ============================================================
 
@@ -170,12 +121,14 @@ with st.sidebar:
     st.markdown("""
     <div style="
         text-align:center;
-        padding:15px 5px 25px 5px;
+        padding:20px;
     ">
 
     <h1>🏠 FirstChoice</h1>
 
     <h3>Property Hub</h3>
+
+    <hr>
 
     <p>
     India's Next-Generation<br>
@@ -187,7 +140,127 @@ with st.sidebar:
 
 
 # ============================================================
-# RUN SELECTED PAGE
+# MAIN HERO
 # ============================================================
 
-pg.run()
+st.markdown("""
+<div class="brand">
+
+<div class="brand-title">
+🏠 FirstChoice Infra Property Hub
+</div>
+
+<div class="brand-subtitle">
+
+India's Next-Generation Real Estate Marketplace
+
+<br><br>
+
+Buy • Sell • Rent • Invest • Build • Discover
+
+</div>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+# ============================================================
+# WELCOME
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+🚀 Welcome to FirstChoice Property Hub
+</h2>
+
+<p>
+Your complete digital property ecosystem.
+</p>
+
+<p>
+Buy, sell, rent, invest and discover properties
+across India.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+# ============================================================
+# QUICK ACCESS
+# ============================================================
+
+st.subheader("🚀 Quick Access")
+
+c1, c2, c3 = st.columns(3)
+
+
+with c1:
+
+    if st.button(
+        "🔐 Login / Register",
+        use_container_width=True
+    ):
+
+        st.switch_page(
+            "pages/01_Login_Register.py"
+        )
+
+
+with c2:
+
+    if st.button(
+        "🔎 Property Search",
+        use_container_width=True
+    ):
+
+        st.switch_page(
+            "pages/02_Property_Search.py"
+        )
+
+
+with c3:
+
+    if st.button(
+        "🏠 Post Property",
+        use_container_width=True
+    ):
+
+        st.switch_page(
+            "pages/03_Post_Property.py"
+        )
+
+
+# ============================================================
+# FOOTER
+# ============================================================
+
+st.markdown("""
+<br><br>
+
+<div style="
+padding:30px;
+border-radius:25px;
+background:linear-gradient(
+135deg,
+#071952,
+#1E1B4B,
+#4C1D95
+);
+color:white;
+text-align:center;
+">
+
+<h3>
+🏠 FIRSTCHOICE INFRA PROPERTY HUB
+</h3>
+
+<p>
+Buy • Sell • Rent • Invest • Build • Discover
+</p>
+
+</div>
+
+""", unsafe_allow_html=True)
