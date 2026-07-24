@@ -1,9 +1,40 @@
 import streamlit as st
+import pandas as pd
+from datetime import datetime
+from io import StringIO
 
 # ============================================================
-# PAGE — SMART PROPERTY COMPARISON & DECISION CENTER
-# MERGED: PAGE 5 + PAGE 27
+# PAGE 27 — SMART PROPERTY COMPARISON & DECISION CENTER
 # FIRSTCHOICE INFRA PROPERTY HUB
+#
+# MERGED FEATURES:
+# PAGE 5  — PROPERTY COMPARISON
+# PAGE 27 — SMART PROPERTY COMPARISON CENTER
+#
+# NEW FEATURES:
+# ✅ Back / Home / Page Menu Navigation
+# ✅ Smart Decision Score
+# ✅ Custom Buyer Priorities
+# ✅ Budget Filter
+# ✅ Property Risk Indicator
+# ✅ Legal Risk Score
+# ✅ Trust Score
+# ✅ Investment Score
+# ✅ Price Comparison
+# ✅ Price Per Sq.Ft.
+# ✅ Side-by-Side Comparison
+# ✅ Save Comparison
+# ✅ Shortlist
+# ✅ Download Comparison Report
+# ✅ Site Visit Action
+# ✅ Legal Verification Action
+# ✅ Finance / EMI Action
+# ✅ Deal Room Action
+# ============================================================
+
+
+# ============================================================
+# PAGE CONFIG
 # ============================================================
 
 st.set_page_config(
@@ -12,281 +43,603 @@ st.set_page_config(
     layout="wide"
 )
 
+
 # ============================================================
-# PREMIUM MULTICOLOUR UI
+# SESSION STATE
 # ============================================================
 
-st.markdown("""
-<style>
+if "current_page" not in st.session_state:
+    st.session_state.current_page = "27_property_comparison_center.py"
 
-.stApp {
-    background:
-    linear-gradient(
-        135deg,
-        #F5F7FF 0%,
-        #FFF7ED 35%,
-        #FDF4FF 70%,
-        #ECFEFF 100%
-    );
+if "previous_page" not in st.session_state:
+    st.session_state.previous_page = "01_admin_master_control.py"
+
+if "saved_comparisons" not in st.session_state:
+    st.session_state.saved_comparisons = []
+
+if "shortlisted_properties" not in st.session_state:
+    st.session_state.shortlisted_properties = []
+
+if "comparison_saved" not in st.session_state:
+    st.session_state.comparison_saved = False
+
+
+# ============================================================
+# COMMON NAVIGATION
+# ============================================================
+
+APP_PAGES = {
+
+    "🏠 Home / Dashboard":
+        "01_admin_master_control.py",
+
+    "🏡 Property Details":
+        "03_property_details.py",
+
+    "📢 Communication Center":
+        "11_smart_communication_notification_center.py",
+
+    "💰 Finance Calculator":
+        "13_finance_calculator.py",
+
+    "📊 Market Insights":
+        "16_market_insights.py",
+
+    "🤖 AI Property Intelligence":
+        "17_AI_Property_Intelligence.py",
+
+    "🎥 Virtual Property Tour":
+        "19_virtual_property_tour.py",
+
+    "📈 Investment Intelligence":
+        "20_investment_intelligence.py",
+
+    "⚖️ Legal Due Diligence":
+        "22_property_legal_due_diligence.py",
+
+    "🤝 Property Deal Room":
+        "23_property_deal_room.py",
+
+    "📁 Property Document Vault":
+        "24_property_document_vault.py",
+
+    "💬 Property Collaboration Hub":
+        "25_property_collaboration_hub.py",
+
+    "📅 Property Site Visit":
+        "26_property_site_visit_manager.py",
+
+    "⚖️ Property Comparison":
+        "27_property_comparison_center.py",
+
+    "💳 Investment Finance Center":
+        "28_property_investment_finance_center.py",
+
+    "🛡️ Legal Verification":
+        "30_property_legal_verification.py",
+
+    "👤 User Profile":
+        "6_User_Profile.py",
+
+    "🏡 My Listings":
+        "7_My_Listings.py",
+
+    "⭐ Saved Properties":
+        "8_Saved_Properties.py",
+
+    "🔍 Property Search":
+        "9_Property_Search.py",
 }
 
-header {
-    visibility: hidden;
-}
 
-#MainMenu {
-    visibility: hidden;
-}
+HOME_PAGE = "01_admin_master_control.py"
 
-footer {
-    visibility: hidden;
-}
 
-/* ============================================================
-HERO
-============================================================ */
+def go_to_page(page_name):
 
-.hero {
-    padding: 52px;
-    border-radius: 36px;
-    color: white;
+    current = st.session_state.get(
+        "current_page",
+        "27_property_comparison_center.py"
+    )
 
-    background:
-    linear-gradient(
-        135deg,
-        #020617,
-        #1D4ED8,
-        #7C3AED,
-        #DB2777
-    );
+    if page_name != current:
 
-    box-shadow:
-    0 24px 75px
-    rgba(37,99,235,0.32);
+        st.session_state.previous_page = current
 
-    margin-bottom: 32px;
-}
+        st.session_state.current_page = page_name
 
-.hero h1 {
-    font-size: 46px;
-    font-weight: 900;
-}
+        st.switch_page(page_name)
 
-.hero p {
-    font-size: 18px;
-    line-height: 1.8;
-}
 
-/* ============================================================
-SECTION
-============================================================ */
+def show_navigation():
 
-.section {
-    margin-top: 32px;
-    margin-bottom: 22px;
-    padding: 30px 34px;
-    border-radius: 28px;
-    color: white;
+    st.markdown(
+        """
+        <style>
 
-    background:
-    linear-gradient(
-        135deg,
-        #1E3A8A,
-        #4F46E5,
-        #9333EA,
-        #EC4899
-    );
+        .nav-title {
+            padding: 14px 20px;
+            border-radius: 16px;
+            margin-bottom: 12px;
 
-    box-shadow:
-    0 14px 40px
-    rgba(79,70,229,0.22);
-}
+            background:
+            linear-gradient(
+                135deg,
+                #071952,
+                #2563EB,
+                #7C3AED
+            );
 
-.section h2 {
-    margin: 0;
-    font-size: 29px;
-    font-weight: 900;
-}
+            color: white;
 
-/* ============================================================
-CARD
-============================================================ */
+            font-size: 18px;
+            font-weight: 800;
 
-.card {
-    padding: 28px;
-    border-radius: 26px;
+            text-align: center;
 
-    background:
-    linear-gradient(
-        135deg,
-        #FFFFFF,
-        #F5F3FF,
-        #EFF6FF
-    );
+            box-shadow:
+            0 8px 25px
+            rgba(37,99,235,0.20);
+        }
 
-    border: 1px solid #E0E7FF;
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
-    box-shadow:
-    0 12px 35px
-    rgba(0,0,0,0.07);
+    st.markdown(
+        """
+        <div class="nav-title">
+        🏠 FirstChoice Infra Property Hub
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-    margin-bottom: 20px;
-}
+    back_col, home_col, menu_col = st.columns(
+        [1, 1, 2]
+    )
 
-/* ============================================================
-AI CARD
-============================================================ */
+    with back_col:
 
-.ai-card {
-    padding: 32px;
-    border-radius: 30px;
-    color: white;
+        if st.button(
+            "⬅️ BACK",
+            use_container_width=True
+        ):
 
-    background:
-    linear-gradient(
-        135deg,
-        #4C1D95,
-        #7C3AED,
-        #C026D3
-    );
+            previous = st.session_state.get(
+                "previous_page",
+                HOME_PAGE
+            )
 
-    box-shadow:
-    0 18px 55px
-    rgba(124,58,237,0.25);
-}
+            try:
 
-/* ============================================================
-BEST PROPERTY
-============================================================ */
+                st.switch_page(previous)
 
-.best-card {
-    padding: 35px;
-    border-radius: 30px;
-    color: white;
+            except Exception:
 
-    background:
-    linear-gradient(
-        135deg,
-        #047857,
-        #059669,
-        #10B981
-    );
+                st.switch_page(HOME_PAGE)
 
-    box-shadow:
-    0 20px 60px
-    rgba(5,150,105,0.25);
-}
 
-/* ============================================================
-WARNING
-============================================================ */
+    with home_col:
 
-.warning-card {
-    padding: 30px;
-    border-radius: 28px;
-    color: white;
+        if st.button(
+            "🏠 HOME",
+            use_container_width=True
+        ):
 
-    background:
-    linear-gradient(
-        135deg,
-        #B45309,
-        #F59E0B,
-        #F97316
-    );
-}
+            st.switch_page(HOME_PAGE)
 
-/* ============================================================
-PROPERTY IMAGE
-============================================================ */
 
-.property-image {
-    border-radius: 20px;
-}
+    with menu_col:
 
-/* ============================================================
-BADGES
-============================================================ */
+        selected_page = st.selectbox(
 
-.badge {
-    display: inline-block;
-    padding: 7px 14px;
-    border-radius: 30px;
-    color: white;
-    font-size: 12px;
-    font-weight: 800;
-    margin-right: 5px;
-}
+            "📋 PAGE MENU",
 
-.verified {
-    background: #059669;
-}
+            list(APP_PAGES.keys()),
 
-.premium {
-    background: #7C3AED;
-}
+            index=None,
 
-.featured {
-    background: #EF4444;
-}
+            placeholder="Select a page..."
 
-</style>
-""", unsafe_allow_html=True)
+        )
+
+        if selected_page:
+
+            selected_file = APP_PAGES[
+                selected_page
+            ]
+
+            if selected_file != st.session_state.current_page:
+
+                st.session_state.previous_page = (
+                    st.session_state.current_page
+                )
+
+                st.session_state.current_page = (
+                    selected_file
+                )
+
+                st.switch_page(selected_file)
+
+
+show_navigation()
+
+
+# ============================================================
+# PREMIUM UI
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+
+    .stApp {
+
+        background:
+        linear-gradient(
+            135deg,
+            #F5F7FF 0%,
+            #FFF7ED 35%,
+            #FDF4FF 70%,
+            #ECFEFF 100%
+        );
+
+    }
+
+    header {
+        visibility: hidden;
+    }
+
+    #MainMenu {
+        visibility: hidden;
+    }
+
+    footer {
+        visibility: hidden;
+    }
+
+
+    .hero {
+
+        padding: 52px;
+
+        border-radius: 36px;
+
+        color: white;
+
+        background:
+        linear-gradient(
+            135deg,
+            #020617,
+            #1D4ED8,
+            #7C3AED,
+            #DB2777
+        );
+
+        box-shadow:
+        0 24px 75px
+        rgba(37,99,235,0.32);
+
+        margin-bottom: 32px;
+
+    }
+
+
+    .hero h1 {
+
+        font-size: 46px;
+
+        font-weight: 900;
+
+    }
+
+
+    .hero p {
+
+        font-size: 18px;
+
+        line-height: 1.8;
+
+    }
+
+
+    .section {
+
+        margin-top: 32px;
+
+        margin-bottom: 22px;
+
+        padding: 30px 34px;
+
+        border-radius: 28px;
+
+        color: white;
+
+        background:
+        linear-gradient(
+            135deg,
+            #1E3A8A,
+            #4F46E5,
+            #9333EA,
+            #EC4899
+        );
+
+        box-shadow:
+        0 14px 40px
+        rgba(79,70,229,0.22);
+
+    }
+
+
+    .section h2 {
+
+        margin: 0;
+
+        font-size: 29px;
+
+        font-weight: 900;
+
+    }
+
+
+    .card {
+
+        padding: 28px;
+
+        border-radius: 26px;
+
+        background:
+        linear-gradient(
+            135deg,
+            #FFFFFF,
+            #F5F3FF,
+            #EFF6FF
+        );
+
+        border:
+        1px solid #E0E7FF;
+
+        box-shadow:
+        0 12px 35px
+        rgba(0,0,0,0.07);
+
+        margin-bottom: 20px;
+
+    }
+
+
+    .ai-card {
+
+        padding: 32px;
+
+        border-radius: 30px;
+
+        color: white;
+
+        background:
+        linear-gradient(
+            135deg,
+            #4C1D95,
+            #7C3AED,
+            #C026D3
+        );
+
+        box-shadow:
+        0 18px 55px
+        rgba(124,58,237,0.25);
+
+    }
+
+
+    .best-card {
+
+        padding: 35px;
+
+        border-radius: 30px;
+
+        color: white;
+
+        background:
+        linear-gradient(
+            135deg,
+            #047857,
+            #059669,
+            #10B981
+        );
+
+        box-shadow:
+        0 20px 60px
+        rgba(5,150,105,0.25);
+
+    }
+
+
+    .warning-card {
+
+        padding: 30px;
+
+        border-radius: 28px;
+
+        color: white;
+
+        background:
+        linear-gradient(
+            135deg,
+            #B45309,
+            #F59E0B,
+            #F97316
+        );
+
+    }
+
+
+    .risk-card {
+
+        padding: 25px;
+
+        border-radius: 25px;
+
+        color: white;
+
+        background:
+        linear-gradient(
+            135deg,
+            #991B1B,
+            #DC2626,
+            #F97316
+        );
+
+    }
+
+
+    .safe-card {
+
+        padding: 25px;
+
+        border-radius: 25px;
+
+        color: white;
+
+        background:
+        linear-gradient(
+            135deg,
+            #047857,
+            #059669,
+            #10B981
+        );
+
+    }
+
+
+    .badge {
+
+        display:
+        inline-block;
+
+        padding:
+        7px 14px;
+
+        border-radius:
+        30px;
+
+        color:
+        white;
+
+        font-size:
+        12px;
+
+        font-weight:
+        800;
+
+        margin-right:
+        5px;
+
+    }
+
+
+    .verified {
+
+        background:
+        #059669;
+
+    }
+
+
+    .premium {
+
+        background:
+        #7C3AED;
+
+    }
+
+
+    .featured {
+
+        background:
+        #EF4444;
+
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
 # HERO
 # ============================================================
 
-st.markdown("""
-<div class="hero">
+st.markdown(
+    """
+    <div class="hero">
 
-<h1>
-⚖️ Smart Property Comparison & Decision Center
-</h1>
+    <h1>
+    ⚖️ Smart Property Comparison & Decision Center
+    </h1>
 
-<p>
-Compare multiple properties side-by-side and make a smarter
-property purchase or investment decision.
-</p>
+    <p>
+    Compare multiple properties side-by-side and make a smarter
+    property purchase or investment decision.
+    </p>
 
-<p>
-💰 Price • 📍 Location • 📐 Area • 🏠 Amenities •
-⚖️ Legal • 📈 Investment • ⭐ Trust • 🤖 Smart Score
-</p>
+    <p>
+    💰 Price
+    &nbsp; • &nbsp;
+    📍 Location
+    &nbsp; • &nbsp;
+    📐 Area
+    &nbsp; • &nbsp;
+    🏠 Amenities
+    &nbsp; • &nbsp;
+    ⚖️ Legal
+    &nbsp; • &nbsp;
+    📈 Investment
+    &nbsp; • &nbsp;
+    ⭐ Trust
+    &nbsp; • &nbsp;
+    🤖 Smart Score
+    </p>
 
-</div>
-""", unsafe_allow_html=True)
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
 # INTRO
 # ============================================================
 
-st.markdown("""
-<div class="ai-card">
+st.markdown(
+    """
+    <div class="ai-card">
 
-<h2>
-🤖 Smart Property Decision Engine
-</h2>
+    <h2>
+    🤖 Smart Property Decision Engine
+    </h2>
 
-<p>
-Select properties from your shortlist and compare important
-property factors on one screen.
-</p>
+    <p>
+    Select properties from your shortlist and compare important
+    property factors on one screen.
+    </p>
 
-<p>
-The system calculates a smart decision score based on your
-personal priorities and highlights the property that best
-matches your requirements.
-</p>
+    <p>
+    The Smart Decision Engine calculates a personalized score
+    based on your budget, location, investment, legal safety,
+    site visit and amenities preferences.
+    </p>
 
-</div>
-""", unsafe_allow_html=True)
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
 # PROPERTY DATABASE
-# PAGE 5 EXISTING PROPERTY DATA
 # ============================================================
 
 property_data = {
@@ -632,37 +985,142 @@ property_data = {
 
 
 # ============================================================
+# BUDGET FILTER
+# ============================================================
+
+st.markdown(
+    """
+    <div class="section">
+
+    <h2>
+    💰 Your Budget & Property Preferences
+    </h2>
+
+    <p>
+    Set your maximum budget to identify suitable properties.
+    </p>
+
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+budget_col1, budget_col2 = st.columns(2)
+
+
+with budget_col1:
+
+    max_budget = st.number_input(
+
+        "💰 Maximum Budget (₹)",
+
+        min_value=100000,
+
+        max_value=100000000,
+
+        value=25000000,
+
+        step=500000
+
+    )
+
+
+with budget_col2:
+
+    property_type_filter = st.selectbox(
+
+        "🏠 Property Type Preference",
+
+        [
+
+            "All Types",
+
+            "Apartment",
+
+            "Villa",
+
+            "Residential Plot",
+
+            "Commercial Office",
+
+            "Luxury Villa"
+
+        ]
+
+    )
+
+
+filtered_properties = []
+
+
+for name, data in property_data.items():
+
+    if data["price"] <= max_budget:
+
+        if (
+
+            property_type_filter == "All Types"
+
+            or
+
+            data["type"] == property_type_filter
+
+        ):
+
+            filtered_properties.append(name)
+
+
+if filtered_properties:
+
+    st.success(
+
+        f"✅ {len(filtered_properties)} properties match your current budget and property type."
+
+    )
+
+else:
+
+    st.warning(
+
+        "⚠️ No properties match your current budget and selected property type."
+
+    )
+
+
+# ============================================================
 # SELECT PROPERTIES
 # ============================================================
 
-st.markdown("""
-<div class="section">
+st.markdown(
+    """
+    <div class="section">
 
-<h2>
-🏡 Select Properties for Comparison
-</h2>
+    <h2>
+    🏡 Select Properties for Comparison
+    </h2>
 
-<p>
-Choose 2 to 5 properties from your shortlist.
-</p>
+    <p>
+    Choose 2 to 5 properties from your shortlist.
+    </p>
 
-</div>
-""", unsafe_allow_html=True)
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 
 selected_properties = st.multiselect(
 
-"🔎 Choose properties to compare",
+    "🔎 Choose properties to compare",
 
-list(property_data.keys()),
+    filtered_properties,
 
-default=[
-"Premium 3 BHK Luxury Apartment — Civil Lines",
-"Modern 4 BHK Premium Villa — Wardha Road",
-"Premium Residential Plot — Amravati Road"
-],
+    default=filtered_properties[:3]
+    if len(filtered_properties) >= 3
+    else filtered_properties,
 
-max_selections=5
+    max_selections=5
 
 )
 
@@ -671,22 +1129,26 @@ max_selections=5
 # BUYER PRIORITIES
 # ============================================================
 
-st.markdown("""
-<div class="section">
+st.markdown(
+    """
+    <div class="section">
 
-<h2>
-🎯 Your Property Buying Priorities
-</h2>
+    <h2>
+    🎯 Your Property Buying Priorities
+    </h2>
 
-<p>
-Set how important each factor is to you.
-</p>
+    <p>
+    Set how important each factor is to you.
+    </p>
 
-</div>
-""", unsafe_allow_html=True)
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 
 p1, p2, p3 = st.columns(3)
+
 
 with p1:
 
@@ -697,6 +1159,7 @@ with p1:
         8
     )
 
+
 with p2:
 
     location_weight = st.slider(
@@ -705,6 +1168,7 @@ with p2:
         10,
         8
     )
+
 
 with p3:
 
@@ -718,6 +1182,7 @@ with p3:
 
 p4, p5, p6 = st.columns(3)
 
+
 with p4:
 
     site_weight = st.slider(
@@ -727,6 +1192,7 @@ with p4:
         7
     )
 
+
 with p5:
 
     legal_weight = st.slider(
@@ -735,6 +1201,7 @@ with p5:
         10,
         10
     )
+
 
 with p6:
 
@@ -752,9 +1219,16 @@ with p6:
 
 if len(selected_properties) >= 2:
 
+    # ========================================================
+    # SELECTED DATA
+    # ========================================================
+
     selected_data = [
+
         property_data[name]
+
         for name in selected_properties
+
     ]
 
 
@@ -762,15 +1236,18 @@ if len(selected_properties) >= 2:
     # PROPERTY CARDS
     # ========================================================
 
-    st.markdown("""
-    <div class="section">
+    st.markdown(
+        """
+        <div class="section">
 
-    <h2>
-    🏠 Selected Properties
-    </h2>
+        <h2>
+        🏠 Selected Properties
+        </h2>
 
-    </div>
-    """, unsafe_allow_html=True)
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 
     columns = st.columns(
@@ -784,6 +1261,7 @@ if len(selected_properties) >= 2:
 
         data = property_data[property_name]
 
+
         with columns[index]:
 
             st.image(
@@ -791,12 +1269,18 @@ if len(selected_properties) >= 2:
                 use_container_width=True
             )
 
+
             st.markdown(
+
                 f"""
                 <div class="card">
 
                 <span class="badge verified">
                 🛡️ {data["verification"]}
+                </span>
+
+                <span class="badge premium">
+                ⭐ Trust {data["trust"]}/100
                 </span>
 
                 <h3>
@@ -820,29 +1304,72 @@ if len(selected_properties) >= 2:
                 </p>
 
                 <p>
-                ⭐ Trust Score:
-                {data["trust"]}/100
+                💵 ₹{data["price_sqft"]:,} / Sq.Ft.
                 </p>
 
                 </div>
                 """,
+
                 unsafe_allow_html=True
+
             )
+
+
+            if property_name in st.session_state.shortlisted_properties:
+
+                if st.button(
+
+                    "💔 Remove Shortlist",
+
+                    key=f"remove_{index}",
+
+                    use_container_width=True
+
+                ):
+
+                    st.session_state.shortlisted_properties.remove(
+                        property_name
+                    )
+
+                    st.rerun()
+
+            else:
+
+                if st.button(
+
+                    "❤️ Add to Shortlist",
+
+                    key=f"shortlist_{index}",
+
+                    use_container_width=True
+
+                ):
+
+                    st.session_state.shortlisted_properties.append(
+                        property_name
+                    )
+
+                    st.success(
+                        "Property added to shortlist."
+                    )
 
 
     # ========================================================
     # SIDE BY SIDE COMPARISON
     # ========================================================
 
-    st.markdown("""
-    <div class="section">
+    st.markdown(
+        """
+        <div class="section">
 
-    <h2>
-    📊 Side-by-Side Property Comparison
-    </h2>
+        <h2>
+        📊 Side-by-Side Property Comparison
+        </h2>
 
-    </div>
-    """, unsafe_allow_html=True)
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 
     comparison_rows = [
@@ -889,8 +1416,11 @@ if len(selected_properties) >= 2:
     for label, key in comparison_rows:
 
         row_columns = st.columns(
+
             len(selected_properties) + 1
+
         )
+
 
         with row_columns[0]:
 
@@ -898,15 +1428,18 @@ if len(selected_properties) >= 2:
                 f"**{label}**"
             )
 
+
         for index, property_name in enumerate(
             selected_properties
         ):
 
             data = property_data[property_name]
 
+
             with row_columns[index + 1]:
 
                 value = data[key]
+
 
                 if key == "price":
 
@@ -914,11 +1447,13 @@ if len(selected_properties) >= 2:
                         f"₹{value:,.0f}"
                     )
 
+
                 elif key == "area":
 
                     st.write(
                         f"{value:,} Sq.Ft."
                     )
+
 
                 elif key == "price_sqft":
 
@@ -926,21 +1461,28 @@ if len(selected_properties) >= 2:
                         f"₹{value:,}"
                     )
 
+
                 elif key == "amenities":
 
                     st.write(
                         f"{len(value)} Amenities"
                     )
 
+
                 elif key in [
+
                     "site_rating",
+
                     "location_rating",
+
                     "investment_rating"
+
                 ]:
 
                     st.write(
                         f"{value}/5"
                     )
+
 
                 elif key == "trust":
 
@@ -952,11 +1494,13 @@ if len(selected_properties) >= 2:
                         f"{value}/100"
                     )
 
+
                 else:
 
                     st.write(
                         value
                     )
+
 
         st.divider()
 
@@ -965,15 +1509,18 @@ if len(selected_properties) >= 2:
     # TRUST SCORE ANALYSIS
     # ========================================================
 
-    st.markdown("""
-    <div class="section">
+    st.markdown(
+        """
+        <div class="section">
 
-    <h2>
-    ⭐ Trust Score Analysis
-    </h2>
+        <h2>
+        ⭐ Trust & Risk Analysis
+        </h2>
 
-    </div>
-    """, unsafe_allow_html=True)
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 
     trust_values = [
@@ -989,8 +1536,11 @@ if len(selected_properties) >= 2:
 
 
     trust_values.sort(
+
         key=lambda x: x[1],
+
         reverse=True
+
     )
 
 
@@ -1008,6 +1558,102 @@ if len(selected_properties) >= 2:
         """
 
     )
+
+
+    risk_cols = st.columns(
+        len(selected_properties)
+    )
+
+
+    for index, property_name in enumerate(
+        selected_properties
+    ):
+
+        p = property_data[property_name]
+
+
+        if p["legal_status"] == "Verified":
+
+            risk_level = "LOW"
+
+            risk_score = 10
+
+        elif p["legal_status"] == "Under Verification":
+
+            risk_level = "MEDIUM"
+
+            risk_score = 45
+
+        else:
+
+            risk_level = "HIGH"
+
+            risk_score = 75
+
+
+        with risk_cols[index]:
+
+            if risk_level == "LOW":
+
+                st.markdown(
+
+                    f"""
+                    <div class="safe-card">
+
+                    <h3>
+                    🛡️ Low Risk
+                    </h3>
+
+                    <p>
+                    {property_name}
+                    </p>
+
+                    <h2>
+                    {risk_score}/100
+                    </h2>
+
+                    <p>
+                    Legal Status:
+                    {p["legal_status"]}
+                    </p>
+
+                    </div>
+                    """,
+
+                    unsafe_allow_html=True
+
+                )
+
+            else:
+
+                st.markdown(
+
+                    f"""
+                    <div class="risk-card">
+
+                    <h3>
+                    ⚠️ {risk_level} Risk
+                    </h3>
+
+                    <p>
+                    {property_name}
+                    </p>
+
+                    <h2>
+                    {risk_score}/100
+                    </h2>
+
+                    <p>
+                    Legal Status:
+                    {p["legal_status"]}
+                    </p>
+
+                    </div>
+                    """,
+
+                    unsafe_allow_html=True
+
+                )
 
 
     # ========================================================
@@ -1249,6 +1895,9 @@ if len(selected_properties) >= 2:
                 1
             ),
 
+            "Trust Score":
+            p["trust"],
+
             "Final Score":
             round(
                 final_score,
@@ -1262,20 +1911,35 @@ if len(selected_properties) >= 2:
     # SMART DECISION SCORE
     # ========================================================
 
-    st.markdown("""
-    <div class="section">
+    st.markdown(
+        """
+        <div class="section">
 
-    <h2>
-    🏆 Smart Decision Scores
-    </h2>
+        <h2>
+        🏆 Smart Decision Scores
+        </h2>
 
-    </div>
-    """, unsafe_allow_html=True)
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+    scores_df = pd.DataFrame(scores)
+
+
+    scores_df = scores_df.sort_values(
+
+        by="Final Score",
+
+        ascending=False
+
+    )
 
 
     st.dataframe(
 
-        scores,
+        scores_df,
 
         use_container_width=True,
 
@@ -1288,23 +1952,9 @@ if len(selected_properties) >= 2:
     # BEST PROPERTY
     # ========================================================
 
-    best_index = max(
-
-        range(
-            len(scores)
-        ),
-
-        key=lambda i:
-        scores[i]["Final Score"]
-
-    )
-
-
     best_property_name = (
 
-        selected_properties[
-            best_index
-        ]
+        scores_df.iloc[0]["Property"]
 
     )
 
@@ -1316,11 +1966,11 @@ if len(selected_properties) >= 2:
     ]
 
 
-    best_score = scores[
+    best_score = scores_df.iloc[0][
 
-        best_index
+        "Final Score"
 
-    ]["Final Score"]
+    ]
 
 
     st.markdown(
@@ -1377,33 +2027,34 @@ if len(selected_properties) >= 2:
 
     if best_score >= 80:
 
-        insight = """
+        insight = (
 
-        This property strongly matches your selected priorities.
-        It may be considered the leading option for further legal,
-        financial and physical verification.
+            "This property strongly matches your selected "
+            "priorities. It may be considered the leading "
+            "option for further legal, financial and physical "
+            "verification."
 
-        """
+        )
 
     elif best_score >= 60:
 
-        insight = """
+        insight = (
 
-        This property is a reasonably strong match.
-        Compare the final deal price and complete all due diligence
-        before making a final decision.
+            "This property is a reasonably strong match. "
+            "Compare the final deal price and complete all "
+            "due diligence before making a final decision."
 
-        """
+        )
 
     else:
 
-        insight = """
+        insight = (
 
-        None of the shortlisted properties strongly match the
-        selected priorities. Consider adding more properties
-        or changing your search criteria.
+            "None of the shortlisted properties strongly "
+            "match the selected priorities. Consider adding "
+            "more properties or changing your search criteria."
 
-        """
+        )
 
 
     st.markdown(
@@ -1428,87 +2079,246 @@ if len(selected_properties) >= 2:
 
 
     # ========================================================
-    # ACTIONS
+    # SAVE COMPARISON
     # ========================================================
 
-    st.markdown("""
-    <div class="section">
+    st.markdown(
+        """
+        <div class="section">
 
-    <h2>
-    🚀 What Would You Like To Do?
-    </h2>
+        <h2>
+        💾 Save & Export Comparison
+        </h2>
 
-    </div>
-    """, unsafe_allow_html=True)
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 
-    a1, a2, a3 = st.columns(3)
+    save_col1, save_col2 = st.columns(2)
+
+
+    with save_col1:
+
+        if st.button(
+
+            "💾 SAVE COMPARISON",
+
+            use_container_width=True
+
+        ):
+
+            saved_record = {
+
+                "Saved At":
+                datetime.now().strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                ),
+
+                "Properties":
+                ", ".join(
+                    selected_properties
+                ),
+
+                "Recommended Property":
+                best_property_name,
+
+                "Decision Score":
+                best_score
+
+            }
+
+
+            st.session_state.saved_comparisons.append(
+
+                saved_record
+
+            )
+
+
+            st.session_state.comparison_saved = True
+
+
+            st.success(
+
+                "✅ Comparison saved successfully."
+
+            )
+
+
+    with save_col2:
+
+        report_csv = scores_df.to_csv(
+            index=False
+        )
+
+
+        st.download_button(
+
+            "📥 DOWNLOAD COMPARISON REPORT",
+
+            data=report_csv,
+
+            file_name=
+            "FirstChoice_Property_Comparison_Report.csv",
+
+            mime="text/csv",
+
+            use_container_width=True
+
+        )
+
+
+    # ========================================================
+    # ACTION CENTER
+    # ========================================================
+
+    st.markdown(
+        """
+        <div class="section">
+
+        <h2>
+        🚀 Property Decision Action Center
+        </h2>
+
+        <p>
+        Continue with the recommended property.
+        </p>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+    a1, a2, a3, a4 = st.columns(4)
 
 
     with a1:
 
         if st.button(
 
-            "❤️ Save Comparison",
+            "📅 SITE VISIT",
 
             use_container_width=True
 
         ):
 
-            st.success(
+            try:
 
-                "Comparison saved to your account."
+                st.switch_page(
 
-            )
+                    "26_property_site_visit_manager.py"
+
+                )
+
+            except Exception:
+
+                st.success(
+
+                    "Site Visit Manager selected."
+
+                )
 
 
     with a2:
 
         if st.button(
 
-            "📞 Contact Best Property",
+            "⚖️ LEGAL CHECK",
 
             use_container_width=True
 
         ):
 
-            st.success(
+            try:
 
-                "Contact request submitted."
+                st.switch_page(
 
-            )
+                    "22_property_legal_due_diligence.py"
+
+                )
+
+            except Exception:
+
+                st.success(
+
+                    "Legal Due Diligence selected."
+
+                )
 
 
     with a3:
 
         if st.button(
 
-            "📅 Schedule Site Visit",
+            "💰 FINANCE",
 
             use_container_width=True
 
         ):
 
-            st.success(
+            try:
 
-                "Site visit request initiated."
+                st.switch_page(
 
-            )
+                    "13_finance_calculator.py"
+
+                )
+
+            except Exception:
+
+                st.success(
+
+                    "Finance Calculator selected."
+
+                )
+
+
+    with a4:
+
+        if st.button(
+
+            "🤝 DEAL ROOM",
+
+            use_container_width=True
+
+        ):
+
+            try:
+
+                st.switch_page(
+
+                    "23_property_deal_room.py"
+
+                )
+
+            except Exception:
+
+                st.success(
+
+                    "Property Deal Room selected."
+
+                )
 
 
     # ========================================================
     # NEXT ACTION
     # ========================================================
 
-    st.markdown("""
-    <div class="section">
+    st.markdown(
+        """
+        <div class="section">
 
-    <h2>
-    🚀 Recommended Next Action
-    </h2>
+        <h2>
+        🚀 Recommended Next Action
+        </h2>
 
-    </div>
-    """, unsafe_allow_html=True)
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 
     next_action = st.selectbox(
@@ -1542,83 +2352,242 @@ if len(selected_properties) >= 2:
 
     ):
 
-        st.success(
+        if next_action == "Schedule Site Visit":
 
-            f"✅ Next action selected: "
-            f"{next_action}"
+            try:
 
-        )
+                st.switch_page(
+                    "26_property_site_visit_manager.py"
+                )
+
+            except Exception:
+
+                st.success(
+                    "Site Visit Manager selected."
+                )
+
+
+        elif next_action == "Start Legal Verification":
+
+            try:
+
+                st.switch_page(
+                    "22_property_legal_due_diligence.py"
+                )
+
+            except Exception:
+
+                st.success(
+                    "Legal Due Diligence selected."
+                )
+
+
+        elif next_action == "Calculate Loan / EMI":
+
+            try:
+
+                st.switch_page(
+                    "13_finance_calculator.py"
+                )
+
+            except Exception:
+
+                st.success(
+                    "Finance Calculator selected."
+                )
+
+
+        elif next_action == "Open Property Deal Room":
+
+            try:
+
+                st.switch_page(
+                    "23_property_deal_room.py"
+                )
+
+            except Exception:
+
+                st.success(
+                    "Property Deal Room selected."
+                )
+
+
+        elif next_action == "Save Property to Shortlist":
+
+            if best_property_name not in st.session_state.shortlisted_properties:
+
+                st.session_state.shortlisted_properties.append(
+                    best_property_name
+                )
+
+                st.success(
+                    "✅ Recommended property added to shortlist."
+                )
+
+            else:
+
+                st.info(
+                    "This property is already in your shortlist."
+                )
+
+
+        else:
+
+            st.info(
+                "Please select additional properties for comparison."
+            )
 
 
 else:
 
     st.warning(
 
-        "Please select at least two properties "
+        "⚠️ Please select at least two properties "
         "to compare."
 
     )
 
 
 # ============================================================
+# SAVED COMPARISONS
+# ============================================================
+
+if st.session_state.saved_comparisons:
+
+    st.markdown(
+        """
+        <div class="section">
+
+        <h2>
+        💾 Saved Comparisons
+        </h2>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+    st.dataframe(
+
+        st.session_state.saved_comparisons,
+
+        use_container_width=True,
+
+        hide_index=True
+
+    )
+
+
+# ============================================================
+# SHORTLIST
+# ============================================================
+
+if st.session_state.shortlisted_properties:
+
+    st.markdown(
+        """
+        <div class="section">
+
+        <h2>
+        ❤️ My Property Shortlist
+        </h2>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+    for property_name in st.session_state.shortlisted_properties:
+
+        p = property_data.get(
+            property_name
+        )
+
+
+        if p:
+
+            st.info(
+
+                f"""
+                ❤️ {property_name}
+
+                | 💰 ₹{p["price"]:,.0f}
+
+                | 📍 {p["location"]}
+
+                | ⭐ Trust {p["trust"]}/100
+                """
+
+            )
+
+
+# ============================================================
 # FUTURE AI FEATURES
 # ============================================================
 
-st.markdown("""
-<div class="ai-card">
+st.markdown(
+    """
+    <div class="ai-card">
 
-<h2>
-🚀 Future Smart Comparison Features
-</h2>
+    <h2>
+    🚀 Future Smart Comparison Features
+    </h2>
 
-<p>
-The production version can integrate:
-</p>
+    <p>
+    The production version can integrate:
+    </p>
 
-<p>
+    <p>
 
-🗺️ Live Location Comparison
-&nbsp; • &nbsp;
+    🗺️ Live Location Comparison
+    &nbsp; • &nbsp;
 
-💰 Real Market Price Analysis
-&nbsp; • &nbsp;
+    💰 Real Market Price Analysis
+    &nbsp; • &nbsp;
 
-🏦 Automatic EMI Comparison
-&nbsp; • &nbsp;
+    🏦 Automatic EMI Comparison
+    &nbsp; • &nbsp;
 
-📈 Investment ROI Forecast
-&nbsp; • &nbsp;
+    📈 Investment ROI Forecast
+    &nbsp; • &nbsp;
 
-⚖️ Legal Risk Score
-&nbsp; • &nbsp;
+    ⚖️ Legal Risk Score
+    &nbsp; • &nbsp;
 
-🌐 Nearby Amenities
-&nbsp; • &nbsp;
+    🌐 Nearby Amenities
+    &nbsp; • &nbsp;
 
-🤖 AI Personalized Recommendation
+    🤖 AI Personalized Recommendation
 
-</p>
+    </p>
 
-</div>
-""", unsafe_allow_html=True)
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
-# NOTICE
+# IMPORTANT NOTICE
 # ============================================================
 
-st.markdown("""
-<div class="warning-card">
+st.markdown(
+    """
+    <div class="warning-card">
 
-<h2>
-⚠️ Important Notice
-</h2>
+    <h2>
+    ⚠️ Important Notice
+    </h2>
 
-<p>
-The Smart Decision Score is an informational comparison
-tool based on available property data and user priorities.
-It is not financial, legal or investment advice.
-</p>
+    <p>
+    The Smart Decision Score is an informational comparison
+    tool based on available property data and user priorities.
+    It is not financial, legal or investment advice.
+    </p>
 
-</div>
-""", unsafe_allow_html=True)
+    </div>
+    """,
+    unsafe_allow_html=True
+)
