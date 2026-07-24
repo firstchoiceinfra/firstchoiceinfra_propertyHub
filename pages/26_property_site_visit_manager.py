@@ -1,12 +1,41 @@
 import streamlit as st
 from datetime import datetime, date, time
+import uuid
+
+# ============================================================
+# NAVIGATION IMPORT
+# ============================================================
+
+from navigation import show_navigation, set_current_page
+
 
 # ============================================================
 # PAGE 26 — SMART PROPERTY SITE VISIT & INSPECTION MANAGER
 # FIRSTCHOICE INFRA PROPERTY HUB
-# MERGED VERSION:
-# PAGE 10 — SITE VISIT BOOKING
-# PAGE 26 — SITE VISIT & INSPECTION MANAGER
+#
+# FEATURES:
+# ✅ Back Button
+# ✅ Home Button
+# ✅ Page Menu
+# ✅ Property ID System
+# ✅ Site Visit Booking
+# ✅ Visit Confirmation
+# ✅ Visit History
+# ✅ Reschedule / Cancel
+# ✅ Inspection Checklist
+# ✅ Inspection Progress
+# ✅ Property Rating
+# ✅ Visit Notes
+# ✅ Site Visit Photos
+# ✅ Buyer Decision
+# ✅ Site Visit Report
+# ✅ Smart Recommendation
+# ✅ Safety & Verification
+# ============================================================
+
+
+# ============================================================
+# PAGE CONFIG
 # ============================================================
 
 st.set_page_config(
@@ -14,6 +43,18 @@ st.set_page_config(
     page_icon="📍",
     layout="wide"
 )
+
+
+# ============================================================
+# CURRENT PAGE NAVIGATION
+# ============================================================
+
+set_current_page(
+    "26_property_site_visit_manager.py"
+)
+
+show_navigation()
+
 
 # ============================================================
 # SESSION STATE
@@ -25,12 +66,19 @@ if "site_visits" not in st.session_state:
 if "visit_confirmed" not in st.session_state:
     st.session_state.visit_confirmed = False
 
+if "selected_visit_id" not in st.session_state:
+    st.session_state.selected_visit_id = None
+
+if "visit_report_generated" not in st.session_state:
+    st.session_state.visit_report_generated = False
+
 
 # ============================================================
-# PREMIUM MULTICOLOUR UI
+# PREMIUM UI
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <style>
 
 .stApp {
@@ -56,6 +104,7 @@ footer {
     visibility: hidden;
 }
 
+
 /* ============================================================
 HERO
 ============================================================ */
@@ -64,6 +113,7 @@ HERO
     padding: 52px;
     border-radius: 36px;
     color: white;
+
     background:
     linear-gradient(
         135deg,
@@ -72,9 +122,11 @@ HERO
         #7C3AED,
         #DB2777
     );
+
     box-shadow:
     0 24px 75px
     rgba(37,99,235,0.32);
+
     margin-bottom: 32px;
 }
 
@@ -88,6 +140,7 @@ HERO
     line-height: 1.8;
 }
 
+
 /* ============================================================
 SECTION
 ============================================================ */
@@ -95,9 +148,13 @@ SECTION
 .section {
     margin-top: 32px;
     margin-bottom: 22px;
+
     padding: 30px 34px;
+
     border-radius: 28px;
+
     color: white;
+
     background:
     linear-gradient(
         135deg,
@@ -106,6 +163,7 @@ SECTION
         #9333EA,
         #EC4899
     );
+
     box-shadow:
     0 14px 40px
     rgba(79,70,229,0.22);
@@ -117,13 +175,16 @@ SECTION
     font-weight: 900;
 }
 
+
 /* ============================================================
 CARD
 ============================================================ */
 
 .card {
     padding: 28px;
+
     border-radius: 26px;
+
     background:
     linear-gradient(
         135deg,
@@ -131,12 +192,16 @@ CARD
         #F5F3FF,
         #EFF6FF
     );
+
     border: 1px solid #E0E7FF;
+
     box-shadow:
     0 12px 35px
     rgba(0,0,0,0.07);
+
     margin-bottom: 20px;
 }
+
 
 /* ============================================================
 AI CARD
@@ -144,8 +209,11 @@ AI CARD
 
 .ai-card {
     padding: 32px;
+
     border-radius: 30px;
+
     color: white;
+
     background:
     linear-gradient(
         135deg,
@@ -153,10 +221,14 @@ AI CARD
         #7C3AED,
         #C026D3
     );
+
     box-shadow:
     0 18px 55px
     rgba(124,58,237,0.25);
+
+    margin-bottom: 25px;
 }
+
 
 /* ============================================================
 SUCCESS CARD
@@ -164,8 +236,11 @@ SUCCESS CARD
 
 .success-card {
     padding: 32px;
+
     border-radius: 28px;
+
     color: white;
+
     background:
     linear-gradient(
         135deg,
@@ -173,10 +248,14 @@ SUCCESS CARD
         #059669,
         #10B981
     );
+
     box-shadow:
     0 15px 45px
     rgba(5,150,105,0.22);
+
+    margin-bottom: 25px;
 }
+
 
 /* ============================================================
 WARNING CARD
@@ -184,8 +263,11 @@ WARNING CARD
 
 .warning-card {
     padding: 30px;
+
     border-radius: 28px;
+
     color: white;
+
     background:
     linear-gradient(
         135deg,
@@ -193,7 +275,10 @@ WARNING CARD
         #F59E0B,
         #F97316
     );
+
+    margin-bottom: 25px;
 }
+
 
 /* ============================================================
 INFO CARD
@@ -201,8 +286,11 @@ INFO CARD
 
 .info-card {
     padding: 30px;
+
     border-radius: 28px;
+
     color: white;
+
     background:
     linear-gradient(
         135deg,
@@ -210,7 +298,14 @@ INFO CARD
         #0284C7,
         #06B6D4
     );
+
+    box-shadow:
+    0 18px 50px
+    rgba(3,105,161,0.22);
+
+    margin-bottom: 25px;
 }
+
 
 /* ============================================================
 VISIT CARD
@@ -218,24 +313,114 @@ VISIT CARD
 
 .visit-card {
     padding: 25px;
+
     border-radius: 25px;
+
     background: white;
-    border-left: 6px solid #7C3AED;
+
+    border-left:
+    6px solid #7C3AED;
+
     box-shadow:
     0 10px 30px
     rgba(0,0,0,0.08);
+
     margin-bottom: 15px;
 }
 
+
+/* ============================================================
+PROPERTY ID
+============================================================ */
+
+.property-id {
+    padding: 25px;
+
+    border-radius: 25px;
+
+    color: white;
+
+    background:
+    linear-gradient(
+        135deg,
+        #047857,
+        #059669,
+        #10B981
+    );
+
+    box-shadow:
+    0 15px 45px
+    rgba(5,150,105,0.25);
+
+    margin-bottom: 25px;
+}
+
+
+/* ============================================================
+REPORT CARD
+============================================================ */
+
+.report-card {
+    padding: 35px;
+
+    border-radius: 30px;
+
+    color: white;
+
+    background:
+    linear-gradient(
+        135deg,
+        #071952,
+        #2563EB,
+        #7C3AED,
+        #EC4899
+    );
+
+    box-shadow:
+    0 20px 60px
+    rgba(124,58,237,0.25);
+
+    margin-top: 25px;
+}
+
+
+/* ============================================================
+NAVIGATION
+============================================================ */
+
+.nav-note {
+    padding: 12px 20px;
+
+    border-radius: 14px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #E0E7FF,
+        #F5F3FF
+    );
+
+    color: #1E1B4B;
+
+    text-align: center;
+
+    font-weight: 700;
+
+    margin-bottom: 25px;
+}
+
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
 # HERO
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="hero">
 
 <h1>
@@ -262,14 +447,17 @@ with a complete digital inspection workflow.
 </p>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
-# INTRO
+# SMART INTRO
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="ai-card">
 
 <h2>
@@ -283,23 +471,32 @@ before making a purchase decision.
 </p>
 
 <p>
-This creates a structured property inspection history
-instead of relying only on memory or scattered notes.
+Every site visit is connected with a unique Visit ID
+and Property ID for better tracking.
+</p>
+
+<p>
+🏡 Property → 🆔 Property ID → 📅 Site Visit
+→ 🔍 Inspection → ⭐ Rating → 📋 Report
+→ 🎯 Buyer Decision
 </p>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
 # PROPERTY SELECTION
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
-🏡 Select Property
+🏡 Step 1 — Select Property
 </h2>
 
 <p>
@@ -307,24 +504,26 @@ Choose the property you would like to visit and inspect.
 </p>
 
 </div>
-""", unsafe_allow_html=True)
-
-st.markdown(
-    '<div class="card">',
+""",
     unsafe_allow_html=True
 )
 
+
+property_list = [
+    "Premium 3 BHK Luxury Apartment — Civil Lines",
+    "Modern 4 BHK Premium Villa — Wardha Road",
+    "Premium Residential Plot — Amravati Road",
+    "Commercial Office Space — MIHAN",
+    "Luxury Villa — Seminary Hills",
+    "Other Property"
+]
+
+
 property_name = st.selectbox(
     "🏠 Property",
-    [
-        "Premium 3 BHK Luxury Apartment — Civil Lines",
-        "Modern 4 BHK Premium Villa — Wardha Road",
-        "Premium Residential Plot — Amravati Road",
-        "Commercial Office Space — MIHAN",
-        "Luxury Villa — Seminary Hills",
-        "Other Property"
-    ]
+    property_list
 )
+
 
 if property_name == "Other Property":
 
@@ -333,54 +532,81 @@ if property_name == "Other Property":
     )
 
     if custom_property_name:
+
         property_name = custom_property_name
 
 
 c1, c2 = st.columns(2)
 
+
 with c1:
 
     property_id = st.text_input(
         "🆔 Property ID",
-        value="FC-VISIT-001"
+        value="FC-PROP-001"
     )
 
+
 with c2:
+
+    property_status = st.selectbox(
+        "📊 Property Status",
+        [
+            "Available",
+            "Under Discussion",
+            "Hold",
+            "Booked",
+            "Sold"
+        ]
+    )
+
+
+c3, c4 = st.columns(2)
+
+
+with c3:
 
     visit_address = st.text_area(
         "📍 Property Visit Address",
         placeholder="Enter complete property address"
     )
 
-c3, c4 = st.columns(2)
 
-with c3:
+with c4:
+
+    property_location = st.text_input(
+        "🗺️ Google Maps / Location Link",
+        placeholder="Paste Google Maps link"
+    )
+
+
+l1, l2 = st.columns(2)
+
+
+with l1:
 
     st.info(
         "📍 Location: Nagpur, Maharashtra"
     )
 
-with c4:
 
-    st.info(
+with l2:
+
+    st.success(
         "🛡️ Verification: Available"
     )
-
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
-)
 
 
 # ============================================================
 # VISIT SCHEDULE
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
-📅 Schedule Your Property Visit
+📅 Step 2 — Schedule Your Property Visit
 </h2>
 
 <p>
@@ -388,14 +614,13 @@ Select your preferred date, time and visit type.
 </p>
 
 </div>
-""", unsafe_allow_html=True)
-
-st.markdown(
-    '<div class="card">',
+""",
     unsafe_allow_html=True
 )
 
+
 s1, s2 = st.columns(2)
+
 
 with s1:
 
@@ -404,6 +629,7 @@ with s1:
         value=date.today(),
         min_value=date.today()
     )
+
 
 with s2:
 
@@ -435,9 +661,14 @@ visit_status = st.selectbox(
     ]
 )
 
-st.markdown(
-    '</div>',
-    unsafe_allow_html=True
+
+visit_priority = st.selectbox(
+    "🚦 Visit Priority",
+    [
+        "Normal",
+        "High Priority",
+        "Urgent"
+    ]
 )
 
 
@@ -445,11 +676,12 @@ st.markdown(
 # VISITOR INFORMATION
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
-👤 Visitor Information
+👤 Step 3 — Visitor Information
 </h2>
 
 <p>
@@ -457,14 +689,13 @@ Provide your contact details so the property team can confirm your visit.
 </p>
 
 </div>
-""", unsafe_allow_html=True)
-
-st.markdown(
-    '<div class="card">',
+""",
     unsafe_allow_html=True
 )
 
+
 v1, v2 = st.columns(2)
+
 
 with v1:
 
@@ -472,6 +703,7 @@ with v1:
         "Full Name *",
         placeholder="Enter your full name"
     )
+
 
 with v2:
 
@@ -481,10 +713,12 @@ with v2:
         placeholder="10 digit mobile number"
     )
 
+
 visitor_email = st.text_input(
     "Email Address",
     placeholder="example@email.com"
 )
+
 
 visitor_role = st.selectbox(
     "👥 Visitor Role",
@@ -494,37 +728,38 @@ visitor_role = st.selectbox(
         "Investor",
         "Agent",
         "Executive",
-        "Builder"
+        "Builder",
+        "Other"
     ]
 )
 
+
 visitor_message = st.text_area(
     "Message / Special Requirement",
-    placeholder=
-    "Tell us if you have any specific requirement..."
+    placeholder="Tell us if you have any specific requirement..."
 )
 
+
+# ============================================================
+# ADDITIONAL SERVICES
+# ============================================================
+
 st.markdown(
-    '</div>',
+    """
+<div class="section">
+
+<h2>
+✨ Step 4 — Additional Visit Services
+</h2>
+
+</div>
+""",
     unsafe_allow_html=True
 )
 
 
-# ============================================================
-# SITE VISIT SERVICES
-# ============================================================
-
-st.markdown("""
-<div class="section">
-
-<h2>
-✨ Additional Visit Services
-</h2>
-
-</div>
-""", unsafe_allow_html=True)
-
 service1, service2, service3 = st.columns(3)
+
 
 with service1:
 
@@ -532,11 +767,13 @@ with service1:
         "🚗 Need Parking Assistance"
     )
 
+
 with service2:
 
     pickup = st.checkbox(
         "🚘 Request Pickup Assistance"
     )
+
 
 with service3:
 
@@ -556,14 +793,15 @@ agree = st.checkbox(
 
 
 # ============================================================
-# CONFIRM SITE VISIT
+# CONFIRM VISIT
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
-🚀 Confirm Your Site Visit
+🚀 Step 5 — Confirm Your Site Visit
 </h2>
 
 <p>
@@ -571,7 +809,9 @@ Submit your request and the property representative will confirm availability.
 </p>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 if st.button(
@@ -600,6 +840,12 @@ if st.button(
             "Please enter a valid 10-digit mobile number."
         )
 
+    elif not property_id:
+
+        st.error(
+            "Please enter Property ID."
+        )
+
     elif not agree:
 
         st.warning(
@@ -608,15 +854,26 @@ if st.button(
 
     else:
 
-        st.session_state.visit_confirmed = True
+        visit_id = (
+            "FC-VISIT-"
+            +
+            uuid.uuid4().hex[:8].upper()
+        )
 
-        st.session_state.site_visits.append({
+
+        new_visit = {
+
+            "Visit ID":
+            visit_id,
 
             "Property":
             property_name,
 
             "Property ID":
             property_id,
+
+            "Property Status":
+            property_status,
 
             "Visitor":
             visitor_name,
@@ -639,11 +896,17 @@ if st.button(
             "Time":
             str(visit_time),
 
+            "Priority":
+            visit_priority,
+
             "Status":
             visit_status,
 
             "Address":
             visit_address,
+
+            "Location Link":
+            property_location,
 
             "Parking":
             parking,
@@ -662,7 +925,18 @@ if st.button(
                 "%Y-%m-%d %H:%M:%S"
             )
 
-        })
+        }
+
+
+        st.session_state.site_visits.append(
+            new_visit
+        )
+
+
+        st.session_state.visit_confirmed = True
+
+        st.session_state.selected_visit_id = visit_id
+
 
         st.success(
             "✅ Site visit request saved successfully."
@@ -675,57 +949,199 @@ if st.button(
 
 if st.session_state.visit_confirmed:
 
-    st.markdown(
-        f"""
-        <div class="success-card">
+    latest_visit = None
 
-        <h2>
-        🎉 Site Visit Request Submitted!
-        </h2>
 
-        <p>
-        <b>Property:</b>
-        {property_name}
-        </p>
+    for item in reversed(
+        st.session_state.site_visits
+    ):
 
-        <p>
-        <b>Property ID:</b>
-        {property_id}
-        </p>
+        if (
+            item["Visit ID"]
+            ==
+            st.session_state.selected_visit_id
+        ):
 
-        <p>
-        📅 <b>Date:</b>
-        {visit_date}
-        </p>
+            latest_visit = item
 
-        <p>
-        ⏰ <b>Time:</b>
-        {visit_time}
-        </p>
+            break
 
-        <p>
-        👤 <b>Visitor:</b>
-        {visitor_name}
-        </p>
 
-        <p>
-        📞 <b>Mobile:</b>
-        {visitor_mobile}
-        </p>
+    if latest_visit:
 
-        <p>
-        🏡 <b>Visit Type:</b>
-        {visit_type}
-        </p>
+        st.markdown(
+            f"""
+<div class="success-card">
 
-        <p>
-        Our property representative will contact you
-        to confirm the visit.
-        </p>
+<h2>
+🎉 Site Visit Request Submitted Successfully!
+</h2>
 
-        </div>
-        """,
-        unsafe_allow_html=True
+<p>
+<b>Visit ID:</b>
+{latest_visit["Visit ID"]}
+</p>
+
+<p>
+<b>Property:</b>
+{latest_visit["Property"]}
+</p>
+
+<p>
+<b>Property ID:</b>
+{latest_visit["Property ID"]}
+</p>
+
+<p>
+📅 <b>Date:</b>
+{latest_visit["Date"]}
+</p>
+
+<p>
+⏰ <b>Time:</b>
+{latest_visit["Time"]}
+</p>
+
+<p>
+👤 <b>Visitor:</b>
+{latest_visit["Visitor"]}
+</p>
+
+<p>
+📞 <b>Mobile:</b>
+{latest_visit["Mobile"]}
+</p>
+
+<p>
+🏡 <b>Visit Type:</b>
+{latest_visit["Visit Type"]}
+</p>
+
+<p>
+📊 <b>Status:</b>
+{latest_visit["Status"]}
+</p>
+
+<p>
+Our property representative will contact you
+to confirm the visit.
+</p>
+
+</div>
+""",
+            unsafe_allow_html=True
+        )
+
+
+# ============================================================
+# VISIT DASHBOARD
+# ============================================================
+
+st.markdown(
+    """
+<div class="section">
+
+<h2>
+📊 Site Visit Dashboard
+</h2>
+
+</div>
+""",
+    unsafe_allow_html=True
+)
+
+
+total_visits = len(
+    st.session_state.site_visits
+)
+
+
+scheduled_visits = len(
+
+    [
+        x
+
+        for x
+        in st.session_state.site_visits
+
+        if x["Status"]
+        in
+        [
+            "Scheduled",
+            "Confirmed"
+        ]
+
+    ]
+
+)
+
+
+completed_visits = len(
+
+    [
+        x
+
+        for x
+        in st.session_state.site_visits
+
+        if x["Status"]
+        ==
+        "Completed"
+
+    ]
+
+)
+
+
+cancelled_visits = len(
+
+    [
+        x
+
+        for x
+        in st.session_state.site_visits
+
+        if x["Status"]
+        ==
+        "Cancelled"
+
+    ]
+
+)
+
+
+d1, d2, d3, d4 = st.columns(4)
+
+
+with d1:
+
+    st.metric(
+        "📅 Total Visits",
+        total_visits
+    )
+
+
+with d2:
+
+    st.metric(
+        "🕒 Scheduled",
+        scheduled_visits
+    )
+
+
+with d3:
+
+    st.metric(
+        "✅ Completed",
+        completed_visits
+    )
+
+
+with d4:
+
+    st.metric(
+        "❌ Cancelled",
+        cancelled_visits
     )
 
 
@@ -733,7 +1149,8 @@ if st.session_state.visit_confirmed:
 # SITE VISIT HISTORY
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -741,11 +1158,13 @@ st.markdown("""
 </h2>
 
 <p>
-View your scheduled and completed property visits.
+View and manage your scheduled and completed property visits.
 </p>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 if st.session_state.site_visits:
@@ -755,6 +1174,125 @@ if st.session_state.site_visits:
         use_container_width=True,
         hide_index=True
     )
+
+
+    visit_ids = [
+
+        x["Visit ID"]
+
+        for x
+        in st.session_state.site_visits
+
+    ]
+
+
+    selected_history_visit = st.selectbox(
+        "🔍 Select Visit for Management",
+        visit_ids
+    )
+
+
+    selected_history = next(
+
+        (
+            x
+
+            for x
+            in st.session_state.site_visits
+
+            if x["Visit ID"]
+            ==
+            selected_history_visit
+        ),
+
+        None
+
+    )
+
+
+    if selected_history:
+
+        st.markdown(
+            f"""
+<div class="visit-card">
+
+<h3>
+📍 {selected_history["Property"]}
+</h3>
+
+<p>
+<b>Visit ID:</b>
+{selected_history["Visit ID"]}
+</p>
+
+<p>
+<b>Property ID:</b>
+{selected_history["Property ID"]}
+</p>
+
+<p>
+<b>Visitor:</b>
+{selected_history["Visitor"]}
+</p>
+
+<p>
+<b>Date:</b>
+{selected_history["Date"]}
+</p>
+
+<p>
+<b>Time:</b>
+{selected_history["Time"]}
+</p>
+
+<p>
+<b>Status:</b>
+{selected_history["Status"]}
+</p>
+
+</div>
+""",
+            unsafe_allow_html=True
+        )
+
+
+        management_status = st.selectbox(
+
+            "🔄 Update Visit Status",
+
+            [
+                "Scheduled",
+                "Confirmed",
+                "Completed",
+                "Rescheduled",
+                "Cancelled"
+            ],
+
+            key="management_status"
+
+        )
+
+
+        if st.button(
+            "🔄 UPDATE VISIT STATUS",
+            use_container_width=True
+        ):
+
+            for item in st.session_state.site_visits:
+
+                if (
+                    item["Visit ID"]
+                    ==
+                    selected_history_visit
+                ):
+
+                    item["Status"] = management_status
+
+
+            st.success(
+                "✅ Site visit status updated successfully."
+            )
+
 
 else:
 
@@ -767,7 +1305,8 @@ else:
 # INSPECTION CHECKLIST
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -779,7 +1318,9 @@ Check the important aspects observed during the site visit.
 </p>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 inspection_items = [
@@ -822,7 +1363,9 @@ inspection_items = [
 checked_items = []
 
 
-for index, item in enumerate(inspection_items):
+for index, item in enumerate(
+    inspection_items
+):
 
     if st.checkbox(
         item,
@@ -855,10 +1398,8 @@ st.progress(
 
 
 st.write(
-
     f"Inspection Checklist Progress: "
     f"{inspection_percentage:.0f}%"
-
 )
 
 
@@ -866,7 +1407,8 @@ st.write(
 # PROPERTY RATINGS
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -874,7 +1416,9 @@ st.markdown("""
 </h2>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 r1, r2, r3 = st.columns(3)
@@ -927,18 +1471,18 @@ overall_rating = (
 
 st.markdown(
     f"""
-    <div class="success-card">
+<div class="success-card">
 
-    <h2>
-    ⭐ Overall Property Rating
-    </h2>
+<h2>
+⭐ Overall Property Rating
+</h2>
 
-    <h1>
-    {overall_rating:.1f} / 5
-    </h1>
+<h1>
+{overall_rating:.1f} / 5
+</h1>
 
-    </div>
-    """,
+</div>
+""",
     unsafe_allow_html=True
 )
 
@@ -947,7 +1491,8 @@ st.markdown(
 # VISIT NOTES
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -955,7 +1500,9 @@ st.markdown("""
 </h2>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 visit_notes = st.text_area(
@@ -974,7 +1521,8 @@ visit_notes = st.text_area(
 # PROPERTY PHOTOS
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -982,7 +1530,9 @@ st.markdown("""
 </h2>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 visit_photos = st.file_uploader(
@@ -992,7 +1542,8 @@ visit_photos = st.file_uploader(
     type=[
         "jpg",
         "jpeg",
-        "png"
+        "png",
+        "webp"
     ],
 
     accept_multiple_files=True
@@ -1003,9 +1554,7 @@ visit_photos = st.file_uploader(
 if visit_photos:
 
     st.success(
-
         f"✅ {len(visit_photos)} photos selected."
-
     )
 
 
@@ -1013,7 +1562,8 @@ if visit_photos:
 # BUYER DECISION
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -1021,7 +1571,9 @@ st.markdown("""
 </h2>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 decision = st.radio(
@@ -1059,76 +1611,107 @@ if st.button(
 
 ):
 
+    st.session_state.visit_report_generated = True
+
+
+if st.session_state.visit_report_generated:
+
     st.markdown(
 
         f"""
-        <div class="info-card">
+<div class="report-card">
 
-        <h2>
-        📋 Property Site Visit Report
-        </h2>
+<h2>
+📋 Property Site Visit Report
+</h2>
 
-        <p>
-        <b>Property:</b>
-        {property_name}
-        </p>
+<hr>
 
-        <p>
-        <b>Property ID:</b>
-        {property_id}
-        </p>
+<p>
+<b>Property:</b>
+{property_name}
+</p>
 
-        <p>
-        <b>Visitor:</b>
-        {visitor_name}
-        </p>
+<p>
+<b>Property ID:</b>
+{property_id}
+</p>
 
-        <p>
-        <b>Visit Type:</b>
-        {visit_type}
-        </p>
+<p>
+<b>Visitor:</b>
+{visitor_name}
+</p>
 
-        <p>
-        <b>Visit Date:</b>
-        {visit_date}
-        </p>
+<p>
+<b>Visit Type:</b>
+{visit_type}
+</p>
 
-        <p>
-        <b>Visit Time:</b>
-        {visit_time}
-        </p>
+<p>
+<b>Visit Date:</b>
+{visit_date}
+</p>
 
-        <p>
-        <b>Inspection Progress:</b>
-        {inspection_percentage:.0f}%
-        </p>
+<p>
+<b>Visit Time:</b>
+{visit_time}
+</p>
 
-        <p>
-        <b>Overall Rating:</b>
-        {overall_rating:.1f}/5
-        </p>
+<p>
+<b>Inspection Progress:</b>
+{inspection_percentage:.0f}%
+</p>
 
-        <p>
-        <b>Decision:</b>
-        {decision}
-        </p>
+<p>
+<b>Overall Rating:</b>
+{overall_rating:.1f}/5
+</p>
 
-        <p>
-        <b>Notes:</b>
-        {visit_notes}
-        </p>
+<p>
+<b>Decision:</b>
+{decision}
+</p>
 
-        </div>
-        """,
+<p>
+<b>Notes:</b>
+{visit_notes}
+</p>
+
+<p>
+<b>Inspection Items Checked:</b>
+{len(checked_items)} / {len(inspection_items)}
+</p>
+
+</div>
+""",
 
         unsafe_allow_html=True
 
     )
 
 
+    st.success(
+        "✅ Site Visit Report generated successfully."
+    )
+
+
 # ============================================================
 # SMART RECOMMENDATION
 # ============================================================
+
+st.markdown(
+    """
+<div class="section">
+
+<h2>
+🤖 Smart Property Visit Recommendation
+</h2>
+
+</div>
+""",
+    unsafe_allow_html=True
+)
+
 
 if overall_rating >= 4:
 
@@ -1160,10 +1743,51 @@ else:
 
 
 # ============================================================
+# NEXT STEP RECOMMENDATION
+# ============================================================
+
+if decision == "❤️ Highly Interested":
+
+    st.success(
+        "🚀 Recommended Next Step: Proceed to Property Legal Verification "
+        "and Investment Finance evaluation."
+    )
+
+elif decision == "👍 Interested":
+
+    st.info(
+        "📊 Recommended Next Step: Compare this property with shortlisted "
+        "properties and review pricing."
+    )
+
+elif decision == "💰 Need Better Price":
+
+    st.warning(
+        "💰 Recommended Next Step: Start price negotiation with the "
+        "property owner or authorised representative."
+    )
+
+elif decision == "📄 Need Legal Verification":
+
+    st.info(
+        "⚖️ Recommended Next Step: Complete legal due diligence "
+        "before making any booking decision."
+    )
+
+elif decision == "❌ Not Interested":
+
+    st.warning(
+        "🔍 Recommended Next Step: Explore other properties matching "
+        "your requirements."
+    )
+
+
+# ============================================================
 # TRUST & SAFETY
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -1171,7 +1795,9 @@ st.markdown("""
 </h2>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 t1, t2, t3 = st.columns(3)
@@ -1179,63 +1805,73 @@ t1, t2, t3 = st.columns(3)
 
 with t1:
 
-    st.markdown("""
-    <div class="info-card">
+    st.markdown(
+        """
+<div class="info-card">
 
-    <h3>
-    🛡️ Verified Listings
-    </h3>
+<h3>
+🛡️ Verified Listings
+</h3>
 
-    <p>
-    We are building a trusted property ecosystem
-    with verification signals.
-    </p>
+<p>
+We are building a trusted property ecosystem
+with verification signals.
+</p>
 
-    </div>
-    """, unsafe_allow_html=True)
+</div>
+""",
+        unsafe_allow_html=True
+    )
 
 
 with t2:
 
-    st.markdown("""
-    <div class="info-card">
+    st.markdown(
+        """
+<div class="info-card">
 
-    <h3>
-    📍 Visit Tracking
-    </h3>
+<h3>
+📍 Visit Tracking
+</h3>
 
-    <p>
-    Future versions will allow users to track
-    their complete site visit history.
-    </p>
+<p>
+Every visit can be connected to a unique
+Property ID and Visit ID.
+</p>
 
-    </div>
-    """, unsafe_allow_html=True)
+</div>
+""",
+        unsafe_allow_html=True
+    )
 
 
 with t3:
 
-    st.markdown("""
-    <div class="info-card">
+    st.markdown(
+        """
+<div class="info-card">
 
-    <h3>
-    🤝 Expert Assistance
-    </h3>
+<h3>
+🤝 Expert Assistance
+</h3>
 
-    <p>
-    Connect with property experts for
-    better buying decisions.
-    </p>
+<p>
+Connect with property experts for
+better buying decisions.
+</p>
 
-    </div>
-    """, unsafe_allow_html=True)
+</div>
+""",
+        unsafe_allow_html=True
+    )
 
 
 # ============================================================
 # FUTURE AI FEATURES
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="ai-card">
 
 <h2>
@@ -1267,14 +1903,17 @@ property inspection report.
 </p>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
 # IMPORTANT NOTICE
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="warning-card">
 
 <h2>
@@ -1288,4 +1927,26 @@ structural or legal certification.
 </p>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
+
+
+# ============================================================
+# FINAL NAVIGATION
+# ============================================================
+
+st.markdown(
+    """
+<div class="nav-note">
+
+🏠 FirstChoice Infra Property Hub
+&nbsp; | &nbsp;
+📍 Page 26 — Site Visit & Inspection Manager
+
+</div>
+""",
+    unsafe_allow_html=True
+)
+
+show_navigation()
