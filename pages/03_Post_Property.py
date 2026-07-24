@@ -1,4 +1,24 @@
 import streamlit as st
+import os
+import uuid
+
+from core.Ui import (
+    load_premium_ui,
+    hero,
+    section,
+    footer
+)
+
+from core.database import (
+    get_custom_areas,
+    save_custom_area,
+    create_property,
+    save_property_media
+)
+
+from core.auth import (
+    is_logged_in
+)
 
 
 # ============================================================
@@ -18,258 +38,29 @@ st.set_page_config(
 # PREMIUM UI
 # ============================================================
 
-st.markdown("""
-<style>
-
-.stApp {
-
-    background:
-    radial-gradient(
-        circle at 10% 10%,
-        rgba(59,130,246,0.10),
-        transparent 30%
-    ),
-
-    radial-gradient(
-        circle at 90% 20%,
-        rgba(168,85,247,0.10),
-        transparent 30%
-    ),
-
-    linear-gradient(
-        135deg,
-        #F8FAFC,
-        #EEF2FF,
-        #FAF5FF,
-        #F0FDFA
-    );
-
-}
-
-
-header {
-    visibility: hidden;
-}
-
-
-#MainMenu {
-    visibility: hidden;
-}
-
-
-footer {
-    visibility: hidden;
-}
-
-
-/* SIDEBAR */
-
-[data-testid="stSidebar"] {
-
-    background:
-    linear-gradient(
-        180deg,
-        #020617,
-        #0F172A,
-        #1E1B4B,
-        #312E81
-    );
-
-}
-
-
-[data-testid="stSidebar"] * {
-
-    color:
-    white !important;
-
-}
-
-
-/* HERO */
-
-.post-hero {
-
-    padding:
-    55px;
-
-    border-radius:
-    40px;
-
-    color:
-    white;
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #020617,
-        #172554,
-        #4338CA,
-        #7E22CE,
-        #BE185D
-    );
-
-    box-shadow:
-
-    0 30px 80px
-    rgba(30,41,59,0.30);
-
-    margin-bottom:
-    35px;
-
-}
-
-
-.post-hero h1 {
-
-    font-size:
-    48px;
-
-    font-weight:
-    900;
-
-}
-
-
-.post-hero p {
-
-    font-size:
-    19px;
-
-    line-height:
-    1.7;
-
-}
-
-
-/* SECTION */
-
-.section-title {
-
-    padding:
-    22px 28px;
-
-    border-radius:
-    25px;
-
-    color:
-    white;
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #1E3A8A,
-        #4338CA,
-        #7E22CE
-    );
-
-    box-shadow:
-
-    0 15px 40px
-    rgba(79,70,229,0.20);
-
-    margin:
-    30px 0 25px 0;
-
-}
-
-
-.section-title h2 {
-
-    margin:
-    0;
-
-    font-size:
-    28px;
-
-    font-weight:
-    900;
-
-}
-
-
-/* PREVIEW */
-
-.preview-card {
-
-    padding:
-    35px;
-
-    border-radius:
-    30px;
-
-    background:
-    rgba(255,255,255,0.95);
-
-    border:
-    1px solid
-    #E2E8F0;
-
-    box-shadow:
-
-    0 20px 50px
-    rgba(15,23,42,0.10);
-
-}
-
-
-.preview-price {
-
-    color:
-    #047857;
-
-    font-size:
-    30px;
-
-    font-weight:
-    900;
-
-}
-
-
-/* FOOTER */
-
-.fc-footer {
-
-    margin-top:
-    60px;
-
-    padding:
-    40px;
-
-    border-radius:
-    32px;
-
-    color:
-    white;
-
-    text-align:
-    center;
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #020617,
-        #1E1B4B,
-        #312E81
-    );
-
-}
-
-</style>
-""", unsafe_allow_html=True)
+load_premium_ui()
 
 
 # ============================================================
-# SESSION STATE — CUSTOM AREAS
+# MEDIA DIRECTORY
 # ============================================================
 
-if "custom_areas" not in st.session_state:
+BASE_DIR = os.path.dirname(
+    os.path.dirname(
+        os.path.abspath(__file__)
+    )
+)
 
-    st.session_state.custom_areas = {}
+MEDIA_DIR = os.path.join(
+    BASE_DIR,
+    "data",
+    "property_media"
+)
+
+os.makedirs(
+    MEDIA_DIR,
+    exist_ok=True
+)
 
 
 # ============================================================
@@ -278,47 +69,45 @@ if "custom_areas" not in st.session_state:
 
 with st.sidebar:
 
-    st.markdown("""
-    <div style="
-        text-align:center;
-        padding:25px;
-    ">
+    st.markdown(
+        """
+        <div style="
+            text-align:center;
+            padding:25px;
+        ">
 
-    <h1>🏠 FirstChoice</h1>
+        <h1>🏠 FirstChoice</h1>
 
-    <h3>Property Hub</h3>
+        <h3>Property Hub</h3>
 
-    <hr>
+        <hr>
 
-    <p>
-    India's Next-Generation<br>
-    Real Estate Ecosystem
-    </p>
+        <p>
+        India's Next-Generation<br>
+        Real Estate Ecosystem
+        </p>
 
-    </div>
-    """, unsafe_allow_html=True)
-
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     st.markdown("### 📌 Navigation")
-
 
     st.page_link(
         "app.py",
         label="🏠 Home"
     )
 
-
     st.page_link(
         "pages/01_Login_Register.py",
         label="🔐 Login & Registration"
     )
 
-
     st.page_link(
         "pages/02_Property_Search.py",
         label="🔎 Property Search"
     )
-
 
     st.page_link(
         "pages/03_Post_Property.py",
@@ -327,63 +116,110 @@ with st.sidebar:
 
 
 # ============================================================
+# LOGIN CHECK
+# ============================================================
+
+if not is_logged_in():
+
+    hero(
+        "🔐 Login Required",
+        "Please login or create your FirstChoice Property Hub account before posting a property."
+    )
+
+    st.warning(
+        "You must be logged in to post a property."
+    )
+
+    if st.button(
+        "🔐 Login / Register",
+        use_container_width=True
+    ):
+
+        st.switch_page(
+            "pages/01_Login_Register.py"
+        )
+
+    footer()
+
+    st.stop()
+
+
+# ============================================================
 # HERO
 # ============================================================
 
-st.markdown("""
-<div class="post-hero">
+hero(
+    "🏡 List Your Property",
+    "Reach genuine buyers, tenants, investors and property seekers through FirstChoice Infra Property Hub."
+)
 
-<h1>
-🏡 Post Your Property
-</h1>
 
-<p>
-List your property with photos, videos and exact location
-so buyers and tenants can discover it easily.
-</p>
+# ============================================================
+# INTRODUCTION
+# ============================================================
 
-<p>
-📸 Photos
-&nbsp; • &nbsp;
-🎥 Video
-&nbsp; • &nbsp;
-📍 Google Location
-&nbsp; • &nbsp;
-🌍 Smart Area Discovery
-</p>
+section(
+    "🚀 Create Your Property Listing",
+    "Provide accurate property details to create a professional listing."
+)
 
-</div>
-""", unsafe_allow_html=True)
+
+st.markdown(
+    """
+    <div class="fc-card">
+
+    <h3>
+    🌟 Increase Your Property Visibility
+    </h3>
+
+    <p>
+    Add accurate location details, photographs, videos,
+    Google Maps location and complete property information.
+    </p>
+
+    <p>
+    Your listing will be submitted for verification before
+    appearing publicly on the Property Search platform.
+    </p>
+
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
 # PROPERTY PURPOSE
 # ============================================================
 
-st.markdown("""
-<div class="section-title">
-
-<h2>
-🎯 Property Listing Purpose
-</h2>
-
-</div>
-""", unsafe_allow_html=True)
+section(
+    "🎯 Property Listing Purpose",
+    "Select what you want to do with your property."
+)
 
 
 purpose = st.selectbox(
 
-    "What do you want to do?",
+    "What would you like to do?",
 
     [
+
         "Sell Property",
+
         "Rent Property",
+
         "Lease Property",
+
         "Post Upcoming Project",
+
         "Post Ongoing Project",
+
         "Post Ready-to-Move Project",
+
         "Post New Layout",
+
         "Post Plot / Land"
+
     ]
 
 )
@@ -393,56 +229,81 @@ purpose = st.selectbox(
 # PROPERTY CATEGORY
 # ============================================================
 
-st.markdown("""
-<div class="section-title">
-
-<h2>
-🏠 Property Category
-</h2>
-
-</div>
-""", unsafe_allow_html=True)
+section(
+    "🏠 Property Category",
+    "Choose the category that best describes your property."
+)
 
 
 category = st.selectbox(
 
-    "Select Property Category",
+    "Property Category",
 
     [
+
         "Residential",
+
         "Commercial",
-        "Plot / Land",
-        "Agricultural Land",
-        "Industrial Property",
-        "Farm House",
-        "Upcoming Project",
-        "Ongoing Project",
-        "Ready to Move Project"
+
+        "Industrial",
+
+        "Agricultural",
+
+        "Land & Plot",
+
+        "Mixed Use",
+
+        "Other"
+
     ]
 
 )
 
 
+# ============================================================
+# PROPERTY TYPE
+# ============================================================
+
+property_type_options = [
+
+    "Apartment",
+
+    "Villa",
+
+    "Independent House",
+
+    "Builder Floor",
+
+    "Studio Apartment",
+
+    "Residential Plot",
+
+    "Commercial Plot",
+
+    "Farm Land",
+
+    "Agricultural Land",
+
+    "Office",
+
+    "Shop",
+
+    "Showroom",
+
+    "Warehouse",
+
+    "Industrial Unit",
+
+    "Other"
+
+]
+
+
 property_type = st.selectbox(
 
-    "Property Type",
+    "🏡 Property Type",
 
-    [
-        "Apartment",
-        "Villa",
-        "Independent House",
-        "Builder Floor",
-        "Studio Apartment",
-        "Residential Plot",
-        "Commercial Plot",
-        "Farm Land",
-        "Office",
-        "Shop",
-        "Showroom",
-        "Warehouse",
-        "Industrial Unit",
-        "Other"
-    ]
+    property_type_options
 
 )
 
@@ -451,20 +312,10 @@ property_type = st.selectbox(
 # LOCATION
 # ============================================================
 
-st.markdown("""
-<div class="section-title">
-
-<h2>
-🌍 Property Location
-</h2>
-
-<p>
-Select your location. If your exact area is not available,
-choose Other Area and add your locality.
-</p>
-
-</div>
-""", unsafe_allow_html=True)
+section(
+    "📍 Property Location",
+    "Select the exact location of your property."
+)
 
 
 col1, col2 = st.columns(2)
@@ -477,8 +328,11 @@ with col1:
         "🌍 Country",
 
         [
+
             "India",
-            "Other Country"
+
+            "Other"
+
         ]
 
     )
@@ -491,15 +345,27 @@ with col2:
         "🗺️ State",
 
         [
+
             "Maharashtra",
+
             "Madhya Pradesh",
+
             "Gujarat",
-            "Karnataka",
-            "Telangana",
+
             "Rajasthan",
-            "Uttar Pradesh",
+
             "Delhi",
-            "Other State"
+
+            "Karnataka",
+
+            "Telangana",
+
+            "Tamil Nadu",
+
+            "Uttar Pradesh",
+
+            "Other"
+
         ]
 
     )
@@ -510,209 +376,131 @@ col1, col2 = st.columns(2)
 
 with col1:
 
-    city = st.selectbox(
+    city = st.text_input(
 
-        "🏙️ City / District",
+        "🏙️ City",
 
-        [
-            "Nagpur",
-            "Mumbai",
-            "Pune",
-            "Nashik",
-            "Aurangabad",
-            "Indore",
-            "Bhopal",
-            "Ahmedabad",
-            "Other City"
-        ]
+        placeholder="Example: Nagpur"
 
     )
 
 
 with col2:
 
-    locality_type = st.selectbox(
+    village_town = st.text_input(
 
-        "🏘️ Location Type",
+        "🏘️ Village / Town",
 
-        [
-            "Village",
-            "Town",
-            "City Area",
-            "Suburb",
-            "Other"
-        ]
+        placeholder="Example: Hingna"
 
     )
 
 
 # ============================================================
-# VILLAGE / TOWN
+# AREA MANAGEMENT
 # ============================================================
 
-village_town = st.text_input(
-
-    "🏘️ Village / Town Name",
-
-    placeholder=
-    "Example: Nagpur, Hingna, Wardha Road etc."
-
+st.markdown(
+    "### 📍 Area / Locality"
 )
 
 
-# ============================================================
-# AREA
-# ============================================================
+custom_areas = []
 
-existing_areas = [
 
-    "Select Area",
+if (
 
-    "Civil Lines",
+    country.strip()
 
-    "Dharampeth",
+    and state.strip()
 
-    "Manish Nagar",
+    and city.strip()
 
-    "Wardha Road",
+    and village_town.strip()
 
-    "Hingna",
+):
 
-    "Katol Road",
+    custom_areas = get_custom_areas(
 
-    "Koradi",
+        country,
 
-    "Other Area"
+        state,
+
+        city,
+
+        village_town
+
+    )
+
+
+area_options = [
+
+    "Select Area"
 
 ]
 
 
-area = st.selectbox(
+area_options.extend(
 
-    "📍 Select Area",
-
-    existing_areas
+    custom_areas
 
 )
 
 
-# ============================================================
-# CUSTOM AREA
-# ============================================================
+area_options.append(
 
-custom_area = ""
+    "Others"
+
+)
 
 
-if area == "Other Area":
+area_selection = st.selectbox(
 
-    custom_area = st.text_input(
+    "Select Area / Locality",
 
-        "📍 Enter Your Exact Area Name",
+    area_options
+
+)
+
+
+custom_area_name = ""
+
+
+if area_selection == "Others":
+
+    custom_area_name = st.text_input(
+
+        "✏️ Enter Your Area Name",
 
         placeholder=
-        "Example: Your locality / colony / village / layout"
+        "Example: Green Valley Layout"
 
     )
-
-
-    if custom_area.strip():
-
-        save_area = st.button(
-
-            "💾 Save This Area"
-
-        )
-
-
-        if save_area:
-
-            location_key = (
-
-                country
-                + "_"
-                + state
-                + "_"
-                + city
-                + "_"
-                + village_town
-
-            )
-
-
-            if location_key not in st.session_state.custom_areas:
-
-                st.session_state.custom_areas[
-                    location_key
-                ] = []
-
-
-            if custom_area not in st.session_state.custom_areas[
-                location_key
-            ]:
-
-                st.session_state.custom_areas[
-                    location_key
-                ].append(
-                    custom_area
-                )
-
-
-                st.success(
-
-                    f"Area '{custom_area}' saved successfully."
-
-                )
-
-
-# ============================================================
-# SHOW SAVED CUSTOM AREAS
-# ============================================================
-
-location_key = (
-
-    country
-    + "_"
-    + state
-    + "_"
-    + city
-    + "_"
-    + village_town
-
-)
-
-
-saved_areas = st.session_state.custom_areas.get(
-
-    location_key,
-
-    []
-
-)
-
-
-if saved_areas:
 
     st.info(
 
-        "📍 Previously added areas for this location: "
-        + ", ".join(saved_areas)
+        "This new area will automatically be saved for future property listings in the same Village / Town."
 
     )
+
+
+if area_selection != "Select Area" and area_selection != "Others":
+
+    area_name = area_selection
+
+else:
+
+    area_name = custom_area_name.strip()
 
 
 # ============================================================
 # PROPERTY DETAILS
 # ============================================================
 
-st.markdown("""
-<div class="section-title">
-
-<h2>
-📐 Property Details
-</h2>
-
-</div>
-""", unsafe_allow_html=True)
+section(
+    "📐 Property Details",
+    "Enter the size, price and other important property information."
+)
 
 
 col1, col2, col3 = st.columns(3)
@@ -724,9 +512,11 @@ with col1:
 
         "📐 Property Area (Sq.Ft.)",
 
-        min_value=0,
+        min_value=0.0,
 
-        value=0
+        value=0.0,
+
+        step=100.0
 
     )
 
@@ -735,13 +525,13 @@ with col2:
 
     price = st.number_input(
 
-        "💰 Expected Price (₹)",
+        "💰 Price (₹)",
 
-        min_value=0,
+        min_value=0.0,
 
-        value=0,
+        value=0.0,
 
-        step=100000
+        step=100000.0
 
     )
 
@@ -753,12 +543,21 @@ with col3:
         "🛏️ BHK",
 
         [
-            "Not Applicable",
+
+            "N/A",
+
             "1 BHK",
+
             "2 BHK",
+
             "3 BHK",
+
             "4 BHK",
-            "5+ BHK"
+
+            "5 BHK",
+
+            "6+ BHK"
+
         ]
 
     )
@@ -768,17 +567,6 @@ with col3:
 # PROJECT STATUS
 # ============================================================
 
-st.markdown("""
-<div class="section-title">
-
-<h2>
-🏗️ Project & Property Status
-</h2>
-
-</div>
-""", unsafe_allow_html=True)
-
-
 col1, col2 = st.columns(2)
 
 
@@ -786,14 +574,24 @@ with col1:
 
     project_status = st.selectbox(
 
-        "🏗️ Status",
+        "🏗️ Project Status",
 
         [
+
             "Ready to Move",
+
             "Under Construction",
+
             "Upcoming",
-            "Ongoing",
-            "New Launch"
+
+            "New Launch",
+
+            "Ready Plot",
+
+            "New Layout",
+
+            "N/A"
+
         ]
 
     )
@@ -801,17 +599,12 @@ with col1:
 
 with col2:
 
-    possession = st.selectbox(
+    possession = st.text_input(
 
-        "📅 Possession",
+        "📅 Possession / Availability",
 
-        [
-            "Immediate",
-            "Within 6 Months",
-            "Within 1 Year",
-            "1-2 Years",
-            "2+ Years"
-        ]
+        placeholder=
+        "Example: December 2026"
 
     )
 
@@ -820,94 +613,25 @@ with col2:
 # GOOGLE LOCATION
 # ============================================================
 
-st.markdown("""
-<div class="section-title">
-
-<h2>
-📍 Google Location
-</h2>
-
-</div>
-""", unsafe_allow_html=True)
+section(
+    "📍 Google Maps Location",
+    "Add the Google Maps link so property seekers can easily find the exact location."
+)
 
 
 google_location = st.text_input(
 
-    "🔗 Google Maps Location Link",
+    "🔗 Google Maps URL",
 
     placeholder=
-    "Paste your Google Maps location link here"
+    "Paste Google Maps share link here"
 
 )
 
 
-st.caption(
+st.info(
 
-    "Tip: Google Maps में property location खोलें → Share → Copy Link → यहाँ paste करें."
-
-)
-
-
-# ============================================================
-# PHOTOS
-# ============================================================
-
-st.markdown("""
-<div class="section-title">
-
-<h2>
-📸 Property Photos
-</h2>
-
-</div>
-""", unsafe_allow_html=True)
-
-
-photos = st.file_uploader(
-
-    "Upload Property Photos",
-
-    type=[
-        "jpg",
-        "jpeg",
-        "png",
-        "webp"
-    ],
-
-    accept_multiple_files=True
-
-)
-
-
-# ============================================================
-# VIDEO
-# ============================================================
-
-st.markdown("""
-<div class="section-title">
-
-<h2>
-🎥 Property Video Advertisement
-</h2>
-
-<p>
-Show buyers what is around the property through video.
-</p>
-
-</div>
-""", unsafe_allow_html=True)
-
-
-video = st.file_uploader(
-
-    "Upload Property Video",
-
-    type=[
-        "mp4",
-        "mov",
-        "avi",
-        "webm"
-    ]
+    "Tip: Open Google Maps → Select your property location → Share → Copy Link → Paste it here."
 
 )
 
@@ -916,25 +640,77 @@ video = st.file_uploader(
 # DESCRIPTION
 # ============================================================
 
-st.markdown("""
-<div class="section-title">
-
-<h2>
-📝 Property Description
-</h2>
-
-</div>
-""", unsafe_allow_html=True)
+section(
+    "📝 Property Description",
+    "Describe your property, nearby facilities, road access and important highlights."
+)
 
 
 description = st.text_area(
 
-    "Describe Your Property",
+    "Property Description",
 
     placeholder=
-    "Describe property features, nearby locations, roads, schools, hospitals, markets and other important information.",
+    "Describe the property, nearby schools, hospitals, markets, roads, transport, surroundings and other important information.",
 
     height=180
+
+)
+
+
+# ============================================================
+# MEDIA UPLOAD
+# ============================================================
+
+section(
+    "📸 Photos & 🎥 Property Video",
+    "Upload high-quality photographs and a short property video."
+)
+
+
+photos = st.file_uploader(
+
+    "📸 Upload Property Photos",
+
+    type=[
+
+        "jpg",
+
+        "jpeg",
+
+        "png",
+
+        "webp"
+
+    ],
+
+    accept_multiple_files=True
+
+)
+
+
+video = st.file_uploader(
+
+    "🎥 Upload Property Video",
+
+    type=[
+
+        "mp4",
+
+        "mov",
+
+        "avi",
+
+        "mkv"
+
+    ]
+
+)
+
+
+st.info(
+
+    "For best performance, upload compressed images and a compressed property video."
 
 )
 
@@ -943,15 +719,10 @@ description = st.text_area(
 # CONTACT DETAILS
 # ============================================================
 
-st.markdown("""
-<div class="section-title">
-
-<h2>
-👤 Contact Information
-</h2>
-
-</div>
-""", unsafe_allow_html=True)
+section(
+    "📞 Contact Information",
+    "Enter the contact details that property seekers can use."
+)
 
 
 col1, col2 = st.columns(2)
@@ -964,7 +735,7 @@ with col1:
         "👤 Contact Person Name",
 
         placeholder=
-        "Enter contact person name"
+        "Enter contact person's name"
 
     )
 
@@ -982,220 +753,442 @@ with col2:
 
 
 # ============================================================
-# LISTING PREVIEW
+# PREVIEW
 # ============================================================
 
-st.markdown("""
-<div class="section-title">
-
-<h2>
-👀 Listing Preview
-</h2>
-
-</div>
-""", unsafe_allow_html=True)
-
-
-final_area = (
-
-    custom_area
-
-    if area == "Other Area"
-
-    else area
-
+section(
+    "👁️ Listing Preview",
+    "Review your basic property information before submitting."
 )
 
 
 st.markdown(
+
     f"""
-    <div class="preview-card">
+    <div class="property-card">
 
-    <h2>
+    <div class="property-info">
+
+    <div class="property-title">
+
     🏡 {property_type}
-    </h2>
+
+    </div>
+
+    <div class="property-location">
+
+    📍 {country} • {state} • {city} •
+    {village_town} • {area_name or "Area not selected"}
+
+    </div>
+
+    <div class="property-price">
+
+    ₹ {price:,.0f}
+
+    </div>
+
+    <hr>
 
     <p>
-    <b>Purpose:</b>
-    {purpose}
+    🎯 <b>Purpose:</b> {purpose}
     </p>
 
     <p>
-    <b>Category:</b>
-    {category}
+    🏠 <b>Category:</b> {category}
     </p>
 
     <p>
-    <b>Location:</b>
-    {country},
-    {state},
-    {city},
-    {village_town},
-    {final_area}
+    📐 <b>Area:</b> {property_area:,.0f} Sq.Ft.
     </p>
 
     <p>
-    <b>Area:</b>
-    {property_area} Sq.Ft.
+    🛏️ <b>BHK:</b> {bhk}
     </p>
 
     <p>
-    <b>BHK:</b>
-    {bhk}
+    🏗️ <b>Status:</b> {project_status}
     </p>
 
-    <p>
-    <b>Status:</b>
-    {project_status}
-    </p>
-
-    <p>
-    <b>Google Location:</b>
-    {google_location if google_location else "Not Added"}
-    </p>
-
-    <div class="preview-price">
-    ₹ {price:,}
     </div>
 
     </div>
     """,
+
     unsafe_allow_html=True
+
 )
 
 
 # ============================================================
-# POST PROPERTY
+# SUBMIT PROPERTY
 # ============================================================
 
-st.markdown("<br>", unsafe_allow_html=True)
+st.markdown(
+    "<br>",
+    unsafe_allow_html=True
+)
 
 
-if st.button(
+submit_property = st.button(
 
-    "🚀 POST PROPERTY",
+    "🚀 SUBMIT PROPERTY FOR VERIFICATION",
 
     use_container_width=True
 
-):
+)
+
+
+if submit_property:
+
+    # ========================================================
+    # VALIDATION
+    # ========================================================
+
+    if not city.strip():
+
+        st.error(
+
+            "Please enter city name."
+
+        )
+
+        st.stop()
+
 
     if not village_town.strip():
 
         st.error(
 
-            "Please enter Village / Town name."
+            "Please enter Village / Town."
 
         )
 
-    elif area == "Other Area" and not custom_area.strip():
+        st.stop()
+
+
+    if not area_name:
 
         st.error(
 
-            "Please enter your exact Area name."
+            "Please select an area or enter a new area."
 
         )
 
-    elif property_area <= 0:
+        st.stop()
+
+
+    if property_area <= 0:
 
         st.error(
 
-            "Please enter valid property area."
+            "Please enter property area."
 
         )
 
-    elif price <= 0:
+        st.stop()
+
+
+    if price <= 0:
 
         st.error(
 
-            "Please enter valid property price."
+            "Please enter property price."
 
         )
 
-    else:
+        st.stop()
 
-        st.success(
 
-            "🎉 Property listing submitted successfully!"
+    if not contact_name.strip():
+
+        st.error(
+
+            "Please enter contact person name."
+
+        )
+
+        st.stop()
+
+
+    if not contact_mobile.strip():
+
+        st.error(
+
+            "Please enter contact mobile number."
 
         )
 
-        st.info(
+        st.stop()
 
-            "Database integration के बाद यह listing automatically Property Search में दिखाई देगी."
+
+    # ========================================================
+    # SAVE CUSTOM AREA
+    # ========================================================
+
+    if area_selection == "Others":
+
+        save_custom_area(
+
+            country=country,
+
+            state=state,
+
+            city=city.strip(),
+
+            village_town=village_town.strip(),
+
+            area_name=area_name,
+
+            created_by=st.session_state.get(
+
+                "user_id",
+
+                None
+
+            )
 
         )
+
+
+    # ========================================================
+    # CREATE PROPERTY
+    # ========================================================
+
+    property_id = create_property(
+
+        owner_id=st.session_state.get(
+
+            "user_id",
+
+            None
+
+        ),
+
+        purpose=purpose,
+
+        category=category,
+
+        property_type=property_type,
+
+        country=country,
+
+        state=state,
+
+        city=city.strip(),
+
+        village_town=village_town.strip(),
+
+        area_name=area_name,
+
+        property_area=property_area,
+
+        price=price,
+
+        bhk=bhk,
+
+        project_status=project_status,
+
+        possession=possession.strip(),
+
+        google_location=google_location.strip(),
+
+        description=description.strip(),
+
+        contact_name=contact_name.strip(),
+
+        contact_mobile=contact_mobile.strip()
+
+    )
+
+
+    # ========================================================
+    # SAVE PHOTOS
+    # ========================================================
+
+    photo_count = 0
+
+
+    if photos:
+
+        for photo in photos:
+
+            extension = os.path.splitext(
+
+                photo.name
+
+            )[1].lower()
+
+
+            unique_name = (
+
+                f"{property_id}_"
+
+                f"{uuid.uuid4().hex}"
+
+                f"{extension}"
+
+            )
+
+
+            file_path = os.path.join(
+
+                MEDIA_DIR,
+
+                unique_name
+
+            )
+
+
+            with open(
+
+                file_path,
+
+                "wb"
+
+            ) as file:
+
+                file.write(
+
+                    photo.getbuffer()
+
+                )
+
+
+            save_property_media(
+
+                property_id=property_id,
+
+                media_type="image",
+
+                file_path=file_path
+
+            )
+
+
+            photo_count += 1
+
+
+    # ========================================================
+    # SAVE VIDEO
+    # ========================================================
+
+    video_saved = False
+
+
+    if video:
+
+        extension = os.path.splitext(
+
+            video.name
+
+        )[1].lower()
+
+
+        unique_name = (
+
+            f"{property_id}_"
+
+            f"{uuid.uuid4().hex}"
+
+            f"{extension}"
+
+        )
+
+
+        file_path = os.path.join(
+
+            MEDIA_DIR,
+
+            unique_name
+
+        )
+
+
+        with open(
+
+            file_path,
+
+            "wb"
+
+        ) as file:
+
+            file.write(
+
+                video.getbuffer()
+
+            )
+
+
+        save_property_media(
+
+            property_id=property_id,
+
+            media_type="video",
+
+            file_path=file_path
+
+        )
+
+
+        video_saved = True
+
+
+    # ========================================================
+    # SUCCESS
+    # ========================================================
+
+    st.success(
+
+        "🎉 Property submitted successfully!"
+
+    )
+
+
+    st.info(
+
+        f"""
+        Property ID: {property_id}
+
+        Status: Pending Verification
+
+        Photos Uploaded: {photo_count}
+
+        Video Uploaded: {"Yes" if video_saved else "No"}
+
+        Your property will appear publicly after verification.
+        """
+
+    )
 
 
 # ============================================================
-# QUICK NAVIGATION
+# BACK BUTTON
 # ============================================================
 
-st.markdown("### 🚀 Quick Navigation")
+st.markdown(
+    "<br>",
+    unsafe_allow_html=True
+)
 
 
-c1, c2, c3 = st.columns(3)
+if st.button(
 
+    "⬅️ Back to Property Search",
 
-with c1:
+    use_container_width=True
 
-    if st.button(
-        "🔎 Property Search",
-        use_container_width=True
-    ):
+):
 
-        st.switch_page(
-            "pages/02_Property_Search.py"
-        )
+    st.switch_page(
 
+        "pages/02_Property_Search.py"
 
-with c2:
-
-    if st.button(
-        "🔐 Login / Register",
-        use_container_width=True
-    ):
-
-        st.switch_page(
-            "pages/01_Login_Register.py"
-        )
-
-
-with c3:
-
-    if st.button(
-        "🏠 Home",
-        use_container_width=True
-    ):
-
-        st.switch_page(
-            "app.py"
-        )
+    )
 
 
 # ============================================================
 # FOOTER
 # ============================================================
 
-st.markdown("""
-<div class="fc-footer">
-
-<h2>
-🏠 FIRSTCHOICE INFRA PROPERTY HUB
-</h2>
-
-<p>
-Buy • Sell • Rent • Invest • Build • Discover
-</p>
-
-<p>
-India's Next-Generation Real Estate Ecosystem
-</p>
-
-<hr>
-
-<p>
-© FirstChoice Infra Property Hub
-</p>
-
-</div>
-""", unsafe_allow_html=True)
+footer()
