@@ -2,7 +2,7 @@ import streamlit as st
 
 # ============================================================
 # FIRSTCHOICE INFRA PROPERTY HUB
-# MAIN APP
+# MAIN APPLICATION
 # ============================================================
 
 st.set_page_config(
@@ -58,11 +58,11 @@ footer {
     color: white !important;
 }
 
-/* HERO */
+/* MAIN BRAND */
 
-.hero {
-    padding: 50px;
-    border-radius: 35px;
+.brand {
+    padding: 45px;
+    border-radius: 32px;
     color: white;
 
     background:
@@ -81,21 +81,21 @@ footer {
     margin-bottom: 30px;
 }
 
-.hero h1 {
-    font-size: 44px;
+.brand-title {
+    font-size: 46px;
     font-weight: 900;
 }
 
-.hero p {
+.brand-subtitle {
+    margin-top: 15px;
     font-size: 18px;
-    line-height: 1.8;
 }
 
 /* SECTION */
 
 .section {
-    padding: 25px 30px;
-    border-radius: 25px;
+    padding: 28px 32px;
+    border-radius: 26px;
     color: white;
 
     background:
@@ -111,41 +111,7 @@ footer {
     0 15px 40px
     rgba(37,99,235,0.18);
 
-    margin-top: 30px;
     margin-bottom: 25px;
-}
-
-/* CARD */
-
-.card {
-    padding: 30px;
-    border-radius: 25px;
-    background: white;
-
-    box-shadow:
-    0 15px 40px
-    rgba(0,0,0,0.08);
-
-    min-height: 180px;
-}
-
-/* FOOTER */
-
-.footer {
-    margin-top: 60px;
-    padding: 40px;
-    border-radius: 30px;
-
-    color: white;
-    text-align: center;
-
-    background:
-    linear-gradient(
-        135deg,
-        #071952,
-        #1E1B4B,
-        #4C1D95
-    );
 }
 
 </style>
@@ -159,229 +125,123 @@ footer {
 with st.sidebar:
 
     st.markdown("""
-    <div style="text-align:center;">
+    <div style="text-align:center; padding:20px;">
 
     <h1>🏠 FirstChoice</h1>
 
     <h3>Property Hub</h3>
 
+    <hr>
+
+    <p>
+    India's Next-Generation<br>
+    Real Estate Marketplace
+    </p>
+
     </div>
     """, unsafe_allow_html=True)
 
-    st.divider()
+    st.markdown("### 📌 Available Pages")
 
     st.markdown("""
-    ### 🚀 Welcome
-
-    Use the menu below to explore
-    FirstChoice Infra Property Hub.
-    """)
-
-    st.divider()
-
-    st.markdown("""
-    ### 📌 Available Pages
-
-    👤 Login / Register
-
-    🔎 Property Search
-
-    🏠 Post Property
-    """)
-
-    st.divider()
-
-    st.info(
-        "Select any page from the left sidebar menu."
-    )
+    <p>🔐 Login & Registration</p>
+    <p>🔎 Property Search</p>
+    <p>🏠 Post Property</p>
+    """, unsafe_allow_html=True)
 
 
 # ============================================================
-# HERO
+# MAIN HERO
 # ============================================================
 
 st.markdown("""
-<div class="hero">
+<div class="brand">
 
-<h1>
+<div class="brand-title">
 🏠 FirstChoice Infra Property Hub
-</h1>
+</div>
 
-<p>
+<div class="brand-subtitle">
+
 India's Next-Generation Real Estate Marketplace
-</p>
 
-<p>
+<br><br>
+
 Buy • Sell • Rent • Invest • Build • Discover
-</p>
+
+</div>
 
 </div>
 """, unsafe_allow_html=True)
 
 
 # ============================================================
-# SEARCH
+# WELCOME
 # ============================================================
 
 st.markdown("""
 <div class="section">
 
 <h2>
-🔎 Find Your Perfect Property
+🚀 Welcome to FirstChoice Property Hub
 </h2>
 
 <p>
-Search properties, plots, land, commercial spaces
-and local property services.
+Your complete digital property ecosystem.
+</p>
+
+<p>
+Use the navigation menu on the left side to access
+Login, Property Search and Post Property.
 </p>
 
 </div>
 """, unsafe_allow_html=True)
 
+
+# ============================================================
+# QUICK ACCESS BUTTONS
+# ============================================================
+
+st.subheader("🚀 Quick Access")
 
 c1, c2, c3 = st.columns(3)
 
 
 with c1:
 
-    looking_for = st.selectbox(
-        "🏠 What are you looking for?",
-        [
-            "Buy Property",
-            "Rent Property",
-            "Commercial Property",
-            "Land & Plot",
-            "New Project",
-            "Investment"
-        ]
-    )
+    if st.button(
+        "🔐 Login / Register",
+        use_container_width=True
+    ):
+
+        st.switch_page(
+            "pages/01_Login_Register.py"
+        )
 
 
 with c2:
 
-    location = st.text_input(
-        "📍 Location",
-        placeholder="City, Town, Village or Area"
-    )
+    if st.button(
+        "🔎 Property Search",
+        use_container_width=True
+    ):
+
+        st.switch_page(
+            "pages/02_Property_Search.py"
+        )
 
 
 with c3:
 
-    property_type = st.selectbox(
-        "🏡 Property Type",
-        [
-            "Any Property",
-            "Apartment",
-            "Flat",
-            "Villa",
-            "Independent House",
-            "Plot",
-            "Farm Land",
-            "Office",
-            "Shop",
-            "Warehouse"
-        ]
-    )
+    if st.button(
+        "🏠 Post Property",
+        use_container_width=True
+    ):
 
-
-if st.button(
-    "🔎 SEARCH PROPERTY",
-    use_container_width=True
-):
-
-    st.success(
-        "Search request submitted successfully."
-    )
-
-    st.info(
-        "Please select 🔎 Property Search from the left sidebar to explore properties."
-    )
-
-
-# ============================================================
-# PLATFORM FEATURES
-# ============================================================
-
-st.markdown("""
-<div class="section">
-
-<h2>
-🚀 One Platform. Complete Property Ecosystem.
-</h2>
-
-<p>
-Everything related to real estate in one place.
-</p>
-
-</div>
-""", unsafe_allow_html=True)
-
-
-f1, f2, f3, f4 = st.columns(4)
-
-
-with f1:
-
-    st.markdown("""
-    <div class="card">
-
-    <h2>🏠 Buy</h2>
-
-    <p>
-    Find homes, apartments,
-    villas and plots.
-    </p>
-
-    </div>
-    """, unsafe_allow_html=True)
-
-
-with f2:
-
-    st.markdown("""
-    <div class="card">
-
-    <h2>🔑 Rent</h2>
-
-    <p>
-    Find residential and
-    commercial rental properties.
-    </p>
-
-    </div>
-    """, unsafe_allow_html=True)
-
-
-with f3:
-
-    st.markdown("""
-    <div class="card">
-
-    <h2>📢 Post Property</h2>
-
-    <p>
-    Post your property with
-    photos, videos and location.
-    </p>
-
-    </div>
-    """, unsafe_allow_html=True)
-
-
-with f4:
-
-    st.markdown("""
-    <div class="card">
-
-    <h2>🛡️ Trusted</h2>
-
-    <p>
-    Build a trusted property
-    ecosystem for India.
-    </p>
-
-    </div>
-    """, unsafe_allow_html=True)
+        st.switch_page(
+            "pages/03_Post_Property.py"
+        )
 
 
 # ============================================================
@@ -389,25 +249,29 @@ with f4:
 # ============================================================
 
 st.markdown("""
-<div class="footer">
+<br><br>
 
-<h2>
+<div style="
+padding:30px;
+border-radius:25px;
+background:linear-gradient(
+135deg,
+#071952,
+#1E1B4B,
+#4C1D95
+);
+color:white;
+text-align:center;
+">
+
+<h3>
 🏠 FIRSTCHOICE INFRA PROPERTY HUB
-</h2>
-
-<p>
-India's Next-Generation Real Estate Marketplace
-</p>
+</h3>
 
 <p>
 Buy • Sell • Rent • Invest • Build • Discover
 </p>
 
-<hr>
-
-<p>
-© FirstChoice Infra Property Hub
-</p>
-
 </div>
+
 """, unsafe_allow_html=True)
