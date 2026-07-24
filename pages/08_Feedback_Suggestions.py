@@ -1,5 +1,7 @@
 import streamlit as st
 
+from datetime import datetime
+
 from core.Ui import (
     load_premium_ui,
     hero,
@@ -17,6 +19,11 @@ from core.database import (
 # PAGE 08 — FEEDBACK & SUGGESTIONS
 # ============================================================
 
+
+# ============================================================
+# PAGE CONFIG
+# ============================================================
+
 st.set_page_config(
     page_title="Feedback & Suggestions | FirstChoice Property Hub",
     page_icon="💡",
@@ -30,6 +37,35 @@ st.set_page_config(
 # ============================================================
 
 load_premium_ui()
+
+
+# ============================================================
+# SESSION
+# ============================================================
+
+logged_in = st.session_state.get(
+    "logged_in",
+    False
+)
+
+user_id = st.session_state.get(
+    "user_id",
+    None
+)
+
+user_role = st.session_state.get(
+    "user_role",
+    "user"
+)
+
+
+# ============================================================
+# NOTIFICATION STORAGE
+# ============================================================
+
+if "notifications" not in st.session_state:
+
+    st.session_state.notifications = []
 
 
 # ============================================================
@@ -60,46 +96,63 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 
-    st.markdown("### 📌 Navigation")
+
+    st.markdown(
+        "### 📌 Navigation"
+    )
+
 
     st.page_link(
         "app.py",
         label="🏠 Home"
     )
 
+
     st.page_link(
         "pages/01_Login_Register.py",
         label="🔐 Login & Registration"
     )
+
 
     st.page_link(
         "pages/02_Property_Search.py",
         label="🔎 Property Search"
     )
 
+
     st.page_link(
         "pages/03_Post_Property.py",
         label="🏡 Post Property"
     )
+
 
     st.page_link(
         "pages/04_Property_Details.py",
         label="📋 Property Details"
     )
 
+
     st.page_link(
         "pages/05_Admin_Panel.py",
         label="🛡️ Admin Panel"
     )
+
 
     st.page_link(
         "pages/06_Boss_Dashboard.py",
         label="👑 Boss Dashboard"
     )
 
+
     st.page_link(
         "pages/07_Manager_Dashboard.py",
         label="👔 Manager Dashboard"
+    )
+
+
+    st.page_link(
+        "pages/09_Notifications_Center.py",
+        label="🔔 Notifications Center"
     )
 
 
@@ -146,18 +199,21 @@ st.markdown(
 
 
 # ============================================================
-# USER SESSION
+# LOGIN INFORMATION
 # ============================================================
 
-logged_in = st.session_state.get(
-    "logged_in",
-    False
-)
+if logged_in:
 
-user_id = st.session_state.get(
-    "user_id",
-    None
-)
+    st.success(
+        "✅ You are logged in. Your feedback will be linked to your account."
+    )
+
+else:
+
+    st.info(
+        "ℹ️ You can submit feedback without logging in. "
+        "Please provide your correct name and email."
+    )
 
 
 # ============================================================
@@ -299,6 +355,11 @@ with st.form(
 
 if submit:
 
+
+    # ========================================================
+    # VALIDATION
+    # ========================================================
+
     if not name.strip():
 
         st.error(
@@ -317,6 +378,15 @@ if submit:
         st.stop()
 
 
+    if "@" not in email or "." not in email:
+
+        st.error(
+            "⚠️ Please enter a valid email address."
+        )
+
+        st.stop()
+
+
     if not message.strip():
 
         st.error(
@@ -327,7 +397,7 @@ if submit:
 
 
     # ========================================================
-    # SAVE TO DATABASE
+    # SAVE FEEDBACK
     # ========================================================
 
     try:
@@ -347,8 +417,138 @@ if submit:
         )
 
 
+        # ====================================================
+        # NOTIFICATION MESSAGE
+        # ====================================================
+
+        notification_message = (
+
+            f"New feedback has been submitted.\n\n"
+
+            f"Category: {category}\n\n"
+
+            f"Submitted By: {name.strip()}\n\n"
+
+            f"Email: {email.strip()}\n\n"
+
+            f"Rating: {rating}/5\n\n"
+
+            f"Message: {message.strip()}"
+
+        )
+
+
+        # ====================================================
+        # UNIQUE NOTIFICATION ID
+        # ====================================================
+
+        base_id = int(
+            datetime.now().timestamp() * 1000
+        )
+
+
+        # ====================================================
+        # NOTIFICATION FUNCTION
+        # ====================================================
+
+        def create_notification(
+
+            recipient_role,
+
+            notification_id
+
+        ):
+
+            st.session_state.notifications.append(
+
+                {
+
+                    "id":
+                        notification_id,
+
+                    "recipient_role":
+                        recipient_role,
+
+                    "recipient_user_id":
+                        None,
+
+                    "title":
+                        "💡 New Feedback Received",
+
+                    "message":
+                        notification_message,
+
+                    "notification_type":
+                        "feedback",
+
+                    "is_read":
+                        False,
+
+                    "created_at":
+                        datetime.now().strftime(
+                            "%d %B %Y, %I:%M %p"
+                        )
+
+                }
+
+            )
+
+
+        # ====================================================
+        # BOSS NOTIFICATION
+        # ====================================================
+
+        create_notification(
+
+            "boss",
+
+            base_id + 1
+
+        )
+
+
+        # ====================================================
+        # MANAGER NOTIFICATION
+        # ====================================================
+
+        create_notification(
+
+            "manager",
+
+            base_id + 2
+
+        )
+
+
+        # ====================================================
+        # ADMIN NOTIFICATION
+        # ====================================================
+
+        create_notification(
+
+            "admin",
+
+            base_id + 3
+
+        )
+
+
+        # ====================================================
+        # SUCCESS MESSAGE
+        # ====================================================
+
         st.success(
             "🎉 Thank you! Your feedback has been submitted successfully."
+        )
+
+
+        st.info(
+            "📩 Your feedback has been forwarded to the appropriate management teams."
+        )
+
+
+        st.success(
+            f"⭐ Your experience rating: {rating}/5"
         )
 
 
@@ -396,7 +596,7 @@ st.markdown(
 
 
 # ============================================================
-# CONTACT MESSAGE
+# MANAGEMENT COMMUNICATION
 # ============================================================
 
 section(
@@ -412,6 +612,9 @@ st.info(
 
     Depending on the category, the feedback may be reviewed
     by the appropriate authorized team.
+
+    Important feedback and complaints may be forwarded to
+    authorized management personnel for further action.
     """
 )
 
