@@ -1,5 +1,18 @@
 import streamlit as st
 
+from core.Ui import (
+    load_premium_ui,
+    hero,
+    section,
+    footer
+)
+
+from core.Database import (
+    get_properties,
+    get_custom_areas,
+    add_property_view
+)
+
 
 # ============================================================
 # FIRSTCHOICE INFRA PROPERTY HUB
@@ -18,240 +31,7 @@ st.set_page_config(
 # PREMIUM UI
 # ============================================================
 
-st.markdown("""
-<style>
-
-.stApp {
-    background:
-    radial-gradient(
-        circle at 10% 10%,
-        rgba(59,130,246,0.10),
-        transparent 30%
-    ),
-    radial-gradient(
-        circle at 90% 20%,
-        rgba(168,85,247,0.10),
-        transparent 30%
-    ),
-    linear-gradient(
-        135deg,
-        #F8FAFC,
-        #EEF2FF,
-        #FAF5FF,
-        #F0FDFA
-    );
-}
-
-header {
-    visibility: hidden;
-}
-
-#MainMenu {
-    visibility: hidden;
-}
-
-footer {
-    visibility: hidden;
-}
-
-
-/* SIDEBAR */
-
-[data-testid="stSidebar"] {
-    background:
-    linear-gradient(
-        180deg,
-        #020617,
-        #0F172A,
-        #1E1B4B,
-        #312E81
-    );
-}
-
-[data-testid="stSidebar"] * {
-    color: white !important;
-}
-
-
-/* HERO */
-
-.search-hero {
-    padding: 55px;
-    border-radius: 40px;
-    color: white;
-
-    background:
-    linear-gradient(
-        135deg,
-        #020617,
-        #172554,
-        #4338CA,
-        #7E22CE,
-        #BE185D
-    );
-
-    box-shadow:
-    0 30px 80px
-    rgba(30,41,59,0.30);
-
-    margin-bottom: 35px;
-}
-
-.search-hero h1 {
-    font-size: 48px;
-    font-weight: 900;
-}
-
-.search-hero p {
-    font-size: 19px;
-    line-height: 1.7;
-}
-
-
-/* SEARCH PANEL */
-
-.search-panel {
-    padding: 32px;
-    border-radius: 30px;
-
-    background:
-    rgba(255,255,255,0.92);
-
-    border:
-    1px solid
-    rgba(148,163,184,0.25);
-
-    box-shadow:
-    0 20px 50px
-    rgba(15,23,42,0.08);
-
-    margin-bottom: 30px;
-}
-
-
-/* SECTION */
-
-.section-title {
-    padding: 22px 28px;
-    border-radius: 25px;
-    color: white;
-
-    background:
-    linear-gradient(
-        135deg,
-        #1E3A8A,
-        #4338CA,
-        #7E22CE
-    );
-
-    box-shadow:
-    0 15px 40px
-    rgba(79,70,229,0.20);
-
-    margin:
-    30px 0 25px 0;
-}
-
-.section-title h2 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 900;
-}
-
-
-/* PROPERTY CARD */
-
-.property-card {
-    padding: 28px;
-    border-radius: 30px;
-
-    background:
-    rgba(255,255,255,0.95);
-
-    border:
-    1px solid
-    #E2E8F0;
-
-    box-shadow:
-    0 18px 50px
-    rgba(15,23,42,0.10);
-
-    margin-bottom: 25px;
-
-    transition:
-    transform 0.25s ease;
-}
-
-.property-card:hover {
-    transform:
-    translateY(-5px);
-}
-
-
-/* BADGE */
-
-.badge {
-    display: inline-block;
-
-    padding:
-    7px 14px;
-
-    border-radius:
-    50px;
-
-    background:
-    linear-gradient(
-        135deg,
-        #2563EB,
-        #7C3AED
-    );
-
-    color:
-    white;
-
-    font-size:
-    13px;
-
-    font-weight:
-    700;
-}
-
-
-/* PRICE */
-
-.price {
-    color:
-    #047857;
-
-    font-size:
-    25px;
-
-    font-weight:
-    900;
-}
-
-
-/* FOOTER */
-
-.fc-footer {
-    margin-top: 60px;
-    padding: 40px;
-    border-radius: 32px;
-
-    color: white;
-    text-align: center;
-
-    background:
-    linear-gradient(
-        135deg,
-        #020617,
-        #1E1B4B,
-        #312E81
-    );
-}
-
-</style>
-""", unsafe_allow_html=True)
+load_premium_ui()
 
 
 # ============================================================
@@ -260,25 +40,28 @@ footer {
 
 with st.sidebar:
 
-    st.markdown("""
-    <div style="
-        text-align:center;
-        padding:25px;
-    ">
+    st.markdown(
+        """
+        <div style="
+            text-align:center;
+            padding:25px;
+        ">
 
-    <h1>🏠 FirstChoice</h1>
+        <h1>🏠 FirstChoice</h1>
 
-    <h3>Property Hub</h3>
+        <h3>Property Hub</h3>
 
-    <hr>
+        <hr>
 
-    <p>
-    India's Next-Generation<br>
-    Real Estate Ecosystem
-    </p>
+        <p>
+        India's Next-Generation<br>
+        Real Estate Ecosystem
+        </p>
 
-    </div>
-    """, unsafe_allow_html=True)
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     st.markdown("### 📌 Navigation")
 
@@ -307,491 +90,399 @@ with st.sidebar:
 # HERO
 # ============================================================
 
-st.markdown("""
-<div class="search-hero">
-
-<h1>
-🔎 Find Your Perfect Property
-</h1>
-
-<p>
-Search homes, plots, apartments, commercial properties,
-upcoming projects and rental properties across India.
-</p>
-
-<p>
-🏠 Buy &nbsp; • &nbsp;
-🏢 Commercial &nbsp; • &nbsp;
-🌳 Land &nbsp; • &nbsp;
-🏙️ Projects &nbsp; • &nbsp;
-🔑 Rent
-</p>
-
-</div>
-""", unsafe_allow_html=True)
+hero(
+    "🔎 Discover Your Perfect Property",
+    "Search homes, plots, land, commercial spaces and upcoming projects across locations."
+)
 
 
 # ============================================================
-# SEARCH PANEL
+# SEARCH SECTION
 # ============================================================
 
-st.markdown("""
-<div class="section-title">
+section(
+    "🔍 Smart Property Search",
+    "Use multiple filters to find the property that matches your requirement."
+)
 
-<h2>
-🔎 Advanced Property Search
-</h2>
-
-</div>
-""", unsafe_allow_html=True)
 
+# ============================================================
+# SEARCH FILTERS
+# ============================================================
 
-with st.container(border=True):
+col1, col2, col3 = st.columns(3)
 
-    # --------------------------------------------------------
-    # PURPOSE
-    # --------------------------------------------------------
 
-    col1, col2, col3 = st.columns(3)
-
-
-    with col1:
-
-        purpose = st.selectbox(
-            "🎯 Looking For",
-            [
-                "Buy",
-                "Rent",
-                "Lease",
-                "Invest"
-            ]
-        )
-
-
-    with col2:
-
-        property_category = st.selectbox(
-            "🏠 Property Category",
-            [
-                "Residential",
-                "Commercial",
-                "Plot / Land",
-                "Agricultural Land",
-                "Industrial Property",
-                "Upcoming Project",
-                "Ready to Move Project"
-            ]
-        )
-
-
-    with col3:
-
-        property_type = st.selectbox(
-            "🏡 Property Type",
-            [
-                "Any",
-                "Apartment",
-                "Villa",
-                "Independent House",
-                "Builder Floor",
-                "Studio Apartment",
-                "Plot",
-                "Farm Land",
-                "Office",
-                "Shop",
-                "Warehouse",
-                "Showroom"
-            ]
-        )
+with col1:
 
+    purpose = st.selectbox(
 
-    # --------------------------------------------------------
-    # LOCATION
-    # --------------------------------------------------------
+        "🎯 Looking For",
 
-    st.markdown("### 🌍 Property Location")
+        [
+            "All",
+            "Sell Property",
+            "Rent Property",
+            "Lease Property",
+            "Post Upcoming Project",
+            "Post Ongoing Project",
+            "Post Ready-to-Move Project",
+            "Post New Layout",
+            "Post Plot / Land"
+        ]
 
+    )
 
-    col1, col2, col3, col4 = st.columns(4)
 
+with col2:
 
-    with col1:
+    property_type = st.selectbox(
 
-        country = st.selectbox(
-            "🌍 Country",
-            [
-                "India",
-                "Other Country"
-            ]
-        )
+        "🏠 Property Type",
 
+        [
+            "All",
+            "Apartment",
+            "Villa",
+            "Independent House",
+            "Builder Floor",
+            "Studio Apartment",
+            "Residential Plot",
+            "Commercial Plot",
+            "Farm Land",
+            "Office",
+            "Shop",
+            "Showroom",
+            "Warehouse",
+            "Industrial Unit"
+        ]
 
-    with col2:
+    )
 
-        state = st.selectbox(
-            "🗺️ State",
-            [
-                "Maharashtra",
-                "Madhya Pradesh",
-                "Delhi",
-                "Gujarat",
-                "Karnataka",
-                "Telangana",
-                "Rajasthan",
-                "Uttar Pradesh",
-                "Other State"
-            ]
-        )
 
+with col3:
 
-    with col3:
+    city = st.selectbox(
 
-        city = st.selectbox(
-            "🏙️ City",
-            [
-                "Nagpur",
-                "Mumbai",
-                "Pune",
-                "Nashik",
-                "Indore",
-                "Bhopal",
-                "Delhi",
-                "Other City"
-            ]
-        )
+        "🏙️ City",
 
+        [
+            "All",
+            "Nagpur",
+            "Mumbai",
+            "Pune",
+            "Nashik",
+            "Aurangabad",
+            "Indore",
+            "Bhopal",
+            "Ahmedabad"
+        ]
 
-    with col4:
-
-        area = st.selectbox(
-            "📍 Area",
-            [
-                "Any Area",
-                "Civil Lines",
-                "Dharampeth",
-                "Manish Nagar",
-                "Wardha Road",
-                "Hingna",
-                "Katol Road",
-                "Other Area"
-            ]
-        )
-
-
-    # --------------------------------------------------------
-    # CUSTOM AREA
-    # --------------------------------------------------------
-
-    if area == "Other Area":
-
-        custom_area = st.text_input(
-            "📍 Enter Your Area Name",
-            placeholder="Example: Your specific locality / village / area"
-        )
-
-    else:
-
-        custom_area = ""
-
-
-    # --------------------------------------------------------
-    # BUDGET
-    # --------------------------------------------------------
-
-    st.markdown("### 💰 Budget & Property Size")
-
-
-    col1, col2, col3, col4 = st.columns(4)
-
-
-    with col1:
-
-        min_budget = st.number_input(
-            "💰 Minimum Budget",
-            min_value=0,
-            value=0,
-            step=100000
-        )
-
-
-    with col2:
-
-        max_budget = st.number_input(
-            "💰 Maximum Budget",
-            min_value=0,
-            value=10000000,
-            step=100000
-        )
-
-
-    with col3:
-
-        min_area = st.number_input(
-            "📐 Minimum Area (Sq.Ft.)",
-            min_value=0,
-            value=0
-        )
-
-
-    with col4:
-
-        max_area = st.number_input(
-            "📐 Maximum Area (Sq.Ft.)",
-            min_value=0,
-            value=10000
-        )
-
-
-    # --------------------------------------------------------
-    # PROPERTY FEATURES
-    # --------------------------------------------------------
-
-    st.markdown("### 🏗️ Property Features")
-
-
-    col1, col2, col3, col4 = st.columns(4)
-
-
-    with col1:
-
-        bhk = st.selectbox(
-            "🛏️ BHK",
-            [
-                "Any",
-                "1 BHK",
-                "2 BHK",
-                "3 BHK",
-                "4 BHK",
-                "5+ BHK"
-            ]
-        )
-
-
-    with col2:
-
-        project_status = st.selectbox(
-            "🏗️ Project Status",
-            [
-                "Any",
-                "Upcoming",
-                "Under Construction",
-                "Ongoing",
-                "Ready to Move"
-            ]
-        )
-
-
-    with col3:
-
-        possession = st.selectbox(
-            "📅 Possession",
-            [
-                "Any",
-                "Immediate",
-                "Within 6 Months",
-                "Within 1 Year",
-                "1-2 Years",
-                "2+ Years"
-            ]
-        )
-
-
-    with col4:
-
-        furnishing = st.selectbox(
-            "🛋️ Furnishing",
-            [
-                "Any",
-                "Unfurnished",
-                "Semi Furnished",
-                "Fully Furnished"
-            ]
-        )
-
-
-    # --------------------------------------------------------
-    # ADVANCED FILTER
-    # --------------------------------------------------------
-
-    st.markdown("### ⭐ Advanced Filters")
-
-
-    col1, col2, col3, col4 = st.columns(4)
-
-
-    with col1:
-
-        video_available = st.checkbox(
-            "🎥 Video Available"
-        )
-
-
-    with col2:
-
-        location_available = st.checkbox(
-            "📍 Google Location Available"
-        )
-
-
-    with col3:
-
-        premium_only = st.checkbox(
-            "⭐ Premium Listings Only"
-        )
-
-
-    with col4:
-
-        verified_only = st.checkbox(
-            "✅ Verified Properties Only"
-        )
-
-
-    # --------------------------------------------------------
-    # SEARCH BUTTON
-    # --------------------------------------------------------
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-
-    search_button = st.button(
-        "🔎 SEARCH PROPERTIES",
-        use_container_width=True
     )
 
 
 # ============================================================
-# SEARCH RESULT
+# AREA SEARCH
+# ============================================================
+
+st.markdown("### 📍 Location & Area")
+
+
+col1, col2 = st.columns(2)
+
+
+with col1:
+
+    village_town = st.text_input(
+
+        "🏘️ Village / Town",
+
+        placeholder=
+        "Enter village or town name"
+
+    )
+
+
+with col2:
+
+    area_name = st.text_input(
+
+        "📍 Area / Locality",
+
+        placeholder=
+        "Enter area, locality, colony or layout"
+
+    )
+
+
+# ============================================================
+# PRICE FILTER
+# ============================================================
+
+st.markdown("### 💰 Budget")
+
+
+col1, col2 = st.columns(2)
+
+
+with col1:
+
+    min_price = st.number_input(
+
+        "Minimum Budget (₹)",
+
+        min_value=0,
+
+        value=0,
+
+        step=100000
+
+    )
+
+
+with col2:
+
+    max_price = st.number_input(
+
+        "Maximum Budget (₹)",
+
+        min_value=0,
+
+        value=0,
+
+        step=100000
+
+    )
+
+
+# ============================================================
+# PROPERTY AREA
+# ============================================================
+
+st.markdown("### 📐 Property Size")
+
+
+col1, col2 = st.columns(2)
+
+
+with col1:
+
+    min_area = st.number_input(
+
+        "Minimum Area (Sq.Ft.)",
+
+        min_value=0,
+
+        value=0
+
+    )
+
+
+with col2:
+
+    max_area = st.number_input(
+
+        "Maximum Area (Sq.Ft.)",
+
+        min_value=0,
+
+        value=0
+
+    )
+
+
+# ============================================================
+# SEARCH BUTTON
+# ============================================================
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+
+search_button = st.button(
+
+    "🔎 SEARCH PROPERTIES",
+
+    use_container_width=True
+
+)
+
+
+# ============================================================
+# SEARCH RESULTS
 # ============================================================
 
 if search_button:
 
-    st.success(
-        "🔎 Property search completed successfully."
+    selected_city = (
+
+        None
+
+        if city == "All"
+
+        else city
+
     )
 
-    st.info(
-        "Current version में demo listings दिखाई जा रही हैं. "
-        "Database integration के बाद यहाँ real property listings आएँगी."
+
+    selected_type = (
+
+        None
+
+        if property_type == "All"
+
+        else property_type
+
     )
 
 
-# ============================================================
-# SAMPLE PROPERTY LISTINGS
-# ============================================================
+    selected_purpose = (
 
-st.markdown("""
-<div class="section-title">
+        None
 
-<h2>
-🏡 Featured Property Listings
-</h2>
+        if purpose == "All"
 
-</div>
-""", unsafe_allow_html=True)
+        else purpose
+
+    )
 
 
-properties = [
+    # --------------------------------------------------------
+    # GET DATABASE RESULTS
+    # --------------------------------------------------------
 
-    {
-        "title":
-        "Premium Residential Plot",
-        "location":
-        "Nagpur, Maharashtra",
-        "price":
-        "₹25,00,000",
-        "type":
-        "Residential Plot",
-        "status":
-        "Ready to Move",
-        "area":
-        "1200 Sq.Ft.",
-        "verified":
-        True
-    },
+    properties = get_properties(
 
-    {
-        "title":
-        "Luxury 3 BHK Apartment",
-        "location":
-        "Pune, Maharashtra",
-        "price":
-        "₹85,00,000",
-        "type":
-        "Apartment",
-        "status":
-        "Ready to Move",
-        "area":
-        "1450 Sq.Ft.",
-        "verified":
-        True
-    },
+        city=selected_city,
 
-    {
-        "title":
-        "Upcoming Premium Township",
-        "location":
-        "Nagpur, Maharashtra",
-        "price":
-        "₹45,00,000",
-        "type":
-        "Upcoming Project",
-        "status":
-        "Upcoming",
-        "area":
-        "1000 Sq.Ft.",
-        "verified":
-        True
-    }
+        area_name=area_name.strip()
 
-]
+        if area_name.strip()
+
+        else None,
+
+        property_type=selected_type,
+
+        purpose=selected_purpose
+
+    )
 
 
-for property_data in properties:
+    # --------------------------------------------------------
+    # ADDITIONAL FILTERING
+    # --------------------------------------------------------
+
+    filtered_properties = []
+
+
+    for property_item in properties:
+
+        # -----------------------------------------------
+        # Village / Town Filter
+        # -----------------------------------------------
+
+        if village_town.strip():
+
+            if village_town.lower() not in (
+
+                property_item["village_town"]
+
+                or ""
+
+            ).lower():
+
+                continue
+
+
+        # -----------------------------------------------
+        # Minimum Price
+        # -----------------------------------------------
+
+        if min_price > 0:
+
+            if (
+
+                property_item["price"]
+
+                or 0
+
+            ) < min_price:
+
+                continue
+
+
+        # -----------------------------------------------
+        # Maximum Price
+        # -----------------------------------------------
+
+        if max_price > 0:
+
+            if (
+
+                property_item["price"]
+
+                or 0
+
+            ) > max_price:
+
+                continue
+
+
+        # -----------------------------------------------
+        # Minimum Area
+        # -----------------------------------------------
+
+        if min_area > 0:
+
+            if (
+
+                property_item["property_area"]
+
+                or 0
+
+            ) < min_area:
+
+                continue
+
+
+        # -----------------------------------------------
+        # Maximum Area
+        # -----------------------------------------------
+
+        if max_area > 0:
+
+            if (
+
+                property_item["property_area"]
+
+                or 0
+
+            ) > max_area:
+
+                continue
+
+
+        filtered_properties.append(
+
+            property_item
+
+        )
+
+
+    # ========================================================
+    # RESULTS COUNT
+    # ========================================================
 
     st.markdown(
         f"""
-        <div class="property-card">
-
-        <span class="badge">
-        ⭐ FEATURED PROPERTY
-        </span>
+        <div class="fc-section">
 
         <h2>
-        🏠 {property_data["title"]}
+        🏡 {len(filtered_properties)}
+        Properties Found
         </h2>
 
         <p>
-        📍 {property_data["location"]}
-        </p>
-
-        <p>
-        🏡 Type:
-        <b>{property_data["type"]}</b>
-        </p>
-
-        <p>
-        📐 Area:
-        <b>{property_data["area"]}</b>
-        </p>
-
-        <p>
-        🏗️ Status:
-        <b>{property_data["status"]}</b>
-        </p>
-
-        <div class="price">
-        {property_data["price"]}
-        </div>
-
-        <br>
-
-        <p>
-        ✅ Verified Property
-        &nbsp;&nbsp;
-        🎥 Video Tour Available
-        &nbsp;&nbsp;
-        📍 Google Location
+        Matching properties available on FirstChoice Property Hub.
         </p>
 
         </div>
@@ -800,49 +491,464 @@ for property_data in properties:
     )
 
 
-# ============================================================
-# ACTION BUTTONS
-# ============================================================
+    # ========================================================
+    # NO RESULTS
+    # ========================================================
 
-st.markdown("### 🚀 Quick Actions")
+    if not filtered_properties:
 
+        st.warning(
 
-c1, c2, c3 = st.columns(3)
+            "No matching properties found."
 
+        )
 
-with c1:
+        st.info(
 
-    if st.button(
-        "🏡 Post Your Property",
-        use_container_width=True
-    ):
+            "Try changing your location, budget or property type."
 
-        st.switch_page(
-            "pages/03_Post_Property.py"
         )
 
 
-with c2:
+    # ========================================================
+    # PROPERTY RESULTS
+    # ========================================================
 
-    if st.button(
-        "🔐 Login / Register",
-        use_container_width=True
-    ):
+    for property_item in filtered_properties:
 
-        st.switch_page(
-            "pages/01_Login_Register.py"
+        property_id = property_item["id"]
+
+
+        title = (
+
+            property_item["property_type"]
+
+            or "Property"
+
         )
 
 
-with c3:
+        location = (
+
+            f"{property_item['city']}, "
+
+            f"{property_item['village_town']}, "
+
+            f"{property_item['area_name']}"
+
+        )
+
+
+        price = (
+
+            property_item["price"]
+
+            or 0
+
+        )
+
+
+        views = (
+
+            property_item["views"]
+
+            or 0
+
+        )
+
+
+        st.markdown(
+
+            f"""
+            <div class="property-card">
+
+            <div class="property-info">
+
+            <div class="property-title">
+
+            🏡 {title}
+
+            </div>
+
+            <div class="property-location">
+
+            📍 {location}
+
+            </div>
+
+            <div class="property-price">
+
+            ₹ {price:,.0f}
+
+            </div>
+
+            <hr>
+
+            <p>
+
+            🎯 <b>Purpose:</b>
+            {property_item["purpose"]}
+
+            </p>
+
+            <p>
+
+            🏠 <b>Category:</b>
+            {property_item["category"]}
+
+            </p>
+
+            <p>
+
+            📐 <b>Area:</b>
+            {property_item["property_area"] or 0}
+            Sq.Ft.
+
+            </p>
+
+            <p>
+
+            🛏️ <b>BHK:</b>
+            {property_item["bhk"] or "N/A"}
+
+            </p>
+
+            <p>
+
+            🏗️ <b>Status:</b>
+            {property_item["project_status"] or "N/A"}
+
+            </p>
+
+            <p>
+
+            👀 <b>Views:</b>
+            {views}
+
+            </p>
+
+            </div>
+
+            </div>
+            """,
+
+            unsafe_allow_html=True
+
+        )
+
+
+        # ====================================================
+        # PROPERTY ACTIONS
+        # ====================================================
+
+        col1, col2, col3 = st.columns(3)
+
+
+        with col1:
+
+            if st.button(
+
+                "👁️ View Details",
+
+                key=f"view_{property_id}",
+
+                use_container_width=True
+
+            ):
+
+                add_property_view(
+
+                    property_id
+
+                )
+
+                st.session_state[
+
+                    "selected_property_id"
+
+                ] = property_id
+
+                st.rerun()
+
+
+        with col2:
+
+            if st.button(
+
+                "📍 Location",
+
+                key=f"location_{property_id}",
+
+                use_container_width=True
+
+            ):
+
+                location_url = (
+
+                    property_item[
+
+                        "google_location"
+
+                    ]
+
+                )
+
+
+                if location_url:
+
+                    st.markdown(
+
+                        f"[📍 Open Google Maps]({location_url})"
+
+                    )
+
+                else:
+
+                    st.info(
+
+                        "Location not available."
+
+                    )
+
+
+        with col3:
+
+            if st.button(
+
+                "📞 Contact",
+
+                key=f"contact_{property_id}",
+
+                use_container_width=True
+
+            ):
+
+                st.info(
+
+                    f"Contact: "
+
+                    f"{property_item['contact_name']}"
+
+                )
+
+                st.write(
+
+                    f"📱 "
+
+                    f"{property_item['contact_mobile']}"
+
+                )
+
+
+# ============================================================
+# PROPERTY DETAILS
+# ============================================================
+
+if "selected_property_id" in st.session_state:
+
+    selected_id = (
+
+        st.session_state[
+
+            "selected_property_id"
+
+        ]
+
+    )
+
+
+    section(
+
+        "🏡 Property Details",
+
+        "Detailed information about the selected property."
+
+    )
+
+
+    selected_properties = get_properties()
+
+
+    selected_property = None
+
+
+    for item in selected_properties:
+
+        if item["id"] == selected_id:
+
+            selected_property = item
+
+            break
+
+
+    if selected_property:
+
+        st.markdown(
+
+            f"""
+            <div class="fc-card">
+
+            <h2>
+
+            🏡 {selected_property["property_type"]}
+
+            </h2>
+
+            <p>
+
+            📍
+
+            {selected_property["country"]},
+
+            {selected_property["state"]},
+
+            {selected_property["city"]},
+
+            {selected_property["village_town"]},
+
+            {selected_property["area_name"]}
+
+            </p>
+
+            <p>
+
+            💰
+
+            <b>
+            ₹ {selected_property["price"] or 0:,.0f}
+            </b>
+
+            </p>
+
+            <p>
+
+            📐
+
+            {selected_property["property_area"] or 0}
+
+            Sq.Ft.
+
+            </p>
+
+            <p>
+
+            📝
+
+            {selected_property["description"] or "No description available."}
+
+            </p>
+
+            </div>
+            """,
+
+            unsafe_allow_html=True
+
+        )
+
+
+        # ----------------------------------------------------
+        # GOOGLE LOCATION
+        # ----------------------------------------------------
+
+        if selected_property["google_location"]:
+
+            st.markdown(
+
+                f"""
+                ### 📍 Property Location
+
+                [Open Property Location on Google Maps](
+                {selected_property["google_location"]}
+                )
+                """
+
+            )
+
+
+        # ----------------------------------------------------
+        # CLOSE DETAILS
+        # ----------------------------------------------------
+
+        if st.button(
+
+            "⬅️ Back to Search Results",
+
+            use_container_width=True
+
+        ):
+
+            del st.session_state[
+
+                "selected_property_id"
+
+            ]
+
+            st.rerun()
+
+
+# ============================================================
+# QUICK NAVIGATION
+# ============================================================
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+section(
+    "🚀 Quick Navigation",
+    "Continue exploring FirstChoice Property Hub."
+)
+
+
+col1, col2, col3 = st.columns(3)
+
+
+with col1:
 
     if st.button(
-        "🏠 Back to Home",
+
+        "🏠 Home",
+
         use_container_width=True
+
     ):
 
         st.switch_page(
+
             "app.py"
+
+        )
+
+
+with col2:
+
+    if st.button(
+
+        "🏡 Post Property",
+
+        use_container_width=True
+
+    ):
+
+        st.switch_page(
+
+            "pages/03_Post_Property.py"
+
+        )
+
+
+with col3:
+
+    if st.button(
+
+        "🔐 Login / Register",
+
+        use_container_width=True
+
+    ):
+
+        st.switch_page(
+
+            "pages/01_Login_Register.py"
+
         )
 
 
@@ -850,26 +956,4 @@ with c3:
 # FOOTER
 # ============================================================
 
-st.markdown("""
-<div class="fc-footer">
-
-<h2>
-🏠 FIRSTCHOICE INFRA PROPERTY HUB
-</h2>
-
-<p>
-Buy • Sell • Rent • Invest • Build • Discover
-</p>
-
-<p>
-India's Next-Generation Real Estate Ecosystem
-</p>
-
-<hr>
-
-<p>
-© FirstChoice Infra Property Hub
-</p>
-
-</div>
-""", unsafe_allow_html=True)
+footer()
