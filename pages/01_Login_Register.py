@@ -1,13 +1,33 @@
 import streamlit as st
 import random
-import re
+from datetime import datetime
+
+from core.Ui import (
+    load_premium_ui,
+    hero,
+    section,
+    footer
+)
+
+from core.Database import (
+    get_user_by_mobile,
+    get_user_by_email,
+    create_user
+)
+
+from core.Auth import (
+    login_user,
+    logout_user,
+    is_logged_in,
+    get_role_label
+)
 
 
 # ============================================================
 # FIRSTCHOICE INFRA PROPERTY HUB
 # PAGE 01 — LOGIN & REGISTRATION
-# STANDALONE VERSION
 # ============================================================
+
 
 st.set_page_config(
     page_title="Login & Registration | FirstChoice Property Hub",
@@ -21,240 +41,41 @@ st.set_page_config(
 # PREMIUM UI
 # ============================================================
 
-st.markdown("""
-<style>
-
-.stApp {
-    background:
-    radial-gradient(
-        circle at 10% 10%,
-        rgba(99,102,241,0.12),
-        transparent 30%
-    ),
-    radial-gradient(
-        circle at 90% 20%,
-        rgba(236,72,153,0.12),
-        transparent 30%
-    ),
-    linear-gradient(
-        135deg,
-        #F8FAFC,
-        #EEF2FF,
-        #FAF5FF,
-        #F0FDFA
-    );
-}
-
-header {
-    visibility: hidden;
-}
-
-#MainMenu {
-    visibility: hidden;
-}
-
-footer {
-    visibility: hidden;
-}
-
-
-/* SIDEBAR */
-
-[data-testid="stSidebar"] {
-    background:
-    linear-gradient(
-        180deg,
-        #020617,
-        #0F172A,
-        #1E1B4B,
-        #312E81
-    );
-}
-
-[data-testid="stSidebar"] * {
-    color: white !important;
-}
-
-
-/* HERO */
-
-.fc-hero {
-    padding: 55px;
-    border-radius: 38px;
-    color: white;
-
-    background:
-    linear-gradient(
-        135deg,
-        #020617,
-        #172554,
-        #4C1D95,
-        #9D174D
-    );
-
-    box-shadow:
-    0 30px 80px
-    rgba(30,41,59,0.30);
-
-    margin-bottom: 35px;
-}
-
-.fc-hero h1 {
-    font-size: 48px;
-    font-weight: 900;
-}
-
-.fc-hero p {
-    font-size: 19px;
-    line-height: 1.7;
-}
-
-
-/* SECTION */
-
-.fc-section {
-    padding: 25px 30px;
-    border-radius: 28px;
-    color: white;
-
-    background:
-    linear-gradient(
-        135deg,
-        #1E3A8A,
-        #4338CA,
-        #7E22CE,
-        #BE185D
-    );
-
-    box-shadow:
-    0 18px 45px
-    rgba(79,70,229,0.22);
-
-    margin: 35px 0 25px 0;
-}
-
-.fc-section h2 {
-    margin: 0;
-    font-size: 30px;
-    font-weight: 900;
-}
-
-.fc-section p {
-    margin-top: 8px;
-    font-size: 16px;
-}
-
-
-/* CARD */
-
-.fc-card {
-    padding: 30px;
-    border-radius: 28px;
-
-    background:
-    rgba(255,255,255,0.90);
-
-    border:
-    1px solid
-    rgba(148,163,184,0.20);
-
-    box-shadow:
-    0 18px 45px
-    rgba(15,23,42,0.08);
-
-    margin-bottom: 20px;
-}
-
-.fc-card h3 {
-    color: #0F172A;
-    font-size: 23px;
-}
-
-.fc-card p {
-    color: #475569;
-    line-height: 1.7;
-}
-
-
-/* SUCCESS */
-
-.fc-success {
-    padding: 28px;
-    border-radius: 28px;
-    color: white;
-
-    background:
-    linear-gradient(
-        135deg,
-        #047857,
-        #059669,
-        #10B981
-    );
-
-    box-shadow:
-    0 20px 50px
-    rgba(5,150,105,0.20);
-}
-
-
-/* WARNING */
-
-.fc-warning {
-    padding: 28px;
-    border-radius: 28px;
-    color: white;
-
-    background:
-    linear-gradient(
-        135deg,
-        #B45309,
-        #D97706,
-        #F59E0B
-    );
-}
-
-
-/* FOOTER */
-
-.fc-footer {
-    margin-top: 60px;
-    padding: 40px;
-    border-radius: 32px;
-    color: white;
-    text-align: center;
-
-    background:
-    linear-gradient(
-        135deg,
-        #020617,
-        #1E1B4B,
-        #312E81
-    );
-}
-
-</style>
-""", unsafe_allow_html=True)
+load_premium_ui()
 
 
 # ============================================================
-# SESSION STATE
+# INITIALIZE SESSION STATE
 # ============================================================
 
-defaults = {
-    "mobile_otp": None,
-    "email_otp": None,
-    "otp_sent": False,
-    "mobile_verified": False,
-    "email_verified": False,
-    "terms_accepted": False,
-    "account_created": False
-}
+if "auth_mode" not in st.session_state:
 
-for key, value in defaults.items():
+    st.session_state.auth_mode = "login"
 
-    if key not in st.session_state:
 
-        st.session_state[key] = value
+if "mobile_otp" not in st.session_state:
+
+    st.session_state.mobile_otp = None
+
+
+if "email_otp" not in st.session_state:
+
+    st.session_state.email_otp = None
+
+
+if "mobile_verified" not in st.session_state:
+
+    st.session_state.mobile_verified = False
+
+
+if "email_verified" not in st.session_state:
+
+    st.session_state.email_verified = False
+
+
+if "registration_data" not in st.session_state:
+
+    st.session_state.registration_data = {}
 
 
 # ============================================================
@@ -263,42 +84,50 @@ for key, value in defaults.items():
 
 with st.sidebar:
 
-    st.markdown("""
-    <div style="
-        text-align:center;
-        padding:25px;
-    ">
+    st.markdown(
+        """
+        <div style="
+            text-align:center;
+            padding:25px;
+        ">
 
-    <h1>🏠 FirstChoice</h1>
+        <h1>🏠 FirstChoice</h1>
 
-    <h3>Property Hub</h3>
+        <h3>Property Hub</h3>
 
-    <hr>
+        <hr>
 
-    <p>
-    India's Next-Generation<br>
-    Real Estate Ecosystem
-    </p>
+        <p>
+        India's Next-Generation<br>
+        Real Estate Ecosystem
+        </p>
 
-    </div>
-    """, unsafe_allow_html=True)
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
 
     st.markdown("### 📌 Navigation")
+
 
     st.page_link(
         "app.py",
         label="🏠 Home"
     )
 
+
     st.page_link(
         "pages/01_Login_Register.py",
         label="🔐 Login & Registration"
     )
 
+
     st.page_link(
         "pages/02_Property_Search.py",
         label="🔎 Property Search"
     )
+
 
     st.page_link(
         "pages/03_Post_Property.py",
@@ -310,601 +139,735 @@ with st.sidebar:
 # HERO
 # ============================================================
 
-st.markdown("""
-<div class="fc-hero">
-
-<h1>
-🔐 Welcome to FirstChoice Property Hub
-</h1>
-
-<p>
-Secure Login & Registration
-</p>
-
-<p>
-Your trusted gateway to India's next-generation
-real estate ecosystem.
-</p>
-
-</div>
-""", unsafe_allow_html=True)
-
-
-# ============================================================
-# INTRO
-# ============================================================
-
-st.markdown("""
-<div class="fc-card">
-
-<h3>
-🏠 Create Your FirstChoice Account
-</h3>
-
-<p>
-Register once and explore properties, post listings,
-connect with buyers, owners, agents, builders and
-real estate service professionals.
-</p>
-
-<p>
-🔐 Mobile verification and Email verification
-are required for account security.
-</p>
-
-</div>
-""", unsafe_allow_html=True)
-
-
-# ============================================================
-# ACCOUNT TYPE
-# ============================================================
-
-st.markdown("""
-<div class="fc-section">
-
-<h2>
-👤 Select Your Account Type
-</h2>
-
-<p>
-Choose the account category that best describes you.
-</p>
-
-</div>
-""", unsafe_allow_html=True)
-
-
-account_type = st.selectbox(
-    "Account Type",
-    [
-        "Buyer",
-        "Owner / Seller",
-        "Tenant",
-        "Agent / Broker",
-        "Builder / Developer",
-        "Architect",
-        "Interior Designer",
-        "Building Material Supplier",
-        "Painter",
-        "Carpenter",
-        "Plumber",
-        "Electrician",
-        "Fabrication Service",
-        "Other Service Provider"
-    ]
+hero(
+    "🔐 Welcome to FirstChoice Property Hub",
+    "Securely login or create your account to access India's next-generation real estate ecosystem."
 )
 
 
 # ============================================================
-# PERSONAL INFORMATION
+# IF ALREADY LOGGED IN
 # ============================================================
 
-st.markdown("""
-<div class="fc-section">
+if is_logged_in():
 
-<h2>
-📝 Personal & Business Information
-</h2>
+    section(
+        "👋 You Are Already Logged In",
+        "Your FirstChoice Property Hub account is currently active."
+    )
 
-<p>
-Enter your basic information to create your account.
-</p>
 
-</div>
-""", unsafe_allow_html=True)
+    st.success(
+        f"Welcome {st.session_state.user_name}!"
+    )
+
+
+    st.info(
+        f"Account Role: {get_role_label()}"
+    )
+
+
+    col1, col2 = st.columns(2)
+
+
+    with col1:
+
+        if st.button(
+            "🏠 Go to Home",
+            use_container_width=True
+        ):
+
+            st.switch_page(
+                "app.py"
+            )
+
+
+    with col2:
+
+        if st.button(
+            "🚪 Logout",
+            use_container_width=True
+        ):
+
+            logout_user()
+
+            st.rerun()
+
+
+    footer()
+
+    st.stop()
+
+
+# ============================================================
+# LOGIN / REGISTER SWITCH
+# ============================================================
+
+section(
+    "🔑 Account Access",
+    "Choose whether you want to login or create a new account."
+)
 
 
 col1, col2 = st.columns(2)
 
 
 with col1:
-
-    full_name = st.text_input(
-        "👤 Full Name *",
-        placeholder="Enter your full name"
-    )
-
-
-with col2:
-
-    business_name = st.text_input(
-        "🏢 Business / Company Name",
-        placeholder="Enter business name if applicable"
-    )
-
-
-# ============================================================
-# CONTACT
-# ============================================================
-
-st.markdown("""
-<div class="fc-section">
-
-<h2>
-📱 Contact Verification
-</h2>
-
-<p>
-Mobile number and Email ID are required.
-</p>
-
-</div>
-""", unsafe_allow_html=True)
-
-
-col1, col2 = st.columns(2)
-
-
-with col1:
-
-    mobile_number = st.text_input(
-        "📱 Mobile Number *",
-        placeholder="Enter your 10-digit mobile number",
-        max_chars=10
-    )
-
-
-with col2:
-
-    email = st.text_input(
-        "📧 Email ID *",
-        placeholder="Enter your active email address"
-    )
-
-
-# ============================================================
-# VALIDATION
-# ============================================================
-
-def valid_mobile(number):
-
-    return (
-        number.isdigit()
-        and len(number) == 10
-        and number[0] in "6789"
-    )
-
-
-def valid_email(email_address):
-
-    pattern = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
-
-    return re.match(
-        pattern,
-        email_address
-    )
-
-
-# ============================================================
-# SEND OTP
-# ============================================================
-
-if st.button(
-    "📩 SEND MOBILE & EMAIL OTP",
-    use_container_width=True
-):
-
-    if not full_name.strip():
-
-        st.error(
-            "Please enter your full name."
-        )
-
-    elif not valid_mobile(mobile_number):
-
-        st.error(
-            "Please enter a valid 10-digit Indian mobile number."
-        )
-
-    elif not valid_email(email):
-
-        st.error(
-            "Please enter a valid Email ID."
-        )
-
-    else:
-
-        st.session_state.mobile_otp = str(
-            random.randint(
-                100000,
-                999999
-            )
-        )
-
-        st.session_state.email_otp = str(
-            random.randint(
-                100000,
-                999999
-            )
-        )
-
-        st.session_state.otp_sent = True
-
-        st.session_state.mobile_verified = False
-
-        st.session_state.email_verified = False
-
-        st.success(
-            "OTP generated successfully."
-        )
-
-        st.info(
-            "DEMO MODE: Production में OTP SMS और Email पर भेजा जाएगा."
-        )
-
-        st.code(
-            f"""
-Mobile OTP: {st.session_state.mobile_otp}
-
-Email OTP: {st.session_state.email_otp}
-"""
-        )
-
-
-# ============================================================
-# OTP VERIFICATION
-# ============================================================
-
-if st.session_state.otp_sent:
-
-    st.markdown("""
-    <div class="fc-section">
-
-    <h2>
-    🔑 Verify Your OTP
-    </h2>
-
-    <p>
-    Enter the OTP received on your mobile and email.
-    </p>
-
-    </div>
-    """, unsafe_allow_html=True)
-
-
-    otp1, otp2 = st.columns(2)
-
-
-    with otp1:
-
-        mobile_otp_input = st.text_input(
-            "📱 Mobile OTP",
-            placeholder="Enter 6-digit mobile OTP",
-            max_chars=6
-        )
-
-        if st.button(
-            "✅ VERIFY MOBILE OTP",
-            use_container_width=True
-        ):
-
-            if (
-                mobile_otp_input
-                == st.session_state.mobile_otp
-            ):
-
-                st.session_state.mobile_verified = True
-
-                st.success(
-                    "Mobile number verified successfully."
-                )
-
-            else:
-
-                st.error(
-                    "Invalid mobile OTP."
-                )
-
-
-    with otp2:
-
-        email_otp_input = st.text_input(
-            "📧 Email OTP",
-            placeholder="Enter 6-digit email OTP",
-            max_chars=6
-        )
-
-        if st.button(
-            "✅ VERIFY EMAIL OTP",
-            use_container_width=True
-        ):
-
-            if (
-                email_otp_input
-                == st.session_state.email_otp
-            ):
-
-                st.session_state.email_verified = True
-
-                st.success(
-                    "Email address verified successfully."
-                )
-
-            else:
-
-                st.error(
-                    "Invalid email OTP."
-                )
-
-
-# ============================================================
-# VERIFICATION STATUS
-# ============================================================
-
-if st.session_state.otp_sent:
-
-    c1, c2 = st.columns(2)
-
-
-    with c1:
-
-        if st.session_state.mobile_verified:
-
-            st.success(
-                "🟢 Mobile Verified"
-            )
-
-        else:
-
-            st.warning(
-                "🟡 Mobile Verification Pending"
-            )
-
-
-    with c2:
-
-        if st.session_state.email_verified:
-
-            st.success(
-                "🟢 Email Verified"
-            )
-
-        else:
-
-            st.warning(
-                "🟡 Email Verification Pending"
-            )
-
-
-# ============================================================
-# TERMS
-# ============================================================
-
-if (
-    st.session_state.mobile_verified
-    and st.session_state.email_verified
-):
-
-    st.markdown("""
-    <div class="fc-section">
-
-    <h2>
-    📜 Terms & Conditions
-    </h2>
-
-    <p>
-    You must accept the Terms & Conditions before creating your account.
-    </p>
-
-    </div>
-    """, unsafe_allow_html=True)
-
-
-    with st.expander(
-        "📖 Read Terms & Conditions"
-    ):
-
-        st.markdown("""
-        ### 1. Account Responsibility
-
-        Users must provide accurate and updated information.
-
-        ### 2. Property Listings
-
-        All property information, photos, videos and documents
-        must be accurate and legally permitted.
-
-        ### 3. Prohibited Content
-
-        Fraudulent, misleading, illegal or abusive content
-        is strictly prohibited.
-
-        ### 4. Transactions
-
-        FirstChoice Property Hub is a technology platform
-        connecting property users and service providers.
-
-        ### 5. Payments
-
-        Paid services are subject to applicable plan conditions.
-
-        ### 6. Account Security
-
-        Users are responsible for protecting their account.
-
-        ### 7. Suspension
-
-        Accounts violating platform policies may be restricted.
-
-        ### 8. Privacy
-
-        Personal information will be handled according to
-        the applicable Privacy Policy.
-
-        ### 9. Service Availability
-
-        The platform may experience maintenance or technical
-        interruptions.
-
-        ### 10. Legal Compliance
-
-        Users must comply with applicable laws and regulations.
-
-        ### 11. Policy Changes
-
-        Terms and policies may be updated when required.
-
-        ### 12. Acceptance
-
-        Creating an account confirms acceptance of the
-        applicable Terms & Conditions and Privacy Policy.
-
-        **Legal Notice:**
-        Production launch से पहले Terms & Conditions और
-        Privacy Policy को qualified legal professional से review करवाना चाहिए.
-        """)
-
-
-    st.session_state.terms_accepted = st.checkbox(
-        "☑️ I have read and agree to the Terms & Conditions and Privacy Policy."
-    )
-
-
-# ============================================================
-# CREATE ACCOUNT
-# ============================================================
-
-if (
-    st.session_state.mobile_verified
-    and st.session_state.email_verified
-):
-
-    if st.session_state.terms_accepted:
-
-        st.markdown("""
-        <div class="fc-success">
-
-        <h2>
-        ✅ Verification Completed
-        </h2>
-
-        <p>
-        Mobile number, Email ID and Terms & Conditions
-        have been successfully verified.
-        </p>
-
-        </div>
-        """, unsafe_allow_html=True)
-
-
-        if st.button(
-            "🚀 CREATE MY FIRSTCHOICE ACCOUNT",
-            use_container_width=True
-        ):
-
-            st.session_state.account_created = True
-
-            st.success(
-                "🎉 Account created successfully!"
-            )
-
-            st.balloons()
-
-
-    else:
-
-        st.warning(
-            "⚠️ Please accept the Terms & Conditions before creating your account."
-        )
-
-
-# ============================================================
-# ACCOUNT CREATED
-# ============================================================
-
-if st.session_state.account_created:
-
-    st.markdown("""
-    <div class="fc-card">
-
-    <h2>
-    🎉 Welcome to FirstChoice Property Hub
-    </h2>
-
-    <p>
-    Your registration process is complete.
-    </p>
-
-    </div>
-    """, unsafe_allow_html=True)
-
 
     if st.button(
-        "🔎 GO TO PROPERTY SEARCH",
+        "🔐 Login",
         use_container_width=True
     ):
 
-        st.switch_page(
-            "pages/02_Property_Search.py"
+        st.session_state.auth_mode = "login"
+
+        st.rerun()
+
+
+with col2:
+
+    if st.button(
+        "📝 Create New Account",
+        use_container_width=True
+    ):
+
+        st.session_state.auth_mode = "register"
+
+        st.rerun()
+
+
+# ============================================================
+# LOGIN
+# ============================================================
+
+if st.session_state.auth_mode == "login":
+
+    section(
+        "🔐 Login to Your Account",
+        "Enter your registered mobile number or email address."
+    )
+
+
+    login_identifier = st.text_input(
+        "📱 Mobile Number / 📧 Email ID",
+        placeholder=
+        "Enter your registered mobile number or email ID"
+    )
+
+
+    login_otp = st.text_input(
+        "🔢 Enter OTP",
+        placeholder=
+        "Enter 6-digit OTP"
+    )
+
+
+    if st.button(
+        "📨 Send Login OTP",
+        use_container_width=True
+    ):
+
+        if not login_identifier.strip():
+
+            st.error(
+                "Please enter your mobile number or email ID."
+            )
+
+        else:
+
+            user = None
+
+
+            if "@" in login_identifier:
+
+                user = get_user_by_email(
+                    login_identifier.strip()
+                )
+
+            else:
+
+                user = get_user_by_mobile(
+                    login_identifier.strip()
+                )
+
+
+            if user is None:
+
+                st.error(
+                    "No account found. Please create a new account first."
+                )
+
+            else:
+
+                otp = "123456"
+
+                st.session_state.login_otp = otp
+
+                st.session_state.login_identifier = (
+                    login_identifier.strip()
+                )
+
+
+                st.success(
+                    "OTP sent successfully."
+                )
+
+
+                st.info(
+                    "Demo OTP for testing: 123456"
+                )
+
+
+    if st.button(
+        "✅ Verify OTP & Login",
+        use_container_width=True
+    ):
+
+        if "login_otp" not in st.session_state:
+
+            st.error(
+                "Please request OTP first."
+            )
+
+        elif login_otp != st.session_state.login_otp:
+
+            st.error(
+                "Invalid OTP."
+            )
+
+        else:
+
+            identifier = (
+                st.session_state.login_identifier
+            )
+
+
+            if "@" in identifier:
+
+                user = get_user_by_email(
+                    identifier
+                )
+
+            else:
+
+                user = get_user_by_mobile(
+                    identifier
+                )
+
+
+            if user:
+
+                login_user(
+
+                    user_id=user["id"],
+
+                    user_name=user["full_name"],
+
+                    user_email=user["email"],
+
+                    user_mobile=user["mobile_number"],
+
+                    role=user["role"]
+
+                )
+
+
+                st.success(
+                    "🎉 Login successful!"
+                )
+
+
+                st.rerun()
+
+
+# ============================================================
+# REGISTRATION
+# ============================================================
+
+else:
+
+    section(
+        "📝 Create Your FirstChoice Account",
+        "Mobile number and email verification are required."
+    )
+
+
+    full_name = st.text_input(
+        "👤 Full Name",
+        placeholder=
+        "Enter your full name"
+    )
+
+
+    business_name = st.text_input(
+        "🏢 Business / Company Name",
+        placeholder=
+        "Enter business or company name (optional)"
+    )
+
+
+    account_type = st.selectbox(
+
+        "👤 Account Type",
+
+        [
+
+            "Individual Buyer",
+
+            "Property Owner",
+
+            "Tenant",
+
+            "Agent / Broker",
+
+            "Builder / Developer",
+
+            "Architect",
+
+            "Interior Designer",
+
+            "Construction Professional",
+
+            "Property Service Provider",
+
+            "Other"
+
+        ]
+
+    )
+
+
+    mobile_number = st.text_input(
+        "📱 Mobile Number",
+        placeholder=
+        "Enter your 10-digit mobile number"
+    )
+
+
+    email = st.text_input(
+        "📧 Email ID",
+        placeholder=
+        "Enter your active email address"
+    )
+
+
+    # ========================================================
+    # MOBILE OTP
+    # ========================================================
+
+    st.markdown(
+        "### 📱 Mobile Verification"
+    )
+
+
+    col1, col2 = st.columns(2)
+
+
+    with col1:
+
+        if st.button(
+            "📨 Send Mobile OTP",
+            use_container_width=True
+        ):
+
+            if not mobile_number.strip():
+
+                st.error(
+                    "Please enter mobile number first."
+                )
+
+            elif len(mobile_number.strip()) != 10:
+
+                st.error(
+                    "Please enter a valid 10-digit mobile number."
+                )
+
+            else:
+
+                otp = "123456"
+
+                st.session_state.mobile_otp = otp
+
+                st.success(
+                    "Mobile OTP sent successfully."
+                )
+
+                st.info(
+                    "Demo OTP: 123456"
+                )
+
+
+    with col2:
+
+        mobile_otp_input = st.text_input(
+            "🔢 Mobile OTP",
+            placeholder=
+            "Enter 6-digit OTP"
         )
 
 
-# ============================================================
-# SECURITY
-# ============================================================
+    if st.button(
+        "✅ Verify Mobile OTP",
+        use_container_width=True
+    ):
 
-st.markdown("""
-<div class="fc-warning">
+        if (
 
-<h3>
-🛡️ Account Security
-</h3>
+            st.session_state.mobile_otp
 
-<p>
-Never share your OTP with anyone.
-FirstChoice Property Hub support staff will never
-ask you for your OTP or password.
-</p>
+            and mobile_otp_input
 
-</div>
-""", unsafe_allow_html=True)
+            == st.session_state.mobile_otp
+
+        ):
+
+            st.session_state.mobile_verified = True
+
+            st.success(
+                "✅ Mobile number verified."
+            )
+
+        else:
+
+            st.error(
+                "Invalid mobile OTP."
+            )
+
+
+    # ========================================================
+    # EMAIL OTP
+    # ========================================================
+
+    st.markdown(
+        "### 📧 Email Verification"
+    )
+
+
+    col1, col2 = st.columns(2)
+
+
+    with col1:
+
+        if st.button(
+            "📨 Send Email OTP",
+            use_container_width=True
+        ):
+
+            if not email.strip():
+
+                st.error(
+                    "Please enter email address first."
+                )
+
+            elif "@" not in email:
+
+                st.error(
+                    "Please enter a valid email address."
+                )
+
+            else:
+
+                otp = "123456"
+
+                st.session_state.email_otp = otp
+
+                st.success(
+                    "Email OTP sent successfully."
+                )
+
+                st.info(
+                    "Demo OTP: 123456"
+                )
+
+
+    with col2:
+
+        email_otp_input = st.text_input(
+            "🔢 Email OTP",
+            placeholder=
+            "Enter 6-digit OTP"
+        )
+
+
+    if st.button(
+        "✅ Verify Email OTP",
+        use_container_width=True
+    ):
+
+        if (
+
+            st.session_state.email_otp
+
+            and email_otp_input
+
+            == st.session_state.email_otp
+
+        ):
+
+            st.session_state.email_verified = True
+
+            st.success(
+                "✅ Email address verified."
+            )
+
+        else:
+
+            st.error(
+                "Invalid email OTP."
+            )
+
+
+    # ========================================================
+    # TERMS & CONDITIONS
+    # ========================================================
+
+    section(
+        "📜 Terms & Conditions",
+        "You must read and accept the Terms & Conditions before creating your account."
+    )
+
+
+    st.markdown(
+        """
+        <div class="fc-card">
+
+        <h3>
+        FirstChoice Infra Property Hub — Terms of Use
+        </h3>
+
+        <p>
+        By creating an account, you agree that the information
+        provided by you is accurate and complete.
+        </p>
+
+        <p>
+        Users are responsible for the accuracy and legality of
+        property information, images, videos and documents
+        uploaded by them.
+        </p>
+
+        <p>
+        FirstChoice Infra Property Hub may review, moderate,
+        suspend or remove listings that violate applicable
+        laws, policies or platform guidelines.
+        </p>
+
+        <p>
+        Property listings and advertisements are provided by
+        users, owners, agents, builders or other third parties.
+        FirstChoice Infra Property Hub does not automatically
+        guarantee the ownership, legality, title, quality or
+        authenticity of every listing.
+        </p>
+
+        <p>
+        Users should independently verify property documents,
+        ownership, approvals, pricing and other information
+        before entering into any transaction.
+        </p>
+
+        <p>
+        Paid or premium services may be subject to separate
+        pricing, subscription and refund policies.
+        </p>
+
+        <p>
+        Users must not misuse the platform, upload unlawful
+        content, attempt unauthorized access, interfere with
+        platform security or engage in fraudulent activities.
+        </p>
+
+        <p>
+        The platform may collect and process account and usage
+        information in accordance with its Privacy Policy.
+        </p>
+
+        <p>
+        These Terms may be updated periodically. Continued use
+        of the platform after an update may require acceptance
+        of the revised Terms.
+        </p>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+    terms_accepted = st.checkbox(
+
+        "☑️ I have read, understood and agree to the Terms & Conditions and Privacy Policy."
+
+    )
+
+
+    # ========================================================
+    # CREATE ACCOUNT
+    # ========================================================
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+
+    if st.button(
+
+        "🚀 CREATE MY ACCOUNT",
+
+        use_container_width=True
+
+    ):
+
+        # ----------------------------------------------------
+        # VALIDATION
+        # ----------------------------------------------------
+
+        if not full_name.strip():
+
+            st.error(
+                "Please enter your full name."
+            )
+
+        elif not mobile_number.strip():
+
+            st.error(
+                "Please enter mobile number."
+            )
+
+        elif not email.strip():
+
+            st.error(
+                "Please enter email address."
+            )
+
+        elif not st.session_state.mobile_verified:
+
+            st.error(
+                "Please verify your mobile number."
+            )
+
+        elif not st.session_state.email_verified:
+
+            st.error(
+                "Please verify your email address."
+            )
+
+        elif not terms_accepted:
+
+            st.error(
+                "You must accept the Terms & Conditions before continuing."
+            )
+
+        else:
+
+            # ------------------------------------------------
+            # CHECK DUPLICATE MOBILE
+            # ------------------------------------------------
+
+            existing_mobile = get_user_by_mobile(
+
+                mobile_number.strip()
+
+            )
+
+
+            if existing_mobile:
+
+                st.error(
+                    "This mobile number is already registered."
+                )
+
+                st.stop()
+
+
+            # ------------------------------------------------
+            # CHECK DUPLICATE EMAIL
+            # ------------------------------------------------
+
+            existing_email = get_user_by_email(
+
+                email.strip()
+
+            )
+
+
+            if existing_email:
+
+                st.error(
+                    "This email address is already registered."
+                )
+
+                st.stop()
+
+
+            # ------------------------------------------------
+            # CREATE USER
+            # ------------------------------------------------
+
+            user_id = create_user(
+
+                full_name=full_name.strip(),
+
+                business_name=business_name.strip(),
+
+                account_type=account_type,
+
+                mobile_number=mobile_number.strip(),
+
+                email=email.strip(),
+
+                mobile_verified=1,
+
+                email_verified=1,
+
+                terms_accepted=1,
+
+                role="user"
+
+            )
+
+
+            if user_id:
+
+                st.success(
+                    "🎉 Your account has been created successfully!"
+                )
+
+
+                # --------------------------------------------
+                # AUTO LOGIN
+                # --------------------------------------------
+
+                login_user(
+
+                    user_id=user_id,
+
+                    user_name=full_name.strip(),
+
+                    user_email=email.strip(),
+
+                    user_mobile=mobile_number.strip(),
+
+                    role="user"
+
+                )
+
+
+                st.info(
+                    "Welcome to FirstChoice Infra Property Hub."
+                )
+
+
+                st.rerun()
+
+
+            else:
+
+                st.error(
+                    "Unable to create account. Please try again."
+                )
 
 
 # ============================================================
 # FOOTER
 # ============================================================
 
-st.markdown("""
-<div class="fc-footer">
-
-<h2>
-🏠 FIRSTCHOICE INFRA PROPERTY HUB
-</h2>
-
-<p>
-Buy • Sell • Rent • Invest • Build • Discover
-</p>
-
-<p>
-India's Next-Generation Real Estate Ecosystem
-</p>
-
-<hr>
-
-<p>
-© FirstChoice Infra Property Hub
-</p>
-
-</div>
-""", unsafe_allow_html=True)
+footer()
