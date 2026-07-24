@@ -15,12 +15,7 @@ from core.database import (
     create_property,
     save_property_media
 )
-
-from core.auth import (
-    is_logged_in
-)
-
-
+import streamlit as st 
 # ============================================================
 # FIRSTCHOICE INFRA PROPERTY HUB
 # PAGE 03 — POST PROPERTY
