@@ -4,237 +4,272 @@ import streamlit as st
 # ============================================================
 # FIRSTCHOICE INFRA PROPERTY HUB
 # COMMON NAVIGATION SYSTEM
-# BACK | HOME | PAGE MENU
 # ============================================================
 
 
-APP_PAGES = {
-    "🏠 Home / Dashboard": "01_admin_master_control.py",
-    "🏡 Property Details": "03_property_details.py",
-    "📢 Communication Center": "11_smart_communication_notification_center.py",
-    "💰 Finance Calculator": "13_finance_calculator.py",
-    "📊 Market Insights": "16_market_insights.py",
-    "🤖 AI Property Intelligence": "17_AI_Property_Intelligence.py",
-    "🎥 Virtual Property Tour": "19_virtual_property_tour.py",
-    "📈 Investment Intelligence": "20_investment_intelligence.py",
-    "⚖️ Legal Due Diligence": "22_property_legal_due_diligence.py",
-    "🤝 Property Deal Room": "23_property_deal_room.py",
-    "📁 Property Document Vault": "24_property_document_vault.py",
-    "💬 Property Collaboration Hub": "25_property_collaboration_hub.py",
-    "📅 Property Site Visit": "26_property_site_visit_manager.py",
-    "⚖️ Property Comparison": "27_property_comparison_center.py",
-    "💳 Investment Finance Center": "28_property_investment_finance_center.py",
-    "🛡️ Legal Verification": "30_property_legal_verification.py",
-    "👤 User Profile": "6_User_Profile.py",
-    "🏡 My Listings": "7_My_Listings.py",
-    "⭐ Saved Properties": "8_Saved_Properties.py",
-    "🔍 Property Search": "9_Property_Search.py",
+# ============================================================
+# PAGE LIST
+# ============================================================
+
+PAGES = {
+
+    "🏠 Home": "app.py",
+
+    "🔎 Property Search": "pages/02_Property_Search.py",
+
+    "🏡 Buy Property": "pages/03_Buy_Property.py",
+
+    "🔑 Rent Property": "pages/04_Rent_Property.py",
+
+    "🏢 Commercial Property": "pages/05_Commercial_Property.py",
+
+    "🌳 Land & Plot": "pages/06_Land_And_Plot.py",
+
+    "🚀 New Projects": "pages/07_New_Projects.py",
+
+    "📢 Post Property": "pages/08_Post_Property.py",
+
+    "❤️ My Watchlist": "pages/09_Watchlist.py",
+
+    "🛡️ Verified Properties": "pages/10_Verified_Properties.py",
+
+    "📈 Investment & Finance": "pages/28_Investment_Finance_Center.py",
+
+    "⚖️ Property Comparison": "pages/29_Property_Comparison.py",
+
+    "🏦 Loan & EMI Comparison": "pages/30_Loan_EMI_Comparison.py",
+
+    "👤 User Dashboard": "pages/50_User_Dashboard.py",
+
+    "💼 Partner Portal": "pages/51_Partner_Portal.py",
+
+    "👑 Admin Master Control": "pages/99_Admin_Master_Control.py"
+
 }
 
 
-HOME_PAGE = "01_admin_master_control.py"
-
-
 # ============================================================
-# SET CURRENT PAGE
+# SIDEBAR NAVIGATION
 # ============================================================
 
-def set_current_page(current_page):
+def render_sidebar():
 
-    # Initialize navigation history
-    if "navigation_history" not in st.session_state:
-        st.session_state.navigation_history = []
+    with st.sidebar:
 
-    previous_page = st.session_state.get(
-        "current_page",
-        HOME_PAGE
-    )
+        st.markdown(
+            """
+            <div style="
+                padding:20px;
+                border-radius:20px;
+                background:linear-gradient(
+                    135deg,
+                    #071952,
+                    #2563EB,
+                    #7C3AED,
+                    #EC4899
+                );
+                color:white;
+                margin-bottom:20px;
+            ">
 
-    # Avoid duplicate page entries
-    if previous_page != current_page:
+            <h2>
+            🏠 FirstChoice
+            </h2>
 
-        if not st.session_state.navigation_history:
+            <p>
+            Property Hub
+            </p>
 
-            st.session_state.navigation_history.append(
-                previous_page
-            )
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-        elif (
-            st.session_state.navigation_history[-1]
-            != previous_page
+
+        st.markdown(
+            "## 📚 Main Navigation"
+        )
+
+
+        selected_page = st.radio(
+
+            "Select Page",
+
+            list(PAGES.keys()),
+
+            key="main_navigation"
+
+        )
+
+
+        if st.button(
+            "🚀 OPEN SELECTED PAGE",
+            use_container_width=True
         ):
 
-            st.session_state.navigation_history.append(
-                previous_page
-            )
+            page_path = PAGES[selected_page]
 
-    st.session_state.current_page = current_page
+            try:
+
+                st.switch_page(page_path)
+
+            except Exception:
+
+                st.error(
+                    f"Page not found: {page_path}"
+                )
 
 
-# ============================================================
-# GO BACK
-# ============================================================
+        st.divider()
 
-def go_back():
 
-    history = st.session_state.get(
-        "navigation_history",
-        []
-    )
+        st.markdown(
+            """
+            ### 🏠 Property
 
-    if history:
+            Buy • Sell • Rent • Invest
+            """
+        )
 
-        previous_page = history.pop()
 
-        st.session_state.navigation_history = history
+        st.markdown(
+            """
+            ### 🛡️ Trust
 
-        st.session_state.current_page = previous_page
+            Verified Properties
+            Verified Owners
+            Secure Enquiry
+            """
+        )
 
-        try:
 
-            st.switch_page(
-                previous_page
-            )
+        st.divider()
 
-        except Exception:
 
-            st.switch_page(
-                HOME_PAGE
-            )
-
-    else:
-
-        st.switch_page(
-            HOME_PAGE
+        st.caption(
+            "FirstChoice Infra Property Hub"
         )
 
 
 # ============================================================
-# COMMON NAVIGATION UI
+# BOTTOM NAVIGATION
 # ============================================================
 
-def show_navigation():
+def render_bottom_navigation(
+    current_page
+):
 
-    st.markdown(
-        """
-        <style>
-
-        .nav-title {
-            padding: 14px 20px;
-            border-radius: 16px;
-            margin-bottom: 12px;
-
-            background:
-            linear-gradient(
-                135deg,
-                #071952,
-                #2563EB,
-                #7C3AED
-            );
-
-            color: white;
-
-            font-size: 18px;
-            font-weight: 800;
-
-            text-align: center;
-
-            box-shadow:
-            0 8px 25px
-            rgba(37,99,235,0.20);
-        }
-
-        </style>
-        """,
-        unsafe_allow_html=True
+    page_names = list(
+        PAGES.keys()
     )
+
+
+    if current_page not in PAGES:
+
+        return
+
+
+    current_index = page_names.index(
+        current_page
+    )
+
+
+    st.divider()
 
 
     st.markdown(
-        """
-        <div class="nav-title">
-        🏠 FirstChoice Infra Property Hub
-        </div>
-        """,
-        unsafe_allow_html=True
+        "## 🧭 Page Navigation"
     )
 
 
-    back_col, home_col, menu_col = st.columns(
-        [1, 1, 2]
-    )
+    col1, col2, col3 = st.columns(3)
 
 
     # ========================================================
-    # BACK
+    # PREVIOUS
     # ========================================================
 
-    with back_col:
+    with col1:
 
-        if st.button(
-            "⬅️ BACK",
-            use_container_width=True,
-            key="common_back_button"
-        ):
+        if current_index > 0:
 
-            go_back()
+            previous_page = page_names[
+                current_index - 1
+            ]
+
+
+            if st.button(
+                "⬅️ Previous Page",
+                use_container_width=True
+            ):
+
+                st.switch_page(
+                    PAGES[
+                        previous_page
+                    ]
+                )
 
 
     # ========================================================
     # HOME
     # ========================================================
 
-    with home_col:
+    with col2:
 
         if st.button(
-            "🏠 HOME",
-            use_container_width=True,
-            key="common_home_button"
+            "🏠 Back to Main Menu",
+            use_container_width=True
         ):
 
-            st.session_state.navigation_history = []
-
-            st.session_state.current_page = HOME_PAGE
-
             st.switch_page(
-                HOME_PAGE
+                "app.py"
             )
 
 
     # ========================================================
-    # PAGE MENU
+    # NEXT
     # ========================================================
 
-    with menu_col:
+    with col3:
 
-        selected_page = st.selectbox(
+        if current_index < len(
+            page_names
+        ) - 1:
 
-            "📋 PAGE MENU",
-
-            list(APP_PAGES.keys()),
-
-            index=None,
-
-            placeholder="Select a page...",
-
-            key="common_page_menu"
-
-        )
-
-
-        if selected_page:
-
-            selected_file = APP_PAGES[
-                selected_page
+            next_page = page_names[
+                current_index + 1
             ]
 
-            current_page = st.session_state.get(
-                "current_page",
-                ""
-            )
 
-            if selected_file != current_page:
+            if st.button(
+                "➡️ Next Page",
+                use_container_width=True
+            ):
 
                 st.switch_page(
-                    selected_file
+                    PAGES[
+                        next_page
+                    ]
                 )
+
+
+    st.markdown(
+        """
+        <div style="
+            text-align:center;
+            padding:15px;
+            margin-top:15px;
+            border-radius:15px;
+            background:#EEF2FF;
+        ">
+
+        🏠 FirstChoice Property Hub
+        <br>
+        <small>
+        All modules are connected through the main navigation.
+        </small>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
