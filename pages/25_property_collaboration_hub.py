@@ -1,35 +1,50 @@
 import streamlit as st
 from datetime import datetime, date
 import uuid
-from navigation import show_navigation, set_current_page
+
 # ============================================================
-# PAGE 25 — PROPERTY POST + COLLABORATION & ENQUIRY HUB
 # FIRSTCHOICE INFRA PROPERTY HUB
+# PAGE 25
+# PROPERTY POST + COLLABORATION + ENQUIRY HUB
 #
-# PAGE 2 + PAGE 25 COMBINED VERSION
+# COMBINED:
+# PAGE 2 + PAGE 25
 #
-# FLOW:
+# FEATURES:
+# 🏡 Property Posting
+# 🆔 Unique Property ID
+# ❤️ Like
+# ⭐ Save
+# 👋 Interest
+# 📩 Enquiry
+# 👤 Original Property Poster
+# 💬 Message Centre
+# 📅 Follow-up
+# ✅ Task Board
+# 👥 Collaboration
+# 📊 Activity Summary
+# ⬅️ Back
+# 🏠 Home
+# 📋 Page Menu
 #
-# POST PROPERTY
-#      ↓
-# UNIQUE PROPERTY ID
-#      ↓
-# PROPERTY LISTING
-#      ↓
-# LIKE / SAVE / INTEREST
-#      ↓
-# ENQUIRY
-#      ↓
-# ORIGINAL PROPERTY POSTER
-#      ↓
-# MESSAGE / FOLLOW-UP / SITE VISIT / TASK
-#      ↓
-# COLLABORATION / NEGOTIATION / BOOKING
-#
-# IMPORTANT:
-# Page 2 can be removed after replacing Page 25
-# with this combined code.
+# FILE:
+# 25_property_collaboration_hub.py
 # ============================================================
+
+
+# ============================================================
+# NAVIGATION IMPORT
+# ============================================================
+
+try:
+    from navigation import show_navigation, set_current_page
+except ImportError:
+
+    def show_navigation():
+        pass
+
+    def set_current_page(current_page):
+        pass
 
 
 # ============================================================
@@ -37,23 +52,42 @@ from navigation import show_navigation, set_current_page
 # ============================================================
 
 st.set_page_config(
-    page_title="Property Hub | FirstChoice Property Hub",
+    page_title="Property Collaboration Hub | FirstChoice Infra",
     page_icon="🏡",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
 
 # ============================================================
-# SESSION STATE — MAIN PROPERTY DATABASE
+# REGISTER CURRENT PAGE
+# ============================================================
+
+try:
+    set_current_page(
+        "25_property_collaboration_hub.py"
+    )
+except Exception:
+    pass
+
+
+# ============================================================
+# COMMON NAVIGATION
+# ============================================================
+
+try:
+    show_navigation()
+except Exception:
+    pass
+
+
+# ============================================================
+# SESSION STATE
 # ============================================================
 
 if "properties" not in st.session_state:
     st.session_state.properties = []
 
-
-# ============================================================
-# SESSION STATE — PROPERTY INTERACTIONS
-# ============================================================
 
 if "property_likes" not in st.session_state:
     st.session_state.property_likes = []
@@ -84,13 +118,15 @@ if "property_followups" not in st.session_state:
 
 
 # ============================================================
-# PREMIUM MULTICOLOUR UI
+# PREMIUM UI
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <style>
 
 .stApp {
+
     background:
     linear-gradient(
         135deg,
@@ -99,26 +135,39 @@ st.markdown("""
         #FDF4FF 70%,
         #ECFEFF 100%
     );
+
 }
+
 
 header {
+
     visibility: hidden;
+
 }
+
 
 #MainMenu {
+
     visibility: hidden;
+
 }
 
+
 footer {
+
     visibility: hidden;
+
 }
 
 
 /* HERO */
 
 .hero {
+
     padding: 52px;
+
     border-radius: 36px;
+
     color: white;
 
     background:
@@ -135,23 +184,34 @@ footer {
     rgba(37,99,235,0.32);
 
     margin-bottom: 32px;
+
 }
+
 
 .hero h1 {
+
     font-size: 46px;
+
     font-weight: 900;
+
 }
 
+
 .hero p {
+
     font-size: 18px;
+
     line-height: 1.8;
+
 }
 
 
 /* SECTION */
 
 .section {
+
     margin-top: 32px;
+
     margin-bottom: 22px;
 
     padding: 30px 34px;
@@ -172,35 +232,27 @@ footer {
     box-shadow:
     0 14px 40px
     rgba(79,70,229,0.22);
+
 }
+
 
 .section h2 {
+
     margin: 0;
+
     font-size: 29px;
+
     font-weight: 900;
-}
 
-
-/* FORM CARD */
-
-.form-card {
-    padding: 30px;
-    border-radius: 28px;
-
-    background: white;
-
-    box-shadow:
-    0 15px 45px
-    rgba(0,0,0,0.08);
-
-    margin-bottom: 25px;
 }
 
 
 /* AI CARD */
 
 .ai-card {
+
     padding: 32px;
+
     border-radius: 30px;
 
     color: white;
@@ -216,13 +268,16 @@ footer {
     box-shadow:
     0 18px 55px
     rgba(124,58,237,0.25);
+
 }
 
 
-/* TRUST CARD */
+/* TRUST */
 
 .trust-card {
+
     padding: 32px;
+
     border-radius: 30px;
 
     color: white;
@@ -238,13 +293,16 @@ footer {
     box-shadow:
     0 18px 55px
     rgba(5,150,105,0.25);
+
 }
 
 
-/* INFO CARD */
+/* INFO */
 
 .info-card {
+
     padding: 30px;
+
     border-radius: 28px;
 
     color: white;
@@ -260,31 +318,16 @@ footer {
     box-shadow:
     0 18px 55px
     rgba(3,105,161,0.22);
-}
 
-
-/* WARNING */
-
-.warning-card {
-    padding: 30px;
-    border-radius: 28px;
-
-    color: white;
-
-    background:
-    linear-gradient(
-        135deg,
-        #B45309,
-        #F59E0B,
-        #F97316
-    );
 }
 
 
 /* PROPERTY ID */
 
 .property-id-card {
+
     padding: 30px;
+
     border-radius: 28px;
 
     color: white;
@@ -302,18 +345,25 @@ footer {
     rgba(5,150,105,0.25);
 
     margin-top: 25px;
+
 }
 
+
 .property-id-card h1 {
+
     font-size: 36px;
+
     font-weight: 900;
+
 }
 
 
 /* POSTER */
 
 .poster-card {
+
     padding: 30px;
+
     border-radius: 28px;
 
     color: white;
@@ -329,13 +379,16 @@ footer {
     box-shadow:
     0 18px 55px
     rgba(30,64,175,0.25);
+
 }
 
 
 /* ENQUIRY */
 
 .enquiry-card {
+
     padding: 28px;
+
     border-radius: 26px;
 
     background:
@@ -354,13 +407,16 @@ footer {
     rgba(0,0,0,0.08);
 
     margin-bottom: 18px;
+
 }
 
 
 /* FINAL */
 
 .final-card {
+
     padding: 35px;
+
     border-radius: 30px;
 
     color: white;
@@ -379,17 +435,21 @@ footer {
     box-shadow:
     0 20px 60px
     rgba(124,58,237,0.25);
+
 }
 
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
 # HERO
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="hero">
 
 <h1>
@@ -402,7 +462,10 @@ all property enquiries from one smart workspace.
 </p>
 
 <p>
-📸 Photos • 🎥 Video • 📍 Location • 💰 Pricing •
+📸 Photos • 🎥 Video • 📍 Location • 💰 Pricing
+</p>
+
+<p>
 ❤️ Likes • ⭐ Saves • 👋 Interest • 📩 Enquiries
 </p>
 
@@ -412,14 +475,17 @@ all property enquiries from one smart workspace.
 </p>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
-# SMART SYSTEM INTRO
+# SMART SYSTEM
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="ai-card">
 
 <h2>
@@ -450,14 +516,17 @@ Follow-up → Site Visit → Negotiation → Booking
 </p>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
-# PROPERTY POSTING SECTION
+# PROPERTY POSTING
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -469,12 +538,10 @@ Create a complete property listing.
 </p>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
-
-# ============================================================
-# LISTING PROFILE
-# ============================================================
 
 profile_type = st.radio(
     "👤 Who are you?",
@@ -487,10 +554,6 @@ profile_type = st.radio(
     horizontal=True
 )
 
-
-# ============================================================
-# PROPERTY PURPOSE
-# ============================================================
 
 purpose = st.radio(
     "🎯 What do you want to do?",
@@ -505,10 +568,11 @@ purpose = st.radio(
 
 
 # ============================================================
-# BASIC PROPERTY INFORMATION
+# BASIC PROPERTY
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -516,7 +580,9 @@ st.markdown("""
 </h2>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 c1, c2 = st.columns(2)
@@ -526,8 +592,7 @@ with c1:
 
     property_title = st.text_input(
         "Property Title *",
-        placeholder=
-        "Example: Premium 3 BHK Luxury Apartment"
+        placeholder="Example: Premium 3 BHK Luxury Apartment"
     )
 
 
@@ -597,8 +662,7 @@ with c5:
 description = st.text_area(
     "Property Description",
     height=150,
-    placeholder=
-    "Describe your property, features, surroundings and unique benefits..."
+    placeholder="Describe your property, features, surroundings and unique benefits..."
 )
 
 
@@ -606,7 +670,8 @@ description = st.text_area(
 # LOCATION
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -614,7 +679,9 @@ st.markdown("""
 </h2>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 l1, l2 = st.columns(2)
@@ -677,7 +744,8 @@ address = st.text_area(
 # PRICING
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -685,7 +753,9 @@ st.markdown("""
 </h2>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 p1, p2, p3 = st.columns(3)
@@ -720,7 +790,8 @@ with p3:
 # AMENITIES
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -728,7 +799,9 @@ st.markdown("""
 </h2>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 amenities = st.multiselect(
@@ -756,7 +829,8 @@ amenities = st.multiselect(
 # MEDIA
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -764,7 +838,9 @@ st.markdown("""
 </h2>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 photos = st.file_uploader(
@@ -813,7 +889,8 @@ if video:
 # VERIFICATION
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -821,10 +898,13 @@ st.markdown("""
 </h2>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
-st.markdown("""
+st.markdown(
+    """
 <div class="trust-card">
 
 <h2>
@@ -842,7 +922,9 @@ and better visibility in future versions.
 <p>✅ RERA Verification for Applicable Projects</p>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 v1, v2 = st.columns(2)
@@ -876,10 +958,11 @@ st.info(
 
 
 # ============================================================
-# CONTACT PREFERENCES
+# CONTACT
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -887,7 +970,9 @@ st.markdown("""
 </h2>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 contact_options = st.multiselect(
@@ -911,10 +996,11 @@ agree = st.checkbox(
 
 
 # ============================================================
-# SUBMIT PROPERTY
+# SUBMIT
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="final-card">
 
 <h2>
@@ -926,7 +1012,9 @@ Your Property ID will connect all future interactions.
 </p>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 if st.button(
@@ -989,7 +1077,7 @@ if st.button(
 
 
         # ====================================================
-        # ORIGINAL POSTER CONNECTION
+        # ORIGINAL POSTER
         # ====================================================
 
         poster_id = st.session_state.get(
@@ -1005,7 +1093,7 @@ if st.button(
 
 
         # ====================================================
-        # PROPERTY RECORD
+        # PROPERTY DATA
         # ====================================================
 
         property_data = {
@@ -1107,7 +1195,7 @@ if st.button(
 
 
         # ====================================================
-        # SAVE PROPERTY
+        # SAVE
         # ====================================================
 
         st.session_state.properties.append(
@@ -1127,56 +1215,56 @@ if st.button(
 
         st.markdown(
             f"""
-            <div class="property-id-card">
+<div class="property-id-card">
 
-            <p>
-            🆔 Your Unique Property ID
-            </p>
+<p>
+🆔 Your Unique Property ID
+</p>
 
-            <h1>
-            {property_id}
-            </h1>
+<h1>
+{property_id}
+</h1>
 
-            <p>
-            Keep this Property ID for tracking your property listing.
-            </p>
+<p>
+Keep this Property ID for tracking your property listing.
+</p>
 
-            </div>
-            """,
+</div>
+""",
             unsafe_allow_html=True
         )
 
 
         st.markdown(
             f"""
-            <div class="info-card">
+<div class="info-card">
 
-            <h3>
-            🔗 Smart Property Connection Activated
-            </h3>
+<h3>
+🔗 Smart Property Connection Activated
+</h3>
 
-            <p>
-            <b>Property ID:</b>
-            {property_id}
-            </p>
+<p>
+<b>Property ID:</b>
+{property_id}
+</p>
 
-            <p>
-            <b>Property Posted By:</b>
-            {poster_name}
-            </p>
+<p>
+<b>Property Posted By:</b>
+{poster_name}
+</p>
 
-            <p>
-            <b>Poster ID:</b>
-            {poster_id}
-            </p>
+<p>
+<b>Poster ID:</b>
+{poster_id}
+</p>
 
-            <p>
-            ❤️ Likes, ⭐ Saves, 👋 Interests and 📩 Enquiries
-            will remain connected to this property.
-            </p>
+<p>
+❤️ Likes, ⭐ Saves, 👋 Interests and 📩 Enquiries
+will remain connected to this property.
+</p>
 
-            </div>
-            """,
+</div>
+""",
             unsafe_allow_html=True
         )
 
@@ -1187,10 +1275,11 @@ if st.button(
 
 
 # ============================================================
-# SELECT PROPERTY FOR COLLABORATION
+# COLLABORATION WORKSPACE
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -1203,7 +1292,9 @@ communication, tasks and follow-ups.
 </p>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 if st.session_state.properties:
@@ -1220,7 +1311,8 @@ if st.session_state.properties:
 
     selected_property_label = st.selectbox(
         "🏡 Select Property",
-        list(property_options.keys())
+        list(property_options.keys()),
+        key="collaboration_property_selector"
     )
 
 
@@ -1234,8 +1326,7 @@ if st.session_state.properties:
         (
             p
 
-            for p
-            in st.session_state.properties
+            for p in st.session_state.properties
 
             if p["property_id"]
             ==
@@ -1245,7 +1336,6 @@ if st.session_state.properties:
         None
 
     )
-
 
 else:
 
@@ -1283,74 +1373,80 @@ if selected_property:
     # ORIGINAL POSTER
     # ========================================================
 
-    st.markdown("""
-    <div class="section">
+    st.markdown(
+        """
+<div class="section">
 
-    <h2>
-    👤 Original Property Poster
-    </h2>
+<h2>
+👤 Original Property Poster
+</h2>
 
-    </div>
-    """, unsafe_allow_html=True)
+</div>
+""",
+        unsafe_allow_html=True
+    )
 
 
     st.markdown(
         f"""
-        <div class="poster-card">
+<div class="poster-card">
 
-        <h2>
-        📌 Enquiry Routing Rule
-        </h2>
+<h2>
+📌 Enquiry Routing Rule
+</h2>
 
-        <p>
-        <strong>Property:</strong>
-        {property_name}
-        </p>
+<p>
+<strong>Property:</strong>
+{property_name}
+</p>
 
-        <p>
-        <strong>Property ID:</strong>
-        {property_id}
-        </p>
+<p>
+<strong>Property ID:</strong>
+{property_id}
+</p>
 
-        <p>
-        <strong>Original Poster:</strong>
-        {poster_name}
-        </p>
+<p>
+<strong>Original Poster:</strong>
+{poster_name}
+</p>
 
-        <p>
-        <strong>Poster ID:</strong>
-        {poster_id}
-        </p>
+<p>
+<strong>Poster ID:</strong>
+{poster_id}
+</p>
 
-        <p>
-        <strong>Role:</strong>
-        {poster_role}
-        </p>
+<p>
+<strong>Role:</strong>
+{poster_role}
+</p>
 
-        <p>
-        <strong>Enquiries will be routed to:</strong>
-        {poster_mobile}
-        </p>
+<p>
+<strong>Enquiries will be routed to:</strong>
+{poster_mobile}
+</p>
 
-        </div>
-        """,
+</div>
+""",
         unsafe_allow_html=True
     )
 
 
     # ========================================================
-    # PROPERTY INTERACTION
+    # INTERACTION
     # ========================================================
 
-    st.markdown("""
-    <div class="section">
+    st.markdown(
+        """
+<div class="section">
 
-    <h2>
-    ❤️ Property Interest & Enquiry
-    </h2>
+<h2>
+❤️ Property Interest & Enquiry
+</h2>
 
-    </div>
-    """, unsafe_allow_html=True)
+</div>
+""",
+        unsafe_allow_html=True
+    )
 
 
     b1, b2, b3 = st.columns(3)
@@ -1388,7 +1484,8 @@ if selected_property:
 
         like_property = st.button(
             "❤️ LIKE PROPERTY",
-            use_container_width=True
+            use_container_width=True,
+            key="like_property_button"
         )
 
 
@@ -1396,7 +1493,8 @@ if selected_property:
 
         save_property = st.button(
             "⭐ SAVE PROPERTY",
-            use_container_width=True
+            use_container_width=True,
+            key="save_property_button"
         )
 
 
@@ -1404,7 +1502,8 @@ if selected_property:
 
         show_interest = st.button(
             "👋 I'M INTERESTED",
-            use_container_width=True
+            use_container_width=True,
+            key="interest_property_button"
         )
 
 
@@ -1508,15 +1607,18 @@ if selected_property:
     # ENQUIRY
     # ========================================================
 
-    st.markdown("""
-    <div class="section">
+    st.markdown(
+        """
+<div class="section">
 
-    <h2>
-    📨 Send Enquiry to Original Property Poster
-    </h2>
+<h2>
+📨 Send Enquiry to Original Property Poster
+</h2>
 
-    </div>
-    """, unsafe_allow_html=True)
+</div>
+""",
+        unsafe_allow_html=True
+    )
 
 
     enquiry_type = st.selectbox(
@@ -1538,15 +1640,15 @@ if selected_property:
 
     enquiry_message = st.text_area(
         "💬 Enquiry Message",
-        placeholder=
-        "Write your enquiry about this property...",
+        placeholder="Write your enquiry about this property...",
         key="workspace_enquiry_message"
     )
 
 
     if st.button(
         "📨 SEND ENQUIRY TO ORIGINAL PROPERTY POSTER",
-        use_container_width=True
+        use_container_width=True,
+        key="send_property_enquiry"
     ):
 
         if not interested_user:
@@ -1615,8 +1717,7 @@ if selected_property:
 
 
             st.success(
-                f"✅ Enquiry sent to the original property poster: "
-                f"{poster_name}"
+                f"✅ Enquiry sent to the original property poster: {poster_name}"
             )
 
 
@@ -1624,15 +1725,18 @@ if selected_property:
     # POSTER ENQUIRY DASHBOARD
     # ========================================================
 
-    st.markdown("""
-    <div class="section">
+    st.markdown(
+        """
+<div class="section">
 
-    <h2>
-    📥 Property Poster Enquiry Dashboard
-    </h2>
+<h2>
+📥 Property Poster Enquiry Dashboard
+</h2>
 
-    </div>
-    """, unsafe_allow_html=True)
+</div>
+""",
+        unsafe_allow_html=True
+    )
 
 
     poster_enquiries = [
@@ -1661,49 +1765,49 @@ if selected_property:
 
             st.markdown(
                 f"""
-                <div class="enquiry-card">
+<div class="enquiry-card">
 
-                <h3>
-                📨 {enquiry["Enquiry Type"]}
-                </h3>
+<h3>
+📨 {enquiry["Enquiry Type"]}
+</h3>
 
-                <p>
-                <strong>Property:</strong>
-                {enquiry["Property"]}
-                </p>
+<p>
+<strong>Property:</strong>
+{enquiry["Property"]}
+</p>
 
-                <p>
-                <strong>Interested User:</strong>
-                {enquiry["Interested User"]}
-                </p>
+<p>
+<strong>Interested User:</strong>
+{enquiry["Interested User"]}
+</p>
 
-                <p>
-                <strong>Mobile:</strong>
-                {enquiry["Interested Mobile"]}
-                </p>
+<p>
+<strong>Mobile:</strong>
+{enquiry["Interested Mobile"]}
+</p>
 
-                <p>
-                <strong>Email:</strong>
-                {enquiry["Interested Email"]}
-                </p>
+<p>
+<strong>Email:</strong>
+{enquiry["Interested Email"]}
+</p>
 
-                <p>
-                <strong>Message:</strong>
-                {enquiry["Message"]}
-                </p>
+<p>
+<strong>Message:</strong>
+{enquiry["Message"]}
+</p>
 
-                <p>
-                <strong>Received:</strong>
-                {enquiry["Created"]}
-                </p>
+<p>
+<strong>Received:</strong>
+{enquiry["Created"]}
+</p>
 
-                <p>
-                <strong>Status:</strong>
-                {enquiry["Status"]}
-                </p>
+<p>
+<strong>Status:</strong>
+{enquiry["Status"]}
+</p>
 
-                </div>
-                """,
+</div>
+""",
                 unsafe_allow_html=True
             )
 
@@ -1765,15 +1869,18 @@ if selected_property:
     # MESSAGE CENTRE
     # ========================================================
 
-    st.markdown("""
-    <div class="section">
+    st.markdown(
+        """
+<div class="section">
 
-    <h2>
-    💬 Property Message Centre
-    </h2>
+<h2>
+💬 Property Message Centre
+</h2>
 
-    </div>
-    """, unsafe_allow_html=True)
+</div>
+""",
+        unsafe_allow_html=True
+    )
 
 
     message_type = st.selectbox(
@@ -1794,8 +1901,7 @@ if selected_property:
 
     message_text = st.text_area(
         "💬 Write Message",
-        placeholder=
-        "Type your property-related message...",
+        placeholder="Type your property-related message...",
         key="workspace_message_text"
     )
 
@@ -1824,7 +1930,8 @@ if selected_property:
 
     if st.button(
         "📨 SEND PROPERTY MESSAGE",
-        use_container_width=True
+        use_container_width=True,
+        key="send_property_message"
     ):
 
         if not message_text:
@@ -1890,15 +1997,18 @@ if selected_property:
 
     if property_messages:
 
-        st.markdown("""
-        <div class="section">
+        st.markdown(
+            """
+<div class="section">
 
-        <h2>
-        🕒 Property Communication History
-        </h2>
+<h2>
+🕒 Property Communication History
+</h2>
 
-        </div>
-        """, unsafe_allow_html=True)
+</div>
+""",
+            unsafe_allow_html=True
+        )
 
 
         st.dataframe(
@@ -1912,15 +2022,18 @@ if selected_property:
     # TASK MANAGEMENT
     # ========================================================
 
-    st.markdown("""
-    <div class="section">
+    st.markdown(
+        """
+<div class="section">
 
-    <h2>
-    ✅ Property Transaction Task Board
-    </h2>
+<h2>
+✅ Property Transaction Task Board
+</h2>
 
-    </div>
-    """, unsafe_allow_html=True)
+</div>
+""",
+        unsafe_allow_html=True
+    )
 
 
     t1, t2 = st.columns(2)
@@ -1930,8 +2043,7 @@ if selected_property:
 
         task_title = st.text_input(
             "📌 Task Name",
-            placeholder=
-            "Example: Collect Sale Agreement",
+            placeholder="Example: Collect Sale Agreement",
             key="workspace_task_title"
         )
 
@@ -1976,7 +2088,8 @@ if selected_property:
 
     if st.button(
         "➕ ADD PROPERTY TASK",
-        use_container_width=True
+        use_container_width=True,
+        key="add_property_task"
     ):
 
         if not task_title:
@@ -2047,18 +2160,21 @@ if selected_property:
 
 
     # ========================================================
-    # FOLLOW-UP REMINDER
+    # FOLLOW-UP
     # ========================================================
 
-    st.markdown("""
-    <div class="section">
+    st.markdown(
+        """
+<div class="section">
 
-    <h2>
-    📅 Follow-Up Reminder
-    </h2>
+<h2>
+📅 Follow-Up Reminder
+</h2>
 
-    </div>
-    """, unsafe_allow_html=True)
+</div>
+""",
+        unsafe_allow_html=True
+    )
 
 
     r1, r2 = st.columns(2)
@@ -2089,7 +2205,8 @@ if selected_property:
 
     if st.button(
         "🔔 CREATE FOLLOW-UP REMINDER",
-        use_container_width=True
+        use_container_width=True,
+        key="create_followup"
     ):
 
         st.session_state.property_followups.append({
@@ -2125,15 +2242,18 @@ if selected_property:
     # COLLABORATION MEMBERS
     # ========================================================
 
-    st.markdown("""
-    <div class="section">
+    st.markdown(
+        """
+<div class="section">
 
-    <h2>
-    👥 Collaboration Members
-    </h2>
+<h2>
+👥 Collaboration Members
+</h2>
 
-    </div>
-    """, unsafe_allow_html=True)
+</div>
+""",
+        unsafe_allow_html=True
+    )
 
 
     members = st.multiselect(
@@ -2157,18 +2277,18 @@ if selected_property:
 
         st.markdown(
             f"""
-            <div class="info-card">
+<div class="info-card">
 
-            <h2>
-            👥 Active Collaboration Team
-            </h2>
+<h2>
+👥 Active Collaboration Team
+</h2>
 
-            <p>
-            {", ".join(members)}
-            </p>
+<p>
+{", ".join(members)}
+</p>
 
-            </div>
-            """,
+</div>
+""",
             unsafe_allow_html=True
         )
 
@@ -2177,15 +2297,18 @@ if selected_property:
     # ACTIVITY SUMMARY
     # ========================================================
 
-    st.markdown("""
-    <div class="section">
+    st.markdown(
+        """
+<div class="section">
 
-    <h2>
-    📊 Collaboration & Enquiry Activity
-    </h2>
+<h2>
+📊 Collaboration & Enquiry Activity
+</h2>
 
-    </div>
-    """, unsafe_allow_html=True)
+</div>
+""",
+        unsafe_allow_html=True
+    )
 
 
     property_likes = [
@@ -2302,7 +2425,8 @@ if selected_property:
 # CURRENT PROPERTY LISTINGS
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="section">
 
 <h2>
@@ -2310,7 +2434,9 @@ st.markdown("""
 </h2>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 if st.session_state.properties:
@@ -2319,38 +2445,38 @@ if st.session_state.properties:
 
         st.markdown(
             f"""
-            <div class="info-card">
+<div class="info-card">
 
-            <h3>
-            🏠 {property_item['property_title']}
-            </h3>
+<h3>
+🏠 {property_item['property_title']}
+</h3>
 
-            <p>
-            🆔 <b>Property ID:</b>
-            {property_item['property_id']}
-            </p>
+<p>
+🆔 <b>Property ID:</b>
+{property_item['property_id']}
+</p>
 
-            <p>
-            👤 <b>Posted By:</b>
-            {property_item['poster_name']}
-            </p>
+<p>
+👤 <b>Posted By:</b>
+{property_item['poster_name']}
+</p>
 
-            <p>
-            📍 {property_item['city']},
-            {property_item['locality']}
-            </p>
+<p>
+📍 {property_item['city']},
+{property_item['locality']}
+</p>
 
-            <p>
-            💰 ₹{property_item['price']:,.0f}
-            </p>
+<p>
+💰 ₹{property_item['price']:,.0f}
+</p>
 
-            <p>
-            📊 <b>Status:</b>
-            {property_item['listing_status']}
-            </p>
+<p>
+📊 <b>Status:</b>
+{property_item['listing_status']}
+</p>
 
-            </div>
-            """,
+</div>
+""",
             unsafe_allow_html=True
         )
 
@@ -2363,10 +2489,11 @@ else:
 
 
 # ============================================================
-# FINAL SMART WORKFLOW
+# FINAL WORKFLOW
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="ai-card">
 
 <h2>
@@ -2410,14 +2537,17 @@ All activity remains connected to the same Property ID.
 </p>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 # ============================================================
 # FINAL NOTICE
 # ============================================================
 
-st.markdown("""
+st.markdown(
+    """
 <div class="trust-card">
 
 <h2>
@@ -2441,4 +2571,6 @@ email and CRM workflow से connect किया जा सकता है।
 </p>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
