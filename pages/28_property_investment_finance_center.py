@@ -1,48 +1,43 @@
+```python
 import streamlit as st
 import pandas as pd
 
 # ============================================================
-# PAGE 14 + PAGE 28 + PAGE 29
-# SMART PROPERTY INVESTMENT, ROI & FINANCE CENTER
+# PAGE 28 — SMART PROPERTY INVESTMENT, ROI & FINANCE CENTER
 # FIRSTCHOICE INFRA PROPERTY HUB
 #
-# MERGED FEATURES:
-# PAGE 14:
-# - Property Investment & ROI Analyzer
-# - Current / Expected Property Value
-# - Gross Rental Yield
-# - Net Rental Yield
-# - Capital Gain
-# - Future Property Value
-# - Future Capital Gain
-# - Investment Score
+# FEATURES:
+# ✅ Property Investment Planner
+# ✅ Purchase & Acquisition Cost
+# ✅ Down Payment
+# ✅ Loan Requirement
+# ✅ Rental Income
+# ✅ Vacancy
+# ✅ Rent Growth
+# ✅ Property Expenses
+# ✅ Appreciation Forecast
+# ✅ ROI Summary
+# ✅ Gross Rental Yield
+# ✅ Net Rental Yield
+# ✅ Current Capital Gain
+# ✅ Future Property Value
+# ✅ Future Capital Gain
+# ✅ Monthly Cash Flow
+# ✅ Multiple Lender Comparison
+# ✅ EMI Calculator
+# ✅ Fixed / Floating Rate
+# ✅ Processing Fee
+# ✅ Other Charges
+# ✅ Total Interest
+# ✅ Total Loan Cost
+# ✅ Best Loan Recommendation
+# ✅ EMI Affordability
+# ✅ Existing EMI
+# ✅ Investment Intelligence
+# ✅ Navigation / Next Actions
 #
-# PAGE 28:
-# - Property Investment Planner
-# - Purchase & Acquisition Costs
-# - Down Payment
-# - Rental Income
-# - Vacancy
-# - Rent Growth
-# - Property Expenses
-# - Appreciation Forecast
-# - ROI Summary
-# - Monthly Cash Flow
-# - Investment Insight
-# - Next Action
-#
-# PAGE 29:
-# - Multiple Lender Comparison
-# - EMI Calculator
-# - Interest Rate
-# - Fixed / Floating
-# - Processing Fee
-# - Other Charges
-# - Total Interest
-# - Total Loan Cost
-# - Best Loan Recommendation
-# - EMI Affordability
-# - Existing EMI
+# 🔥 UPGRADE:
+# Loan Tenure Maximum = 30 Years
 # ============================================================
 
 
@@ -87,11 +82,6 @@ footer {
     visibility: hidden;
 }
 
-
-/* =========================================================
-HERO
-========================================================= */
-
 .hero {
     padding: 52px;
     border-radius: 36px;
@@ -123,19 +113,11 @@ HERO
     line-height: 1.8;
 }
 
-
-/* =========================================================
-SECTION
-========================================================= */
-
 .section {
     margin-top: 32px;
     margin-bottom: 22px;
-
     padding: 30px 34px;
-
     border-radius: 28px;
-
     color: white;
 
     background:
@@ -158,18 +140,8 @@ SECTION
     font-weight: 900;
 }
 
-.section p {
-    margin-top: 8px;
-}
-
-
-/* =========================================================
-CARD
-========================================================= */
-
 .card {
     padding: 28px;
-
     border-radius: 26px;
 
     background:
@@ -189,16 +161,9 @@ CARD
     margin-bottom: 20px;
 }
 
-
-/* =========================================================
-AI CARD
-========================================================= */
-
 .ai-card {
     padding: 32px;
-
     border-radius: 30px;
-
     color: white;
 
     background:
@@ -216,16 +181,9 @@ AI CARD
     margin-bottom: 25px;
 }
 
-
-/* =========================================================
-PROFIT CARD
-========================================================= */
-
 .profit-card {
     padding: 35px;
-
     border-radius: 30px;
-
     color: white;
 
     background:
@@ -242,17 +200,10 @@ PROFIT CARD
 
     margin-bottom: 25px;
 }
-
-
-/* =========================================================
-BEST LOAN
-========================================================= */
 
 .best-card {
     padding: 35px;
-
     border-radius: 30px;
-
     color: white;
 
     background:
@@ -270,16 +221,9 @@ BEST LOAN
     margin-bottom: 25px;
 }
 
-
-/* =========================================================
-WARNING
-========================================================= */
-
 .warning-card {
     padding: 30px;
-
     border-radius: 28px;
-
     color: white;
 
     background:
@@ -293,14 +237,8 @@ WARNING
     margin-top: 30px;
 }
 
-
-/* =========================================================
-INFO CARD
-========================================================= */
-
 .info-card {
     padding: 25px;
-
     border-radius: 25px;
 
     background:
@@ -316,16 +254,9 @@ INFO CARD
     margin-bottom: 20px;
 }
 
-
-/* =========================================================
-RESULT CARD
-========================================================= */
-
 .result-card {
     padding: 35px;
-
     border-radius: 30px;
-
     color: white;
 
     background:
@@ -350,11 +281,6 @@ RESULT CARD
     font-weight: 900;
 }
 
-
-/* =========================================================
-TAB AREA
-========================================================= */
-
 .stTabs [data-baseweb="tab-list"] {
     gap: 10px;
 }
@@ -365,21 +291,11 @@ TAB AREA
     font-weight: 800;
 }
 
-
-/* =========================================================
-BUTTON
-========================================================= */
-
 .stButton > button {
     border-radius: 14px;
     font-weight: 800;
     padding: 12px;
 }
-
-
-/* =========================================================
-MOBILE
-========================================================= */
 
 @media (max-width: 768px) {
 
@@ -480,15 +396,10 @@ tab1, tab2, tab3, tab4 = st.tabs([
 
 
 # ################################################################
-# TAB 1
-# PROPERTY INVESTMENT PLANNER
+# TAB 1 — PROPERTY INVESTMENT PLANNER
 # ################################################################
 
 with tab1:
-
-    # ========================================================
-    # PROPERTY DETAILS
-    # ========================================================
 
     st.markdown("""
     <div class="section">
@@ -759,28 +670,20 @@ with tab1:
 
 
     required_loan = max(
-        purchase_price
-        -
-        down_payment,
+        purchase_price - down_payment,
         0
     )
 
 
     annual_gross_rent = (
-        monthly_rent
-        *
-        12
+        monthly_rent * 12
     )
 
 
     effective_rent = (
         annual_gross_rent
         *
-        (
-            1
-            -
-            vacancy_rate / 100
-        )
+        (1 - vacancy_rate / 100)
     )
 
 
@@ -798,11 +701,6 @@ with tab1:
         -
         total_expenses
     )
-
-
-    # Keep negative cash flow visible.
-    # Do NOT use max(..., 0), because negative rental income
-    # is important for genuine investment analysis.
 
 
     gross_rental_yield = (
@@ -828,11 +726,9 @@ with tab1:
 
 
     current_capital_gain = (
-
         current_value
         -
         purchase_price
-
     )
 
 
@@ -876,7 +772,6 @@ with tab1:
     # ========================================================
 
     total_projected_rental_income = 0
-
 
     projected_annual_rent = effective_rent
 
@@ -986,10 +881,6 @@ with tab1:
         )
 
 
-    # ========================================================
-    # ROI RESULT
-    # ========================================================
-
     st.markdown(
         f"""
         <div class="result-card">
@@ -1015,15 +906,10 @@ with tab1:
 
 
 # ################################################################
-# TAB 2
-# ROI & RENTAL YIELD
+# TAB 2 — ROI & RENTAL YIELD
 # ################################################################
 
 with tab2:
-
-    # ========================================================
-    # RENTAL YIELD
-    # ========================================================
 
     st.markdown("""
     <div class="section">
@@ -1093,10 +979,6 @@ with tab2:
         )
 
 
-    # ========================================================
-    # CAPITAL APPRECIATION
-    # ========================================================
-
     st.markdown("""
     <div class="section">
 
@@ -1151,10 +1033,6 @@ with tab2:
         f"{current_capital_gain_percentage:.2f}%"
     )
 
-
-    # ========================================================
-    # FUTURE VALUE
-    # ========================================================
 
     st.markdown("""
     <div class="section">
@@ -1220,10 +1098,6 @@ with tab2:
         )
 
 
-    # ========================================================
-    # INVESTMENT SCORE
-    # ========================================================
-
     if net_rental_yield >= 5:
 
         score = "Excellent"
@@ -1282,10 +1156,6 @@ with tab2:
     )
 
 
-    # ========================================================
-    # ROI COMPONENT BREAKDOWN
-    # ========================================================
-
     st.markdown("""
     <div class="section">
 
@@ -1324,10 +1194,6 @@ with tab2:
         )
 
 
-    # ========================================================
-    # INVESTMENT WARNING
-    # ========================================================
-
     st.warning(
         "⚠️ The ROI calculation is an estimate based on "
         "user-entered assumptions. It does not include all "
@@ -1337,15 +1203,10 @@ with tab2:
 
 
 # ################################################################
-# TAB 3
-# LOAN & EMI CENTER
+# TAB 3 — LOAN & EMI CENTER
 # ################################################################
 
 with tab3:
-
-    # ========================================================
-    # LOAN INTRO
-    # ========================================================
 
     st.markdown("""
     <div class="section">
@@ -1353,6 +1214,11 @@ with tab3:
     <h2>
     🏦 Smart Loan & EMI Comparison Center
     </h2>
+
+    <p>
+    Compare multiple lenders and calculate EMI for loan tenure
+    up to 30 years.
+    </p>
 
     </div>
     """, unsafe_allow_html=True)
@@ -1370,13 +1236,13 @@ with tab3:
     other charges and estimated total financing cost.
     </p>
 
+    <p>
+    🔥 Loan tenure supported from 1 year up to 30 years.
+    </p>
+
     </div>
     """, unsafe_allow_html=True)
 
-
-    # ========================================================
-    # LOAN OFFER COUNT
-    # ========================================================
 
     lender_count = st.selectbox(
         "🏦 How many loan offers do you want to compare?",
@@ -1520,7 +1386,7 @@ with tab3:
             lender_name = st.text_input(
                 "🏦 Lender / Bank Name",
                 value=f"Lender {i + 1}",
-                key=f"final_lender_{i}"
+                key=f"page28_lender_{i}"
             )
 
 
@@ -1532,18 +1398,24 @@ with tab3:
                 max_value=30.0,
                 value=8.5,
                 step=0.05,
-                key=f"final_interest_{i}"
+                key=f"page28_interest_{i}"
             )
 
 
         with c3:
 
+            # =================================================
+            # 🔥 UPGRADED:
+            # MAXIMUM TENURE NOW 30 YEARS
+            # =================================================
+
             tenure = st.number_input(
-                "📅 Loan Tenure (Years)",
+                "📅 Loan Tenure (Years) — Max 30 Years",
                 min_value=1,
-                max_value=40,
+                max_value=30,
                 value=20,
-                key=f"final_tenure_{i}"
+                step=1,
+                key=f"page28_tenure_{i}"
             )
 
 
@@ -1557,7 +1429,7 @@ with tab3:
                 min_value=0,
                 value=10000,
                 step=1000,
-                key=f"final_processing_{i}"
+                key=f"page28_processing_{i}"
             )
 
 
@@ -1568,7 +1440,7 @@ with tab3:
                 min_value=0,
                 value=5000,
                 step=1000,
-                key=f"final_other_{i}"
+                key=f"page28_other_{i}"
             )
 
 
@@ -1577,7 +1449,7 @@ with tab3:
             floating_rate = st.checkbox(
                 "📈 Floating Interest Rate",
                 value=True,
-                key=f"final_floating_{i}"
+                key=f"page28_floating_{i}"
             )
 
 
@@ -1627,10 +1499,8 @@ with tab3:
         total_cost = (
 
             total_payment
-
             +
             loan["processing"]
-
             +
             loan["other"]
 
@@ -1670,10 +1540,6 @@ with tab3:
 
         })
 
-
-    # ========================================================
-    # COMPARISON TABLE
-    # ========================================================
 
     st.markdown("""
     <div class="section">
@@ -1717,11 +1583,9 @@ with tab3:
             )[1]
 
             +
-
             loans[i]["processing"]
 
             +
-
             loans[i]["other"]
 
         )
@@ -1756,10 +1620,6 @@ with tab3:
     )
 
 
-    # ========================================================
-    # BEST LOAN RECOMMENDATION
-    # ========================================================
-
     st.markdown(
         f"""
         <div class="best-card">
@@ -1776,6 +1636,13 @@ with tab3:
         📊 Interest Rate:
         <b>
         {best_loan['interest']:.2f}%
+        </b>
+        </p>
+
+        <p>
+        📌 Rate Type:
+        <b>
+        {"Floating" if best_loan["floating"] else "Fixed"}
         </b>
         </p>
 
@@ -1833,7 +1700,7 @@ with tab3:
         min_value=0,
         value=100000,
         step=5000,
-        key="final_monthly_income"
+        key="page28_monthly_income"
     )
 
 
@@ -1842,7 +1709,7 @@ with tab3:
         min_value=0,
         value=0,
         step=1000,
-        key="final_existing_emi"
+        key="page28_existing_emi"
     )
 
 
@@ -1951,13 +1818,9 @@ with tab3:
     monthly_cash_flow = (
 
         monthly_effective_rent
-
         -
-
         monthly_expenses
-
         -
-
         best_emi
 
     )
@@ -2000,15 +1863,10 @@ with tab3:
 
 
 # ################################################################
-# TAB 4
-# INVESTMENT INTELLIGENCE
+# TAB 4 — INVESTMENT INTELLIGENCE
 # ################################################################
 
 with tab4:
-
-    # ========================================================
-    # SMART INVESTMENT INSIGHT
-    # ========================================================
 
     if estimated_roi >= 100:
 
@@ -2054,10 +1912,6 @@ with tab4:
         unsafe_allow_html=True
     )
 
-
-    # ========================================================
-    # INVESTMENT DECISION SNAPSHOT
-    # ========================================================
 
     st.markdown("""
     <div class="section">
@@ -2105,10 +1959,6 @@ with tab4:
         )
 
 
-    # ========================================================
-    # NEXT ACTION
-    # ========================================================
-
     st.markdown("""
     <div class="section">
 
@@ -2146,7 +1996,7 @@ with tab4:
 
         ],
 
-        key="final_next_step"
+        key="page28_next_step"
 
     )
 
@@ -2161,15 +2011,11 @@ with tab4:
         )
 
 
-    # ========================================================
-    # FUTURE SMART FEATURES
-    # ========================================================
-
     st.markdown("""
     <div class="ai-card">
 
     <h2>
-    🚀 Future Smart Investment & Finance Features
+    🚀 Smart Investment & Finance Features
     </h2>
 
     <p>
@@ -2209,10 +2055,6 @@ with tab4:
     """, unsafe_allow_html=True)
 
 
-    # ========================================================
-    # IMPORTANT FINANCIAL DISCLAIMER
-    # ========================================================
-
     st.markdown("""
     <div class="warning-card">
 
@@ -2238,3 +2080,4 @@ with tab4:
 
     </div>
     """, unsafe_allow_html=True)
+```
