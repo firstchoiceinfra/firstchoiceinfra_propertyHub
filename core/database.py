@@ -1,27 +1,39 @@
 import sqlite3
-from pathlib import Path
+import os
 from datetime import datetime
 
 
 # ============================================================
 # FIRSTCHOICE INFRA PROPERTY HUB
-# CENTRAL DATABASE MODULE
+# CORE DATABASE SYSTEM
 # ============================================================
 
-# ------------------------------------------------------------
+
+# ============================================================
 # DATABASE PATH
-# ------------------------------------------------------------
+# ============================================================
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(
+    os.path.dirname(
+        os.path.abspath(__file__)
+    )
+)
 
-DATA_DIR = BASE_DIR / "data"
+DATA_DIR = os.path.join(
+    BASE_DIR,
+    "data"
+)
 
-DATA_DIR.mkdir(
-    parents=True,
+os.makedirs(
+    DATA_DIR,
     exist_ok=True
 )
 
-DB_PATH = DATA_DIR / "property_hub.db"
+
+DATABASE_PATH = os.path.join(
+    DATA_DIR,
+    "firstchoice_property_hub.db"
+)
 
 
 # ============================================================
@@ -31,7 +43,7 @@ DB_PATH = DATA_DIR / "property_hub.db"
 def get_connection():
 
     connection = sqlite3.connect(
-        DB_PATH,
+        DATABASE_PATH,
         check_same_thread=False
     )
 
@@ -41,7 +53,7 @@ def get_connection():
 
 
 # ============================================================
-# DATABASE INITIALIZATION
+# INITIALIZE DATABASE
 # ============================================================
 
 def init_db():
@@ -63,17 +75,23 @@ def init_db():
 
             full_name TEXT NOT NULL,
 
+            business_name TEXT,
+
+            account_type TEXT NOT NULL,
+
+            mobile_number TEXT UNIQUE NOT NULL,
+
             email TEXT UNIQUE NOT NULL,
 
-            mobile TEXT UNIQUE NOT NULL,
+            mobile_verified INTEGER DEFAULT 0,
 
-            role TEXT DEFAULT 'user',
-
-            is_active INTEGER DEFAULT 1,
+            email_verified INTEGER DEFAULT 0,
 
             terms_accepted INTEGER DEFAULT 0,
 
-            terms_accepted_at TEXT,
+            role TEXT DEFAULT 'user',
+
+            account_status TEXT DEFAULT 'active',
 
             created_at TEXT NOT NULL
 
@@ -83,12 +101,12 @@ def init_db():
 
 
     # ========================================================
-    # LOCATIONS TABLE
+    # CUSTOM AREAS TABLE
     # ========================================================
 
     cursor.execute(
         """
-        CREATE TABLE IF NOT EXISTS locations (
+        CREATE TABLE IF NOT EXISTS custom_areas (
 
             id INTEGER PRIMARY KEY AUTOINCREMENT,
 
@@ -100,7 +118,9 @@ def init_db():
 
             village_town TEXT NOT NULL,
 
-            area TEXT NOT NULL,
+            area_name TEXT NOT NULL,
+
+            created_by INTEGER,
 
             created_at TEXT NOT NULL,
 
@@ -109,8 +129,13 @@ def init_db():
                 state,
                 city,
                 village_town,
-                area
+                area_name
+            ),
+
+            FOREIGN KEY (
+                created_by
             )
+            REFERENCES users(id)
 
         )
         """
@@ -129,11 +154,9 @@ def init_db():
 
             owner_id INTEGER,
 
-            title TEXT NOT NULL,
-
-            description TEXT,
-
             purpose TEXT NOT NULL,
+
+            category TEXT NOT NULL,
 
             property_type TEXT NOT NULL,
 
@@ -145,27 +168,37 @@ def init_db():
 
             village_town TEXT NOT NULL,
 
-            area TEXT NOT NULL,
+            area_name TEXT NOT NULL,
 
-            address TEXT,
-
-            latitude REAL,
-
-            longitude REAL,
+            property_area REAL,
 
             price REAL,
 
-            bedrooms INTEGER,
+            bhk TEXT,
 
-            bathrooms INTEGER,
+            project_status TEXT,
 
-            area_sqft REAL,
+            possession TEXT,
 
-            status TEXT DEFAULT 'Pending',
+            google_location TEXT,
 
-            verification_status TEXT DEFAULT 'Pending',
+            description TEXT,
+
+            contact_name TEXT,
+
+            contact_mobile TEXT,
+
+            property_status TEXT DEFAULT 'pending',
+
+            is_verified INTEGER DEFAULT 0,
+
+            is_premium INTEGER DEFAULT 0,
+
+            views INTEGER DEFAULT 0,
 
             created_at TEXT NOT NULL,
+
+            updated_at TEXT,
 
             FOREIGN KEY (
                 owner_id
@@ -191,7 +224,7 @@ def init_db():
 
             media_type TEXT NOT NULL,
 
-            media_path TEXT NOT NULL,
+            file_path TEXT NOT NULL,
 
             created_at TEXT NOT NULL,
 
@@ -248,13 +281,15 @@ def init_db():
 
             user_id INTEGER,
 
-            feedback_type TEXT NOT NULL,
+            name TEXT,
 
-            subject TEXT,
+            email TEXT,
+
+            category TEXT,
 
             message TEXT NOT NULL,
 
-            status TEXT DEFAULT 'New',
+            status TEXT DEFAULT 'new',
 
             created_at TEXT NOT NULL,
 
@@ -269,36 +304,8 @@ def init_db():
 
 
     # ========================================================
-    # AUDIT LOG TABLE
+    # SAVE DATABASE
     # ========================================================
-
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS audit_logs (
-
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-            user_id INTEGER,
-
-            action TEXT NOT NULL,
-
-            target_type TEXT,
-
-            target_id INTEGER,
-
-            details TEXT,
-
-            created_at TEXT NOT NULL,
-
-            FOREIGN KEY (
-                user_id
-            )
-            REFERENCES users(id)
-
-        )
-        """
-    )
-
 
     connection.commit()
 
@@ -306,21 +313,37 @@ def init_db():
 
 
 # ============================================================
-# USER FUNCTIONS
+# CREATE USER
 # ============================================================
 
 def create_user(
+
     full_name,
+
+    business_name,
+
+    account_type,
+
+    mobile_number,
+
     email,
-    mobile,
+
+    mobile_verified=1,
+
+    email_verified=1,
+
+    terms_accepted=1,
+
     role="user"
+
 ):
 
     connection = get_connection()
 
     cursor = connection.cursor()
 
-    now = datetime.utcnow().isoformat()
+
+    created_at = datetime.now().isoformat()
 
 
     try:
@@ -330,46 +353,85 @@ def create_user(
             INSERT INTO users (
 
                 full_name,
+
+                business_name,
+
+                account_type,
+
+                mobile_number,
+
                 email,
-                mobile,
+
+                mobile_verified,
+
+                email_verified,
+
+                terms_accepted,
+
                 role,
+
                 created_at
 
             )
 
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
+
             (
+
                 full_name,
+
+                business_name,
+
+                account_type,
+
+                mobile_number,
+
                 email,
-                mobile,
+
+                mobile_verified,
+
+                email_verified,
+
+                terms_accepted,
+
                 role,
-                now
+
+                created_at
+
             )
+
         )
+
 
         connection.commit()
 
+
         user_id = cursor.lastrowid
+
+
+        connection.close()
+
 
         return user_id
 
 
     except sqlite3.IntegrityError:
 
+        connection.close()
+
         return None
 
 
-    finally:
-
-        connection.close()
-
-
 # ============================================================
-# GET USER BY EMAIL
+# GET USER BY MOBILE
 # ============================================================
 
-def get_user_by_email(email):
+def get_user_by_mobile(
+
+    mobile_number
+
+):
 
     connection = get_connection()
 
@@ -377,6 +439,50 @@ def get_user_by_email(email):
 
 
     cursor.execute(
+
+        """
+        SELECT *
+
+        FROM users
+
+        WHERE mobile_number = ?
+
+        LIMIT 1
+        """,
+
+        (
+            mobile_number,
+        )
+
+    )
+
+
+    user = cursor.fetchone()
+
+
+    connection.close()
+
+
+    return user
+
+
+# ============================================================
+# GET USER BY EMAIL
+# ============================================================
+
+def get_user_by_email(
+
+    email
+
+):
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+
+    cursor.execute(
+
         """
         SELECT *
 
@@ -386,141 +492,28 @@ def get_user_by_email(email):
 
         LIMIT 1
         """,
-        (email,)
-    )
 
-
-    user = cursor.fetchone()
-
-    connection.close()
-
-
-    if user:
-
-        return dict(user)
-
-    return None
-
-
-# ============================================================
-# GET USER BY MOBILE
-# ============================================================
-
-def get_user_by_mobile(mobile):
-
-    connection = get_connection()
-
-    cursor = connection.cursor()
-
-
-    cursor.execute(
-        """
-        SELECT *
-
-        FROM users
-
-        WHERE mobile = ?
-
-        LIMIT 1
-        """,
-        (mobile,)
-    )
-
-
-    user = cursor.fetchone()
-
-    connection.close()
-
-
-    if user:
-
-        return dict(user)
-
-    return None
-
-
-# ============================================================
-# ACCEPT TERMS
-# ============================================================
-
-def accept_terms(user_id):
-
-    connection = get_connection()
-
-    cursor = connection.cursor()
-
-    now = datetime.utcnow().isoformat()
-
-
-    cursor.execute(
-        """
-        UPDATE users
-
-        SET
-
-            terms_accepted = 1,
-
-            terms_accepted_at = ?
-
-        WHERE id = ?
-        """,
         (
-            now,
-            user_id
+            email,
         )
+
     )
 
 
-    connection.commit()
+    user = cursor.fetchone()
+
 
     connection.close()
 
 
-# ============================================================
-# CHECK TERMS STATUS
-# ============================================================
-
-def has_accepted_terms(user_id):
-
-    connection = get_connection()
-
-    cursor = connection.cursor()
-
-
-    cursor.execute(
-        """
-        SELECT terms_accepted
-
-        FROM users
-
-        WHERE id = ?
-
-        LIMIT 1
-        """,
-        (user_id,)
-    )
-
-
-    result = cursor.fetchone()
-
-    connection.close()
-
-
-    if result:
-
-        return bool(
-            result["terms_accepted"]
-        )
-
-
-    return False
+    return user
 
 
 # ============================================================
-# SAVE LOCATION
+# SAVE CUSTOM AREA
 # ============================================================
 
-def save_location(
+def save_custom_area(
 
     country,
 
@@ -530,7 +523,9 @@ def save_location(
 
     village_town,
 
-    area
+    area_name,
+
+    created_by=None
 
 ):
 
@@ -538,57 +533,79 @@ def save_location(
 
     cursor = connection.cursor()
 
-    now = datetime.utcnow().isoformat()
+
+    created_at = datetime.now().isoformat()
 
 
-    cursor.execute(
-        """
-        INSERT OR IGNORE INTO locations (
+    try:
 
-            country,
+        cursor.execute(
 
-            state,
+            """
+            INSERT OR IGNORE INTO custom_areas (
 
-            city,
+                country,
 
-            village_town,
+                state,
 
-            area,
+                city,
 
-            created_at
+                village_town,
+
+                area_name,
+
+                created_by,
+
+                created_at
+
+            )
+
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+
+            """,
+
+            (
+
+                country,
+
+                state,
+
+                city,
+
+                village_town,
+
+                area_name,
+
+                created_by,
+
+                created_at
+
+            )
 
         )
 
-        VALUES (?, ?, ?, ?, ?, ?)
-        """,
-        (
 
-            country,
-
-            state,
-
-            city,
-
-            village_town,
-
-            area,
-
-            now
-
-        )
-    )
+        connection.commit()
 
 
-    connection.commit()
+        connection.close()
 
-    connection.close()
+
+        return True
+
+
+    except Exception:
+
+        connection.close()
+
+        return False
 
 
 # ============================================================
-# GET SAVED AREAS
+# GET CUSTOM AREAS
 # ============================================================
 
-def get_areas(
+def get_custom_areas(
 
     country,
 
@@ -606,10 +623,11 @@ def get_areas(
 
 
     cursor.execute(
-        """
-        SELECT DISTINCT area
 
-        FROM locations
+        """
+        SELECT area_name
+
+        FROM custom_areas
 
         WHERE country = ?
 
@@ -619,8 +637,10 @@ def get_areas(
 
         AND village_town = ?
 
-        ORDER BY area ASC
+        ORDER BY area_name ASC
+
         """,
+
         (
 
             country,
@@ -632,36 +652,36 @@ def get_areas(
             village_town
 
         )
+
     )
 
 
-    results = cursor.fetchall()
+    rows = cursor.fetchall()
+
 
     connection.close()
 
 
     return [
 
-        row["area"]
+        row["area_name"]
 
-        for row in results
+        for row in rows
 
     ]
 
 
 # ============================================================
-# SAVE PROPERTY
+# CREATE PROPERTY
 # ============================================================
 
 def create_property(
 
     owner_id,
 
-    title,
-
-    description,
-
     purpose,
+
+    category,
 
     property_type,
 
@@ -673,21 +693,25 @@ def create_property(
 
     village_town,
 
-    area,
+    area_name,
 
-    address,
-
-    latitude,
-
-    longitude,
+    property_area,
 
     price,
 
-    bedrooms,
+    bhk,
 
-    bathrooms,
+    project_status,
 
-    area_sqft
+    possession,
+
+    google_location,
+
+    description,
+
+    contact_name,
+
+    contact_mobile
 
 ):
 
@@ -695,20 +719,20 @@ def create_property(
 
     cursor = connection.cursor()
 
-    now = datetime.utcnow().isoformat()
+
+    created_at = datetime.now().isoformat()
 
 
     cursor.execute(
+
         """
         INSERT INTO properties (
 
             owner_id,
 
-            title,
-
-            description,
-
             purpose,
+
+            category,
 
             property_type,
 
@@ -720,47 +744,41 @@ def create_property(
 
             village_town,
 
-            area,
+            area_name,
 
-            address,
-
-            latitude,
-
-            longitude,
+            property_area,
 
             price,
 
-            bedrooms,
+            bhk,
 
-            bathrooms,
+            project_status,
 
-            area_sqft,
+            possession,
+
+            google_location,
+
+            description,
+
+            contact_name,
+
+            contact_mobile,
 
             created_at
 
         )
 
-        VALUES (
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
-            ?, ?, ?, ?, ?,
-
-            ?, ?, ?, ?, ?,
-
-            ?, ?, ?, ?, ?,
-
-            ?, ?, ?
-
-        )
         """,
+
         (
 
             owner_id,
 
-            title,
-
-            description,
-
             purpose,
+
+            category,
 
             property_type,
 
@@ -772,66 +790,56 @@ def create_property(
 
             village_town,
 
-            area,
+            area_name,
 
-            address,
-
-            latitude,
-
-            longitude,
+            property_area,
 
             price,
 
-            bedrooms,
+            bhk,
 
-            bathrooms,
+            project_status,
 
-            area_sqft,
+            possession,
 
-            now
+            google_location,
+
+            description,
+
+            contact_name,
+
+            contact_mobile,
+
+            created_at
 
         )
+
     )
 
 
     connection.commit()
 
+
     property_id = cursor.lastrowid
 
+
     connection.close()
-
-
-    # Save location automatically
-
-    save_location(
-
-        country,
-
-        state,
-
-        city,
-
-        village_town,
-
-        area
-
-    )
 
 
     return property_id
 
 
 # ============================================================
-# ADD PROPERTY MEDIA
+# SAVE PROPERTY MEDIA
 # ============================================================
 
-def add_property_media(
+def save_property_media(
 
     property_id,
 
     media_type,
 
-    media_path
+    file_path
 
 ):
 
@@ -839,10 +847,9 @@ def add_property_media(
 
     cursor = connection.cursor()
 
-    now = datetime.utcnow().isoformat()
-
 
     cursor.execute(
+
         """
         INSERT INTO property_media (
 
@@ -850,31 +857,146 @@ def add_property_media(
 
             media_type,
 
-            media_path,
+            file_path,
 
             created_at
 
         )
 
         VALUES (?, ?, ?, ?)
+
         """,
+
         (
 
             property_id,
 
             media_type,
 
-            media_path,
+            file_path,
 
-            now
+            datetime.now().isoformat()
 
         )
+
     )
 
 
     connection.commit()
 
+
     connection.close()
+
+
+# ============================================================
+# GET PROPERTIES
+# ============================================================
+
+def get_properties(
+
+    city=None,
+
+    area_name=None,
+
+    property_type=None,
+
+    purpose=None
+
+):
+
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+
+    query = """
+
+    SELECT *
+
+    FROM properties
+
+    WHERE property_status = 'approved'
+
+    """
+
+    parameters = []
+
+
+    if city:
+
+        query += """
+
+        AND city = ?
+
+        """
+
+        parameters.append(
+            city
+        )
+
+
+    if area_name:
+
+        query += """
+
+        AND area_name = ?
+
+        """
+
+        parameters.append(
+            area_name
+        )
+
+
+    if property_type:
+
+        query += """
+
+        AND property_type = ?
+
+        """
+
+        parameters.append(
+            property_type
+        )
+
+
+    if purpose:
+
+        query += """
+
+        AND purpose = ?
+
+        """
+
+        parameters.append(
+            purpose
+        )
+
+
+    query += """
+
+    ORDER BY created_at DESC
+
+    """
+
+
+    cursor.execute(
+
+        query,
+
+        parameters
+
+    )
+
+
+    properties = cursor.fetchall()
+
+
+    connection.close()
+
+
+    return properties
 
 
 # ============================================================
@@ -893,10 +1015,9 @@ def add_property_view(
 
     cursor = connection.cursor()
 
-    now = datetime.utcnow().isoformat()
-
 
     cursor.execute(
+
         """
         INSERT INTO property_views (
 
@@ -909,37 +1030,63 @@ def add_property_view(
         )
 
         VALUES (?, ?, ?)
+
         """,
+
         (
 
             property_id,
 
             viewer_id,
 
-            now
+            datetime.now().isoformat()
 
         )
+
+    )
+
+
+    cursor.execute(
+
+        """
+        UPDATE properties
+
+        SET views = views + 1
+
+        WHERE id = ?
+
+        """,
+
+        (
+
+            property_id,
+
+        )
+
     )
 
 
     connection.commit()
 
+
     connection.close()
 
 
 # ============================================================
-# ADD FEEDBACK
+# SAVE FEEDBACK
 # ============================================================
 
-def add_feedback(
+def save_feedback(
 
-    user_id,
+    name,
 
-    feedback_type,
+    email,
 
-    subject,
+    category,
 
-    message
+    message,
+
+    user_id=None
 
 ):
 
@@ -947,118 +1094,57 @@ def add_feedback(
 
     cursor = connection.cursor()
 
-    now = datetime.utcnow().isoformat()
-
 
     cursor.execute(
+
         """
         INSERT INTO feedback (
 
             user_id,
 
-            feedback_type,
+            name,
 
-            subject,
+            email,
 
-            message,
-
-            created_at
-
-        )
-
-        VALUES (?, ?, ?, ?, ?)
-        """,
-        (
-
-            user_id,
-
-            feedback_type,
-
-            subject,
+            category,
 
             message,
-
-            now
-
-        )
-    )
-
-
-    connection.commit()
-
-    connection.close()
-
-
-# ============================================================
-# AUDIT LOG
-# ============================================================
-
-def add_audit_log(
-
-    user_id,
-
-    action,
-
-    target_type=None,
-
-    target_id=None,
-
-    details=None
-
-):
-
-    connection = get_connection()
-
-    cursor = connection.cursor()
-
-    now = datetime.utcnow().isoformat()
-
-
-    cursor.execute(
-        """
-        INSERT INTO audit_logs (
-
-            user_id,
-
-            action,
-
-            target_type,
-
-            target_id,
-
-            details,
 
             created_at
 
         )
 
         VALUES (?, ?, ?, ?, ?, ?)
+
         """,
+
         (
 
             user_id,
 
-            action,
+            name,
 
-            target_type,
+            email,
 
-            target_id,
+            category,
 
-            details,
+            message,
 
-            now
+            datetime.now().isoformat()
 
         )
+
     )
 
 
     connection.commit()
 
+
     connection.close()
 
 
 # ============================================================
-# INITIALIZE DATABASE
+# INITIALIZE DATABASE AUTOMATICALLY
 # ============================================================
 
 init_db()
