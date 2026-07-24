@@ -86,7 +86,7 @@ with st.sidebar:
     )
 
     st.page_link(
-        "pages/04_Admin_Panel.py",
+        "pages/05_Admin_Panel.py",
         label="🛡️ Admin Panel"
     )
 
