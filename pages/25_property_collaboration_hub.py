@@ -1,57 +1,50 @@
 import streamlit as st
-from datetime import datetime
+from datetime import datetime, date
+import uuid
 
 
 # ============================================================
-# PAGE 25 — PROPERTY COLLABORATION & ENQUIRY HUB
+# PAGE 25 — ALL-IN-ONE PROPERTY POSTING
+# + PROPERTY COLLABORATION & ENQUIRY HUB
 # FIRSTCHOICE INFRA PROPERTY HUB
 #
-# CONNECTED WITH PAGE 2 — POST PROPERTY
+# PAGE 2 + PAGE 25 MERGED
 #
 # FLOW:
-# PAGE 2 — POST PROPERTY
-#       ↓
+#
+# POST PROPERTY
+#      ↓
 # UNIQUE PROPERTY ID
-#       ↓
+#      ↓
 # ORIGINAL POSTER ID
-#       ↓
-# PAGE 25 PROPERTY SELECTION
-#       ↓
-# ORIGINAL POSTER AUTO CONNECTED
-#       ↓
-# BUYER LIKE / SAVE / INTEREST
-#       ↓
-# ENQUIRY → ORIGINAL PROPERTY POSTER
-#       ↓
+#      ↓
+# PROPERTY LISTING
+#      ↓
+# LIKE / SAVE / INTEREST
+#      ↓
+# ENQUIRY
+#      ↓
+# ORIGINAL PROPERTY POSTER
+#      ↓
 # MESSAGE / FOLLOW-UP / SITE VISIT / TASK
+#      ↓
+# COLLABORATION / DEAL
 # ============================================================
 
 
 st.set_page_config(
-    page_title="Property Collaboration & Enquiry Hub | FirstChoice Property Hub",
-    page_icon="💬",
+    page_title="Property Post & Collaboration Hub | FirstChoice Property Hub",
+    page_icon="🏡",
     layout="wide"
 )
 
 
 # ============================================================
-# SESSION STATE
+# SESSION STATE — PROPERTY DATA
 # ============================================================
 
-if "property_messages" not in st.session_state:
-    st.session_state.property_messages = []
-
-
-if "property_tasks" not in st.session_state:
-    st.session_state.property_tasks = []
-
-
-if "property_enquiries" not in st.session_state:
-    st.session_state.property_enquiries = []
-
-
-if "property_followups" not in st.session_state:
-    st.session_state.property_followups = []
+if "properties" not in st.session_state:
+    st.session_state.properties = []
 
 
 if "property_likes" not in st.session_state:
@@ -64,6 +57,26 @@ if "property_saved" not in st.session_state:
 
 if "property_interests" not in st.session_state:
     st.session_state.property_interests = []
+
+
+if "property_enquiries" not in st.session_state:
+    st.session_state.property_enquiries = []
+
+
+if "property_messages" not in st.session_state:
+    st.session_state.property_messages = []
+
+
+if "property_tasks" not in st.session_state:
+    st.session_state.property_tasks = []
+
+
+if "property_followups" not in st.session_state:
+    st.session_state.property_followups = []
+
+
+if "last_property_id" not in st.session_state:
+    st.session_state.last_property_id = ""
 
 
 # ============================================================
@@ -97,6 +110,8 @@ footer {
 }
 
 
+/* HERO */
+
 .hero {
     padding: 52px;
     border-radius: 36px;
@@ -129,6 +144,8 @@ footer {
 }
 
 
+/* SECTION */
+
 .section {
     margin-top: 32px;
     margin-bottom: 22px;
@@ -160,27 +177,23 @@ footer {
 }
 
 
-.card {
-    padding: 28px;
-    border-radius: 26px;
+/* FORM CARD */
 
-    background:
-    linear-gradient(
-        135deg,
-        #FFFFFF,
-        #F5F3FF,
-        #EFF6FF
-    );
+.form-card {
+    padding: 30px;
+    border-radius: 28px;
 
-    border: 1px solid #E0E7FF;
+    background: white;
 
     box-shadow:
-    0 12px 35px
-    rgba(0,0,0,0.07);
+    0 15px 45px
+    rgba(0,0,0,0.08);
 
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
+
+/* AI CARD */
 
 .ai-card {
     padding: 32px;
@@ -202,8 +215,10 @@ footer {
 }
 
 
-.success-card {
-    padding: 32px;
+/* TRUST */
+
+.trust-card {
+    padding: 30px;
     border-radius: 28px;
 
     color: white;
@@ -222,27 +237,32 @@ footer {
 }
 
 
+/* INFO */
+
 .info-card {
     padding: 30px;
     border-radius: 28px;
 
-    color: white;
-
     background:
     linear-gradient(
         135deg,
-        #0369A1,
-        #0284C7,
-        #06B6D4
+        #EFF6FF,
+        #F5F3FF
     );
 
+    border: 1px solid #DBEAFE;
+
     box-shadow:
-    0 18px 55px
-    rgba(3,105,161,0.22);
+    0 12px 35px
+    rgba(37,99,235,0.08);
+
+    margin-bottom: 20px;
 }
 
 
-.warning-card {
+/* POSTER */
+
+.poster-card {
     padding: 30px;
     border-radius: 28px;
 
@@ -251,12 +271,18 @@ footer {
     background:
     linear-gradient(
         135deg,
-        #B45309,
-        #F59E0B,
-        #F97316
+        #0F172A,
+        #1E40AF,
+        #7C3AED
     );
+
+    box-shadow:
+    0 18px 55px
+    rgba(30,64,175,0.25);
 }
 
+
+/* ENQUIRY */
 
 .enquiry-card {
     padding: 28px;
@@ -281,7 +307,31 @@ footer {
 }
 
 
-.poster-card {
+/* SUCCESS */
+
+.success-card {
+    padding: 32px;
+    border-radius: 28px;
+
+    color: white;
+
+    background:
+    linear-gradient(
+        135deg,
+        #047857,
+        #059669,
+        #10B981
+    );
+
+    box-shadow:
+    0 18px 55px
+    rgba(5,150,105,0.25);
+}
+
+
+/* WARNING */
+
+.warning-card {
     padding: 30px;
     border-radius: 28px;
 
@@ -290,36 +340,64 @@ footer {
     background:
     linear-gradient(
         135deg,
-        #0F172A,
-        #1E40AF,
-        #7C3AED
+        #B45309,
+        #F59E0B,
+        #F97316
     );
-
-    box-shadow:
-    0 18px 55px
-    rgba(30,64,175,0.25);
 }
 
 
-.property-card {
+/* PROPERTY ID */
+
+.property-id-card {
     padding: 30px;
-    border-radius: 30px;
+    border-radius: 28px;
 
     color: white;
 
     background:
     linear-gradient(
         135deg,
-        #1E3A8A,
-        #2563EB,
-        #7C3AED
+        #047857,
+        #059669,
+        #10B981
     );
 
     box-shadow:
-    0 18px 55px
-    rgba(37,99,235,0.25);
+    0 18px 50px
+    rgba(5,150,105,0.25);
 
-    margin-bottom: 25px;
+    margin-top: 25px;
+}
+
+.property-id-card h1 {
+    font-size: 36px;
+    font-weight: 900;
+}
+
+
+/* FINAL */
+
+.final-card {
+    padding: 35px;
+    border-radius: 30px;
+
+    color: white;
+
+    text-align: center;
+
+    background:
+    linear-gradient(
+        135deg,
+        #071952,
+        #2563EB,
+        #7C3AED,
+        #EC4899
+    );
+
+    box-shadow:
+    0 20px 60px
+    rgba(124,58,237,0.25);
 }
 
 </style>
@@ -334,17 +412,19 @@ st.markdown("""
 <div class="hero">
 
 <h1>
-💬 Property Collaboration & Enquiry Hub
+🏡 Property Post & Collaboration Hub
 </h1>
 
 <p>
-Every property enquiry stays connected to the original
-property poster.
+Post your property, connect genuine buyers and manage
+every enquiry, communication, follow-up and collaboration
+from one central property workspace.
 </p>
 
 <p>
-❤️ Like • ⭐ Save • 👋 Interest • 📞 Enquiry •
-📅 Site Visit • 💬 Chat • ✅ Follow-up • 🤝 Collaboration
+📸 Photos • 🎥 Video • 📍 Location • 💰 Price •
+🛡️ Verification • ❤️ Likes • ⭐ Saves •
+📩 Enquiries • 💬 Messages • 📅 Follow-ups
 </p>
 
 </div>
@@ -352,32 +432,35 @@ property poster.
 
 
 # ============================================================
-# SMART INTRO
+# SMART WORKFLOW
 # ============================================================
 
 st.markdown("""
 <div class="ai-card">
 
 <h2>
-🤖 Smart Property Communication Centre
+🤖 Smart Property Connection System
 </h2>
 
 <p>
-This page is connected with Page 2 — Post Property.
-Select a property created in Page 2 and its original
-property poster will be automatically connected.
-</p>
-
-<p>
-The buyer or interested user's interaction will remain
-linked with the same Property ID.
+Every property receives a unique Property ID and is connected
+to the Original Property Poster.
 </p>
 
 <p>
 <strong>
-Page 2 Property Post → Unique Property ID →
-Original Poster → Buyer Interest → Enquiry →
-Communication → Follow-up → Site Visit → Deal
+Post Property
+→ Property ID
+→ Original Poster
+→ Listing
+→ Like / Save / Interest
+→ Enquiry
+→ Poster Dashboard
+→ Message
+→ Follow-up
+→ Site Visit
+→ Negotiation
+→ Booking
 </strong>
 </p>
 
@@ -386,172 +469,771 @@ Communication → Follow-up → Site Visit → Deal
 
 
 # ============================================================
-# CHECK PAGE 2 PROPERTY DATA
-# ============================================================
-
-if "properties" not in st.session_state:
-
-    st.session_state.properties = []
-
-
-if not st.session_state.properties:
-
-    st.warning(
-        "⚠️ अभी Page 2 से कोई property available नहीं है. "
-        "पहले Page 2 — Post Property से property publish करें."
-    )
-
-    st.stop()
-
-
-# ============================================================
-# PROPERTY SELECTION
-# CONNECTED WITH PAGE 2
+# SECTION 1 — PROFILE
 # ============================================================
 
 st.markdown("""
 <div class="section">
 
 <h2>
-🏡 Select Property
+👤 Who are you?
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+profile_type = st.radio(
+    "Listing Profile",
+    [
+        "👤 Owner",
+        "🏢 Agent / Broker",
+        "🏗️ Builder / Developer",
+        "🏛️ Company / Organization"
+    ],
+    horizontal=True
+)
+
+
+# ============================================================
+# PURPOSE
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+🎯 What do you want to do?
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+purpose = st.radio(
+    "Property Requirement",
+    [
+        "🏠 Sell",
+        "🔑 Rent",
+        "📈 Lease",
+        "🤝 Joint Venture"
+    ],
+    horizontal=True
+)
+
+
+# ============================================================
+# PROPERTY INFORMATION
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+🏠 Property Information
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+c1, c2 = st.columns(2)
+
+
+with c1:
+
+    property_title = st.text_input(
+        "Property Title *",
+        placeholder="Example: Premium 3 BHK Luxury Apartment"
+    )
+
+
+with c2:
+
+    property_type = st.selectbox(
+        "Property Type *",
+        [
+            "Apartment",
+            "Flat",
+            "Villa",
+            "Independent House",
+            "Plot",
+            "Residential Land",
+            "Farm Land",
+            "Commercial Office",
+            "Shop",
+            "Warehouse",
+            "Industrial Property",
+            "Other"
+        ]
+    )
+
+
+c3, c4, c5 = st.columns(3)
+
+
+with c3:
+
+    bhk = st.selectbox(
+        "BHK",
+        [
+            "Not Applicable",
+            "1 BHK",
+            "2 BHK",
+            "3 BHK",
+            "4 BHK",
+            "5 BHK",
+            "5+ BHK"
+        ]
+    )
+
+
+with c4:
+
+    area = st.number_input(
+        "Property Area (Sq.Ft.)",
+        min_value=0,
+        step=100
+    )
+
+
+with c5:
+
+    property_age = st.selectbox(
+        "Property Age",
+        [
+            "New Construction",
+            "0–1 Year",
+            "1–5 Years",
+            "5–10 Years",
+            "10+ Years"
+        ]
+    )
+
+
+description = st.text_area(
+    "Property Description",
+    height=150,
+    placeholder="Describe your property, features, surroundings and unique benefits..."
+)
+
+
+# ============================================================
+# LOCATION
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+📍 Property Location
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+l1, l2 = st.columns(2)
+
+
+with l1:
+
+    state = st.selectbox(
+        "State *",
+        [
+            "Maharashtra",
+            "Madhya Pradesh",
+            "Gujarat",
+            "Karnataka",
+            "Telangana",
+            "Delhi",
+            "Uttar Pradesh",
+            "Rajasthan",
+            "Tamil Nadu",
+            "Other"
+        ]
+    )
+
+
+with l2:
+
+    city = st.text_input(
+        "City *",
+        placeholder="Example: Nagpur"
+    )
+
+
+l3, l4 = st.columns(2)
+
+
+with l3:
+
+    locality = st.text_input(
+        "Locality / Area *",
+        placeholder="Example: Civil Lines"
+    )
+
+
+with l4:
+
+    pincode = st.text_input(
+        "PIN Code *",
+        max_chars=6,
+        placeholder="440001"
+    )
+
+
+address = st.text_area(
+    "Complete Property Address",
+    placeholder="Enter complete address..."
+)
+
+
+# ============================================================
+# PRICE
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+💰 Pricing & Financial Details
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+p1, p2, p3 = st.columns(3)
+
+
+with p1:
+
+    price = st.number_input(
+        "Expected Price (₹)",
+        min_value=0,
+        step=100000
+    )
+
+
+with p2:
+
+    price_negotiable = st.checkbox(
+        "Price Negotiable"
+    )
+
+
+with p3:
+
+    maintenance = st.number_input(
+        "Monthly Maintenance (₹)",
+        min_value=0,
+        step=500
+    )
+
+
+# ============================================================
+# AMENITIES
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+✨ Property Amenities
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+amenities = st.multiselect(
+    "Available Amenities",
+    [
+        "🚗 Parking",
+        "🏊 Swimming Pool",
+        "🏋️ Gym",
+        "🌳 Garden",
+        "🔒 Security",
+        "🛗 Lift",
+        "⚡ Power Backup",
+        "💧 Water Supply",
+        "🔥 Gas Pipeline",
+        "📶 Internet",
+        "🏫 School Nearby",
+        "🏥 Hospital Nearby",
+        "🛒 Market Nearby",
+        "🚇 Public Transport"
+    ]
+)
+
+
+# ============================================================
+# MEDIA
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+📸 Property Photos & 🎥 Video
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+photos = st.file_uploader(
+    "Upload Property Photos",
+    type=[
+        "jpg",
+        "jpeg",
+        "png",
+        "webp"
+    ],
+    accept_multiple_files=True
+)
+
+
+video = st.file_uploader(
+    "Upload Property Video",
+    type=[
+        "mp4",
+        "mov",
+        "avi"
+    ]
+)
+
+
+video_url = st.text_input(
+    "Or paste YouTube / Property Video URL",
+    placeholder="https://youtube.com/..."
+)
+
+
+if photos:
+
+    st.success(
+        f"{len(photos)} property photo(s) selected."
+    )
+
+
+if video:
+
+    st.success(
+        "Property video selected successfully."
+    )
+
+
+# ============================================================
+# VERIFICATION
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+🛡️ Identity & Property Verification
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+st.markdown("""
+<div class="trust-card">
+
+<h2>
+🛡️ Build Trust With Verified Listings
 </h2>
 
 <p>
-Page 2 — Post Property से property automatically load होगी.
-Property select करते ही Original Property Poster की details
-automatically connect हो जाएंगी.
+Verified profiles may receive stronger trust signals
+and better visibility in future versions.
+</p>
+
+<p>✅ Mobile Number Verification</p>
+<p>✅ Identity Verification</p>
+<p>✅ Property Ownership Verification</p>
+<p>✅ RERA Verification for Applicable Projects</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+v1, v2 = st.columns(2)
+
+
+with v1:
+
+    mobile = st.text_input(
+        "Current Mobile Number *",
+        max_chars=10,
+        placeholder="10 digit mobile number"
+    )
+
+
+with v2:
+
+    identity_type = st.selectbox(
+        "Identity Verification",
+        [
+            "Verify Later",
+            "Aadhaar-based Verification",
+            "Other Government ID"
+        ]
+    )
+
+
+st.info(
+    "🔐 Aadhaar numbers should not be stored directly in the application. "
+    "Production version में compliant KYC provider integrate किया जाएगा."
+)
+
+
+# ============================================================
+# CONTACT PREFERENCES
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+📞 Contact Preferences
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+contact_options = st.multiselect(
+    "Preferred Contact Methods",
+    [
+        "📞 Phone Call",
+        "💬 WhatsApp",
+        "✉️ Email",
+        "💬 In-App Chat"
+    ]
+)
+
+
+# ============================================================
+# TERMS
+# ============================================================
+
+agree = st.checkbox(
+    "I confirm that the information provided is accurate and I have the right to list this property."
+)
+
+
+# ============================================================
+# SUBMIT PROPERTY
+# ============================================================
+
+st.markdown("""
+<div class="final-card">
+
+<h2>
+🚀 Ready to Publish Your Property?
+</h2>
+
+<p>
+Your property will receive a unique Property ID.
+All future Likes, Saves, Interests, Enquiries and
+Collaboration activities will remain connected to it.
 </p>
 
 </div>
 """, unsafe_allow_html=True)
 
 
-property_options = []
+if st.button(
+    "🚀 SUBMIT PROPERTY LISTING",
+    use_container_width=True
+):
+
+    if not property_title:
+
+        st.error(
+            "Please enter the Property Title."
+        )
+
+    elif not city:
+
+        st.error(
+            "Please enter the City."
+        )
+
+    elif not locality:
+
+        st.error(
+            "Please enter the Locality."
+        )
+
+    elif not mobile:
+
+        st.error(
+            "Please enter your current mobile number."
+        )
+
+    elif (
+        len(mobile) != 10
+        or not mobile.isdigit()
+    ):
+
+        st.error(
+            "Please enter a valid 10-digit mobile number."
+        )
+
+    elif not agree:
+
+        st.warning(
+            "Please confirm the declaration before submitting."
+        )
+
+    else:
+
+        # ====================================================
+        # UNIQUE PROPERTY ID
+        # ====================================================
+
+        property_id = (
+            "FC-PROP-"
+            +
+            uuid.uuid4().hex[:8].upper()
+        )
 
 
-for item in st.session_state.properties:
+        # ====================================================
+        # ORIGINAL POSTER CONNECTION
+        # ====================================================
 
-    property_options.append(
-        f"{item.get('property_title', 'Untitled Property')} "
-        f"| {item.get('property_id', 'No ID')} "
-        f"| {item.get('city', '')}, {item.get('locality', '')}"
+        poster_id = st.session_state.get(
+            "user_id",
+            mobile
+        )
+
+
+        poster_name = st.session_state.get(
+            "user_name",
+            mobile
+        )
+
+
+        # ====================================================
+        # PROPERTY RECORD
+        # ====================================================
+
+        property_data = {
+
+            "property_id": property_id,
+
+            "poster_id": poster_id,
+
+            "poster_name": poster_name,
+
+            "poster_mobile": mobile,
+
+            "poster_role": profile_type,
+
+            "property_title": property_title,
+
+            "property_type": property_type,
+
+            "purpose": purpose,
+
+            "bhk": bhk,
+
+            "area": area,
+
+            "property_age": property_age,
+
+            "description": description,
+
+            "state": state,
+
+            "city": city,
+
+            "locality": locality,
+
+            "pincode": pincode,
+
+            "address": address,
+
+            "price": price,
+
+            "price_negotiable": price_negotiable,
+
+            "maintenance": maintenance,
+
+            "amenities": amenities,
+
+            "photo_count":
+                len(photos)
+                if photos
+                else 0,
+
+            "video_uploaded":
+                True
+                if video
+                else False,
+
+            "video_url": video_url,
+
+            "identity_type": identity_type,
+
+            "verification_status": "Pending",
+
+            "contact_options": contact_options,
+
+            "listing_status": "Pending Review",
+
+            "created_at":
+                datetime.now().strftime(
+                    "%d-%m-%Y %I:%M %p"
+                )
+
+        }
+
+
+        st.session_state.properties.append(
+            property_data
+        )
+
+
+        st.session_state.last_property_id = property_id
+
+
+        st.success(
+            "🎉 Your property listing has been submitted successfully!"
+        )
+
+
+        st.markdown(
+            f"""
+            <div class="property-id-card">
+
+            <p>
+            🆔 Your Unique Property ID
+            </p>
+
+            <h1>
+            {property_id}
+            </h1>
+
+            <p>
+            Keep this Property ID for tracking your property listing.
+            </p>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+        st.markdown(
+            f"""
+            <div class="info-card">
+
+            <h3>
+            🔗 Smart Property Connection Activated
+            </h3>
+
+            <p>
+            <b>Property ID:</b>
+            {property_id}
+            </p>
+
+            <p>
+            <b>Property Posted By:</b>
+            {poster_name}
+            </p>
+
+            <p>
+            <b>Poster ID:</b>
+            {poster_id}
+            </p>
+
+            <p>
+            ❤️ Likes, ⭐ Saves, 🔥 Interests and
+            📩 Enquiries received for this property
+            will remain connected to this Property ID.
+            </p>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+# ============================================================
+# SELECT PROPERTY WORKSPACE
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+🏡 Property Collaboration Workspace
+</h2>
+
+<p>
+Select a property to manage Likes, Saves, Enquiries,
+Messages, Tasks and Follow-ups.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+if st.session_state.properties:
+
+    property_options = {
+
+        f"{p['property_title']} | {p['property_id']}":
+        p
+
+        for p in st.session_state.properties
+
+    }
+
+
+    selected_property_label = st.selectbox(
+        "Select Property",
+        list(property_options.keys())
     )
 
 
-selected_property_label = st.selectbox(
-    "🏠 Select Property",
-    property_options
-)
+    selected_property = property_options[
+        selected_property_label
+    ]
 
 
-selected_index = property_options.index(
-    selected_property_label
-)
+    property_id = selected_property["property_id"]
+
+    property_name = selected_property["property_title"]
+
+    poster_name = selected_property["poster_name"]
+
+    poster_id = selected_property["poster_id"]
+
+    poster_mobile = selected_property["poster_mobile"]
+
+    poster_role = selected_property["poster_role"]
 
 
-selected_property = st.session_state.properties[
-    selected_index
-]
+else:
 
+    st.info(
+        "📭 No property has been posted yet. "
+        "Please submit a property above."
+    )
 
-# ============================================================
-# AUTOMATIC PROPERTY DATA
-# ============================================================
-
-property_id = selected_property.get(
-    "property_id",
-    ""
-)
-
-
-property_name = selected_property.get(
-    "property_title",
-    "Untitled Property"
-)
-
-
-poster_id = selected_property.get(
-    "poster_id",
-    ""
-)
-
-
-poster_name = selected_property.get(
-    "poster_name",
-    ""
-)
-
-
-poster_mobile = selected_property.get(
-    "poster_mobile",
-    ""
-)
-
-
-poster_role = selected_property.get(
-    "poster_role",
-    ""
-)
-
-
-# ============================================================
-# PROPERTY INFORMATION CARD
-# ============================================================
-
-st.markdown(
-    f"""
-    <div class="property-card">
-
-    <h2>
-    🏠 {property_name}
-    </h2>
-
-    <p>
-    🆔 <strong>Property ID:</strong>
-    {property_id}
-    </p>
-
-    <p>
-    📍 <strong>Location:</strong>
-    {selected_property.get("city", "")},
-    {selected_property.get("locality", "")},
-    {selected_property.get("state", "")}
-    </p>
-
-    <p>
-    🏘️ <strong>Property Type:</strong>
-    {selected_property.get("property_type", "")}
-    </p>
-
-    <p>
-    🎯 <strong>Purpose:</strong>
-    {selected_property.get("purpose", "")}
-    </p>
-
-    <p>
-    📐 <strong>Area:</strong>
-    {selected_property.get("area", 0):,.0f} Sq.Ft.
-    </p>
-
-    <p>
-    💰 <strong>Expected Price:</strong>
-    ₹{selected_property.get("price", 0):,.0f}
-    </p>
-
-    <p>
-    📊 <strong>Listing Status:</strong>
-    {selected_property.get("listing_status", "")}
-    </p>
-
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+    st.stop()
 
 
 # ============================================================
 # ORIGINAL PROPERTY POSTER
-# AUTOMATICALLY CONNECTED FROM PAGE 2
 # ============================================================
 
 st.markdown("""
@@ -560,11 +1242,6 @@ st.markdown("""
 <h2>
 👤 Original Property Poster
 </h2>
-
-<p>
-This information is automatically loaded from Page 2.
-It should not be manually changed here.
-</p>
 
 </div>
 """, unsafe_allow_html=True)
@@ -575,7 +1252,7 @@ st.markdown(
     <div class="poster-card">
 
     <h2>
-    🔗 Original Poster Automatically Connected
+    📌 Enquiry Routing Rule
     </h2>
 
     <p>
@@ -589,28 +1266,28 @@ st.markdown(
     </p>
 
     <p>
-    <strong>Original Poster ID:</strong>
+    <strong>Original Poster:</strong>
+    {poster_name}
+    </p>
+
+    <p>
+    <strong>Poster ID:</strong>
     {poster_id}
     </p>
 
     <p>
-    <strong>Original Poster:</strong>
-    {poster_name if poster_name else "Not Available"}
-    </p>
-
-    <p>
-    <strong>Poster Role:</strong>
+    <strong>Role:</strong>
     {poster_role}
     </p>
 
     <p>
     <strong>Poster Mobile:</strong>
-    {poster_mobile if poster_mobile else "Not Available"}
+    {poster_mobile}
     </p>
 
     <p>
-    📩 All enquiries for this property will remain
-    connected to this original property poster.
+    All enquiries for this property remain connected
+    to the Original Property Poster.
     </p>
 
     </div>
@@ -629,11 +1306,6 @@ st.markdown("""
 <h2>
 ❤️ Property Interest & Enquiry
 </h2>
-
-<p>
-Buyer or interested user can interact with the selected property.
-All interactions are linked with the Property ID.
-</p>
 
 </div>
 """, unsafe_allow_html=True)
@@ -664,7 +1336,7 @@ with b3:
     )
 
 
-i1, i2, i3 = st.columns(3)
+i1, i2, i3, i4 = st.columns(4)
 
 
 with i1:
@@ -691,36 +1363,34 @@ with i3:
     )
 
 
+with i4:
+
+    request_call = st.button(
+        "📞 REQUEST CALL",
+        use_container_width=True
+    )
+
+
 # ============================================================
-# LIKE PROPERTY
+# LIKE
 # ============================================================
 
 if like_property:
 
     st.session_state.property_likes.append({
 
-        "Property ID":
-        property_id,
+        "Property ID": property_id,
 
-        "Property":
-        property_name,
+        "Property": property_name,
 
-        "Original Poster ID":
-        poster_id,
+        "Interested User": interested_user,
 
-        "Original Poster":
-        poster_name,
-
-        "Interested User":
-        interested_user,
-
-        "Mobile":
-        interested_mobile,
+        "Mobile": interested_mobile,
 
         "Time":
-        datetime.now().strftime(
-            "%d-%m-%Y %I:%M %p"
-        )
+            datetime.now().strftime(
+                "%d-%m-%Y %I:%M %p"
+            )
 
     })
 
@@ -730,35 +1400,25 @@ if like_property:
 
 
 # ============================================================
-# SAVE PROPERTY
+# SAVE
 # ============================================================
 
 if save_property:
 
     st.session_state.property_saved.append({
 
-        "Property ID":
-        property_id,
+        "Property ID": property_id,
 
-        "Property":
-        property_name,
+        "Property": property_name,
 
-        "Original Poster ID":
-        poster_id,
+        "Saved By": interested_user,
 
-        "Original Poster":
-        poster_name,
-
-        "Saved By":
-        interested_user,
-
-        "Mobile":
-        interested_mobile,
+        "Mobile": interested_mobile,
 
         "Time":
-        datetime.now().strftime(
-            "%d-%m-%Y %I:%M %p"
-        )
+            datetime.now().strftime(
+                "%d-%m-%Y %I:%M %p"
+            )
 
     })
 
@@ -768,65 +1428,35 @@ if save_property:
 
 
 # ============================================================
-# SHOW INTEREST
+# INTEREST
 # ============================================================
 
 if show_interest:
 
-    if not interested_user:
+    st.session_state.property_interests.append({
 
-        st.warning(
-            "⚠️ Please enter Interested User Name."
-        )
+        "Property ID": property_id,
 
-    elif not interested_mobile:
+        "Property": property_name,
 
-        st.warning(
-            "⚠️ Please enter Interested User Mobile."
-        )
+        "Interested User": interested_user,
 
-    else:
+        "Mobile": interested_mobile,
 
-        st.session_state.property_interests.append({
-
-            "Property ID":
-            property_id,
-
-            "Property":
-            property_name,
-
-            "Original Poster ID":
-            poster_id,
-
-            "Original Poster":
-            poster_name,
-
-            "Interested User":
-            interested_user,
-
-            "Mobile":
-            interested_mobile,
-
-            "Email":
-            interested_email,
-
-            "Status":
-            "New",
-
-            "Created":
+        "Time":
             datetime.now().strftime(
                 "%d-%m-%Y %I:%M %p"
             )
 
-        })
+    })
 
-        st.success(
-            "👋 Interest registered successfully."
-        )
+    st.success(
+        "👋 Interest recorded successfully."
+    )
 
 
 # ============================================================
-# CREATE ENQUIRY
+# ENQUIRY
 # ============================================================
 
 st.markdown("""
@@ -858,13 +1488,22 @@ enquiry_type = st.selectbox(
 
 enquiry_message = st.text_area(
     "💬 Enquiry Message",
-    placeholder=
-    "Write your enquiry about this property..."
+    placeholder="Write your enquiry about this property..."
 )
 
 
+if request_call:
+
+    enquiry_type = "Request Call Back"
+
+
+if show_interest:
+
+    enquiry_type = "I'm Interested"
+
+
 if st.button(
-    "📨 SEND ENQUIRY TO ORIGINAL PROPERTY POSTER",
+    "📨 SEND ENQUIRY TO PROPERTY POSTER",
     use_container_width=True
 ):
 
@@ -884,63 +1523,47 @@ if st.button(
 
         new_enquiry = {
 
-            "Property ID":
-            property_id,
+            "Property ID": property_id,
 
-            "Property":
-            property_name,
+            "Property": property_name,
 
-            "Original Poster ID":
-            poster_id,
+            "Poster ID": poster_id,
 
-            "Poster Name":
-            poster_name,
+            "Poster Name": poster_name,
 
-            "Poster Role":
-            poster_role,
+            "Poster Role": poster_role,
 
-            "Poster Mobile":
-            poster_mobile,
+            "Poster Mobile": poster_mobile,
 
-            "Interested User":
-            interested_user,
+            "Interested User": interested_user,
 
-            "Interested Mobile":
-            interested_mobile,
+            "Interested Mobile": interested_mobile,
 
-            "Interested Email":
-            interested_email,
+            "Interested Email": interested_email,
 
-            "Enquiry Type":
-            enquiry_type,
+            "Enquiry Type": enquiry_type,
 
-            "Message":
-            enquiry_message,
+            "Message": enquiry_message,
 
-            "Status":
-            "New",
+            "Status": "New",
 
             "Created":
-            datetime.now().strftime(
-                "%d-%m-%Y %I:%M %p"
-            )
+                datetime.now().strftime(
+                    "%d-%m-%Y %I:%M %p"
+                )
 
         }
+
 
         st.session_state.property_enquiries.append(
             new_enquiry
         )
 
+
         st.success(
-            f"✅ Enquiry successfully connected to "
-            f"the original property poster: {poster_name}"
+            f"✅ Enquiry successfully routed to "
+            f"{poster_name}, the Original Property Poster."
         )
-
-        if poster_mobile:
-
-            st.info(
-                f"📱 Enquiry destination: {poster_mobile}"
-            )
 
 
 # ============================================================
@@ -954,10 +1577,6 @@ st.markdown("""
 📥 Property Poster Enquiry Dashboard
 </h2>
 
-<p>
-Enquiries are filtered by both Property ID and Original Poster ID.
-</p>
-
 </div>
 """, unsafe_allow_html=True)
 
@@ -969,11 +1588,9 @@ poster_enquiries = [
     for enquiry
     in st.session_state.property_enquiries
 
-    if enquiry.get("Property ID")
-    == property_id
+    if enquiry["Property ID"] == property_id
 
-    and enquiry.get("Original Poster ID")
-    == poster_id
+    and enquiry["Poster ID"] == poster_id
 
 ]
 
@@ -995,16 +1612,6 @@ if poster_enquiries:
             <p>
             <strong>Property:</strong>
             {enquiry["Property"]}
-            </p>
-
-            <p>
-            <strong>Property ID:</strong>
-            {enquiry["Property ID"]}
-            </p>
-
-            <p>
-            <strong>Original Poster:</strong>
-            {enquiry["Poster Name"]}
             </p>
 
             <p>
@@ -1071,17 +1678,15 @@ if poster_enquiries:
 
             target_created = enquiry["Created"]
 
+
             for item in st.session_state.property_enquiries:
 
                 if (
-                    item.get("Property ID")
-                    == property_id
+                    item["Property ID"] == property_id
 
-                    and item.get("Original Poster ID")
-                    == poster_id
+                    and item["Poster ID"] == poster_id
 
-                    and item.get("Created")
-                    == target_created
+                    and item["Created"] == target_created
                 ):
 
                     item["Status"] = new_status
@@ -1095,6 +1700,54 @@ else:
 
     st.info(
         "📭 No enquiries received for this property yet."
+    )
+
+
+# ============================================================
+# QUICK CONTACT
+# ============================================================
+
+st.markdown("""
+<div class="section">
+
+<h2>
+📞 Property Contact
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+q1, q2, q3 = st.columns(3)
+
+
+with q1:
+
+    contact_name = st.text_input(
+        "👤 Contact Person"
+    )
+
+
+with q2:
+
+    contact_role = st.selectbox(
+        "💼 Contact Role",
+        [
+            "Buyer",
+            "Seller",
+            "Builder",
+            "Agent",
+            "Executive",
+            "Legal Consultant",
+            "Loan Consultant"
+        ]
+    )
+
+
+with q3:
+
+    contact_mobile = st.text_input(
+        "📱 Contact Mobile"
     )
 
 
@@ -1130,8 +1783,7 @@ message_type = st.selectbox(
 
 message_text = st.text_area(
     "💬 Write Message",
-    placeholder=
-    "Type your property-related message..."
+    placeholder="Type your property-related message..."
 )
 
 
@@ -1170,34 +1822,20 @@ if st.button(
 
         st.session_state.property_messages.append({
 
-            "Property ID":
-            property_id,
+            "Property ID": property_id,
 
-            "Property":
-            property_name,
-
-            "Original Poster ID":
-            poster_id,
-
-            "Original Poster":
-            poster_name,
+            "Property": property_name,
 
             "Time":
-            datetime.now().strftime(
-                "%d-%m-%Y %I:%M %p"
-            ),
+                datetime.now().strftime(
+                    "%d-%m-%Y %I:%M %p"
+                ),
 
-            "From":
-            current_user,
+            "From": current_user,
 
-            "Role":
-            user_role,
+            "Role": user_role,
 
-            "Message Type":
-            message_type,
-
-            "Message":
-            message_text
+            "Message": message_text
 
         })
 
@@ -1217,8 +1855,7 @@ property_messages = [
     for message
     in st.session_state.property_messages
 
-    if message.get("Property ID")
-    == property_id
+    if message["Property ID"] == property_id
 
 ]
 
@@ -1260,10 +1897,6 @@ st.markdown("""
 ✅ Property Transaction Task Board
 </h2>
 
-<p>
-Create and track important tasks related to this property.
-</p>
-
 </div>
 """, unsafe_allow_html=True)
 
@@ -1275,8 +1908,7 @@ with t1:
 
     task_title = st.text_input(
         "📌 Task Name",
-        placeholder=
-        "Example: Collect Sale Agreement"
+        placeholder="Example: Collect Sale Agreement"
     )
 
 
@@ -1330,31 +1962,22 @@ if st.button(
 
         st.session_state.property_tasks.append({
 
-            "Property ID":
-            property_id,
+            "Property ID": property_id,
 
-            "Property":
-            property_name,
+            "Property": property_name,
 
-            "Original Poster ID":
-            poster_id,
+            "Task": task_title,
 
-            "Task":
-            task_title,
+            "Assigned To": task_owner,
 
-            "Assigned To":
-            task_owner,
+            "Priority": task_priority,
 
-            "Priority":
-            task_priority,
-
-            "Status":
-            task_status,
+            "Status": task_status,
 
             "Created":
-            datetime.now().strftime(
-                "%d-%m-%Y %I:%M %p"
-            )
+                datetime.now().strftime(
+                    "%d-%m-%Y %I:%M %p"
+                )
 
         })
 
@@ -1374,11 +1997,7 @@ property_tasks = [
     for task
     in st.session_state.property_tasks
 
-    if task.get("Property ID")
-    == property_id
-
-    and task.get("Original Poster ID")
-    == poster_id
+    if task["Property ID"] == property_id
 
 ]
 
@@ -1426,7 +2045,8 @@ with r1:
 with r2:
 
     reminder_date = st.date_input(
-        "📅 Follow-Up Date"
+        "📅 Follow-Up Date",
+        value=date.today()
     )
 
 
@@ -1442,28 +2062,20 @@ if st.button(
 
     st.session_state.property_followups.append({
 
-        "Property ID":
-        property_id,
+        "Property ID": property_id,
 
-        "Property":
-        property_name,
+        "Property": property_name,
 
-        "Original Poster ID":
-        poster_id,
+        "Title": reminder_title,
 
-        "Title":
-        reminder_title,
+        "Date": str(reminder_date),
 
-        "Date":
-        str(reminder_date),
-
-        "Notes":
-        reminder_notes,
+        "Notes": reminder_notes,
 
         "Created":
-        datetime.now().strftime(
-            "%d-%m-%Y %I:%M %p"
-        )
+            datetime.now().strftime(
+                "%d-%m-%Y %I:%M %p"
+            )
 
     })
 
@@ -1483,27 +2095,12 @@ property_followups = [
     for followup
     in st.session_state.property_followups
 
-    if followup.get("Property ID")
-    == property_id
-
-    and followup.get("Original Poster ID")
-    == poster_id
+    if followup["Property ID"] == property_id
 
 ]
 
 
 if property_followups:
-
-    st.markdown("""
-    <div class="section">
-
-    <h2>
-    🔔 Follow-Up History
-    </h2>
-
-    </div>
-    """, unsafe_allow_html=True)
-
 
     st.dataframe(
         property_followups,
@@ -1585,8 +2182,7 @@ property_likes = [
     for like
     in st.session_state.property_likes
 
-    if like.get("Property ID")
-    == property_id
+    if like["Property ID"] == property_id
 
 ]
 
@@ -1598,8 +2194,7 @@ property_saved = [
     for saved
     in st.session_state.property_saved
 
-    if saved.get("Property ID")
-    == property_id
+    if saved["Property ID"] == property_id
 
 ]
 
@@ -1611,8 +2206,7 @@ property_interests = [
     for interest
     in st.session_state.property_interests
 
-    if interest.get("Property ID")
-    == property_id
+    if interest["Property ID"] == property_id
 
 ]
 
@@ -1639,7 +2233,7 @@ with m2:
 with m3:
 
     st.metric(
-        "👋 Interests",
+        "🔥 Interests",
         len(property_interests)
     )
 
@@ -1654,6 +2248,14 @@ with m4:
 
 with m5:
 
+    st.metric(
+        "💬 Messages",
+        len(property_messages)
+    )
+
+
+with m6:
+
     completed_tasks = len(
 
         [
@@ -1662,24 +2264,70 @@ with m5:
             for x
             in property_tasks
 
-            if x.get("Status")
-            == "Completed"
+            if x["Status"] == "Completed"
 
         ]
 
     )
 
     st.metric(
-        "🎯 Completed",
+        "🎯 Completed Tasks",
         completed_tasks
     )
 
 
-with m6:
+# ============================================================
+# CURRENT PROPERTY LISTINGS
+# ============================================================
 
-    st.metric(
-        "👥 Members",
-        len(members)
+st.markdown("""
+<div class="section">
+
+<h2>
+🏡 Property Listings Created
+</h2>
+
+</div>
+""", unsafe_allow_html=True)
+
+
+for property_item in st.session_state.properties:
+
+    st.markdown(
+        f"""
+        <div class="info-card">
+
+        <h3>
+        🏠 {property_item["property_title"]}
+        </h3>
+
+        <p>
+        🆔 <b>Property ID:</b>
+        {property_item["property_id"]}
+        </p>
+
+        <p>
+        👤 <b>Original Poster:</b>
+        {property_item["poster_name"]}
+        </p>
+
+        <p>
+        📍 {property_item["city"]},
+        {property_item["locality"]}
+        </p>
+
+        <p>
+        💰 ₹{property_item["price"]:,.0f}
+        </p>
+
+        <p>
+        📊 <b>Status:</b>
+        {property_item["listing_status"]}
+        </p>
+
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
 
@@ -1696,33 +2344,22 @@ st.markdown("""
 
 <p>
 ❤️ User Likes Property
-&nbsp; → &nbsp;
-⭐ Saves Property
-&nbsp; → &nbsp;
-👋 Shows Interest
-&nbsp; → &nbsp;
-📨 Enquiry Created
+→ ⭐ Saves Property
+→ 👋 Shows Interest
+→ 📨 Enquiry Created
 </p>
 
 <p>
-📨 Enquiry is automatically connected to the
-Original Property Poster
-&nbsp; → &nbsp;
-💬 Communication
-&nbsp; → &nbsp;
-📅 Follow-up
-&nbsp; → &nbsp;
-🏠 Site Visit
-&nbsp; → &nbsp;
-🤝 Negotiation
-&nbsp; → &nbsp;
-📝 Booking
+📨 Enquiry is linked to Original Property Poster
+→ 💬 Communication
+→ 📅 Follow-up
+→ 🏠 Site Visit
+→ 🤝 Negotiation
+→ 📝 Booking
 </p>
 
 <p>
-The Property ID remains the permanent connection between
-the property, original poster, buyer interest, enquiry,
-communication and future transaction activities.
+All activities are connected using the same Property ID.
 </p>
 
 </div>
@@ -1737,18 +2374,14 @@ st.markdown("""
 <div class="success-card">
 
 <h2>
-🏠 One Property — One Original Poster — One Enquiry Destination
+🏠 One Property — One Property ID — One Original Poster
 </h2>
 
 <p>
-The person who originally posts the property on Page 2 remains
-the primary property owner/poster record for that Property ID.
-All buyer interest, enquiries, communication and follow-ups
-remain connected to the same property record.
-</p>
-
-<p>
-🔗 Page 2 Property ID → Page 25 Collaboration Hub
+The person who originally posts the property remains connected
+as the primary property poster. Buyer interest, enquiries,
+communication, tasks and follow-ups remain linked to the
+same Property ID.
 </p>
 
 </div>
