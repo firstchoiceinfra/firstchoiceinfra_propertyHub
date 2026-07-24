@@ -2,7 +2,7 @@ import streamlit as st
 
 # ============================================================
 # FIRSTCHOICE INFRA PROPERTY HUB
-# MAIN APPLICATION
+# MAIN APP
 # ============================================================
 
 st.set_page_config(
@@ -13,136 +13,144 @@ st.set_page_config(
 )
 
 # ============================================================
-# GLOBAL PREMIUM UI
+# PREMIUM UI
 # ============================================================
 
-st.markdown(
-    """
-    <style>
+st.markdown("""
+<style>
 
-    .stApp {
-        background:
-        linear-gradient(
-            135deg,
-            #F8FAFC 0%,
-            #EFF6FF 35%,
-            #F5F3FF 70%,
-            #ECFEFF 100%
-        );
-    }
+.stApp {
+    background:
+    linear-gradient(
+        135deg,
+        #F7F9FF 0%,
+        #FFF7F3 35%,
+        #F7F1FF 70%,
+        #EFFCFF 100%
+    );
+}
 
-    header {
-        visibility: hidden;
-    }
+header {
+    visibility: hidden;
+}
 
-    #MainMenu {
-        visibility: hidden;
-    }
+#MainMenu {
+    visibility: hidden;
+}
 
-    footer {
-        visibility: hidden;
-    }
+footer {
+    visibility: hidden;
+}
 
-    [data-testid="stSidebar"] {
-        background:
-        linear-gradient(
-            180deg,
-            #020617,
-            #172554,
-            #312E81,
-            #4C1D95
-        );
-    }
+/* SIDEBAR */
 
-    [data-testid="stSidebar"] * {
-        color: white !important;
-    }
+[data-testid="stSidebar"] {
+    background:
+    linear-gradient(
+        180deg,
+        #071952,
+        #1E1B4B,
+        #4C1D95
+    );
+}
 
-    .hero {
-        padding: 55px;
-        border-radius: 35px;
-        color: white;
+[data-testid="stSidebar"] * {
+    color: white !important;
+}
 
-        background:
-        linear-gradient(
-            135deg,
-            #020617,
-            #1D4ED8,
-            #7C3AED,
-            #DB2777
-        );
+/* HERO */
 
-        box-shadow:
-        0 25px 70px
-        rgba(37, 99, 235, 0.25);
+.hero {
+    padding: 50px;
+    border-radius: 35px;
+    color: white;
 
-        margin-bottom: 30px;
-    }
+    background:
+    linear-gradient(
+        135deg,
+        #071952,
+        #2563EB,
+        #7C3AED,
+        #EC4899
+    );
 
-    .hero h1 {
-        font-size: 48px;
-        font-weight: 900;
-    }
+    box-shadow:
+    0 25px 70px
+    rgba(37,99,235,0.25);
 
-    .hero p {
-        font-size: 19px;
-        line-height: 1.8;
-    }
+    margin-bottom: 30px;
+}
 
-    .section {
-        padding: 28px 35px;
-        border-radius: 28px;
-        color: white;
+.hero h1 {
+    font-size: 44px;
+    font-weight: 900;
+}
 
-        background:
-        linear-gradient(
-            135deg,
-            #1E3A8A,
-            #4F46E5,
-            #7C3AED,
-            #EC4899
-        );
+.hero p {
+    font-size: 18px;
+    line-height: 1.8;
+}
 
-        box-shadow:
-        0 15px 45px
-        rgba(79, 70, 229, 0.20);
+/* SECTION */
 
-        margin-top: 30px;
-        margin-bottom: 25px;
-    }
+.section {
+    padding: 25px 30px;
+    border-radius: 25px;
+    color: white;
 
-    .card {
-        padding: 30px;
-        border-radius: 25px;
-        background: white;
+    background:
+    linear-gradient(
+        135deg,
+        #071952,
+        #2563EB,
+        #7C3AED,
+        #EC4899
+    );
 
-        box-shadow:
-        0 12px 35px
-        rgba(0,0,0,0.07);
+    box-shadow:
+    0 15px 40px
+    rgba(37,99,235,0.18);
 
-        min-height: 180px;
-    }
+    margin-top: 30px;
+    margin-bottom: 25px;
+}
 
-    .footer {
-        margin-top: 60px;
-        padding: 40px;
-        border-radius: 30px;
-        color: white;
-        text-align: center;
+/* CARD */
 
-        background:
-        linear-gradient(
-            135deg,
-            #020617,
-            #1E1B4B,
-            #4C1D95
-        );
-    }
+.card {
+    padding: 30px;
+    border-radius: 25px;
+    background: white;
 
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+    box-shadow:
+    0 15px 40px
+    rgba(0,0,0,0.08);
+
+    min-height: 180px;
+}
+
+/* FOOTER */
+
+.footer {
+    margin-top: 60px;
+    padding: 40px;
+    border-radius: 30px;
+
+    color: white;
+    text-align: center;
+
+    background:
+    linear-gradient(
+        135deg,
+        #071952,
+        #1E1B4B,
+        #4C1D95
+    );
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 
 # ============================================================
 # SIDEBAR
@@ -150,63 +158,41 @@ st.markdown(
 
 with st.sidebar:
 
-    st.markdown(
-        """
-        <div style="text-align:center; padding:20px;">
+    st.markdown("""
+    <div style="text-align:center;">
 
-        <h1>🏠 FirstChoice</h1>
+    <h1>🏠 FirstChoice</h1>
 
-        <h3>Infra Property Hub</h3>
+    <h3>Property Hub</h3>
 
-        <p>
-        India's Next-Generation
-        Real Estate Ecosystem
-        </p>
-
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    </div>
+    """, unsafe_allow_html=True)
 
     st.divider()
 
-    st.markdown("### 🚀 Explore")
+    st.markdown("""
+    ### 🚀 Welcome
+
+    Use the menu below to explore
+    FirstChoice Infra Property Hub.
+    """)
+
+    st.divider()
+
+    st.markdown("""
+    ### 📌 Available Pages
+
+    👤 Login / Register
+
+    🔎 Property Search
+
+    🏠 Post Property
+    """)
+
+    st.divider()
 
     st.info(
-        "Use the Pages menu to open "
-        "any section of FirstChoice Property Hub."
-    )
-
-    st.markdown("### 🏠 Property")
-
-    st.markdown(
-        """
-        • Buy Property  
-        • Sell Property  
-        • Rent Property  
-        • Land & Plot  
-        • Commercial  
-        • New Projects  
-        """
-    )
-
-    st.markdown("### 🛠️ Services")
-
-    st.markdown(
-        """
-        • Architects  
-        • Builders  
-        • Contractors  
-        • Plumbers  
-        • Carpenters  
-        • Building Material  
-        """
-    )
-
-    st.divider()
-
-    st.caption(
-        "© FirstChoice Infra Property Hub"
+        "Select any page from the left sidebar menu."
     )
 
 
@@ -214,50 +200,43 @@ with st.sidebar:
 # HERO
 # ============================================================
 
-st.markdown(
-    """
-    <div class="hero">
+st.markdown("""
+<div class="hero">
 
-    <h1>
-    🏠 FirstChoice Infra Property Hub
-    </h1>
+<h1>
+🏠 FirstChoice Infra Property Hub
+</h1>
 
-    <p>
-    India's Next-Generation
-    Real Estate Marketplace
-    </p>
+<p>
+India's Next-Generation Real Estate Marketplace
+</p>
 
-    <p>
-    Buy • Sell • Rent • Invest • Build • Discover
-    </p>
+<p>
+Buy • Sell • Rent • Invest • Build • Discover
+</p>
 
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+</div>
+""", unsafe_allow_html=True)
 
 
 # ============================================================
 # SEARCH
 # ============================================================
 
-st.markdown(
-    """
-    <div class="section">
+st.markdown("""
+<div class="section">
 
-    <h2>
-    🔎 Find Your Perfect Property
-    </h2>
+<h2>
+🔎 Find Your Perfect Property
+</h2>
 
-    <p>
-    Search properties, projects, land,
-    commercial spaces and local property services.
-    </p>
+<p>
+Search properties, plots, land, commercial spaces
+and local property services.
+</p>
 
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+</div>
+""", unsafe_allow_html=True)
 
 
 c1, c2, c3 = st.columns(3)
@@ -265,14 +244,14 @@ c1, c2, c3 = st.columns(3)
 
 with c1:
 
-    purpose = st.selectbox(
+    looking_for = st.selectbox(
         "🏠 What are you looking for?",
         [
-            "Buy",
-            "Rent",
-            "Sell",
-            "Commercial",
+            "Buy Property",
+            "Rent Property",
+            "Commercial Property",
             "Land & Plot",
+            "New Project",
             "Investment"
         ]
     )
@@ -300,8 +279,7 @@ with c3:
             "Farm Land",
             "Office",
             "Shop",
-            "Warehouse",
-            "New Project"
+            "Warehouse"
         ]
     )
 
@@ -312,8 +290,11 @@ if st.button(
 ):
 
     st.success(
-        f"Searching {purpose} properties "
-        f"in {location or 'all locations'}."
+        "Search request submitted successfully."
+    )
+
+    st.info(
+        "Please select 🔎 Property Search from the left sidebar to explore properties."
     )
 
 
@@ -321,90 +302,112 @@ if st.button(
 # PLATFORM FEATURES
 # ============================================================
 
-st.markdown(
-    """
-    <div class="section">
+st.markdown("""
+<div class="section">
 
-    <h2>
-    🚀 One Platform. Complete Property Ecosystem.
-    </h2>
+<h2>
+🚀 One Platform. Complete Property Ecosystem.
+</h2>
 
-    <p>
-    Property discovery से लेकर property services तक,
-    FirstChoice एक complete ecosystem बनाने के लिए designed है.
-    </p>
+<p>
+Everything related to real estate in one place.
+</p>
 
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+</div>
+""", unsafe_allow_html=True)
 
 
 f1, f2, f3, f4 = st.columns(4)
 
 
-features = [
+with f1:
 
-    ("🏠", "Buy & Sell",
-     "Homes, flats, villas, plots and land."),
+    st.markdown("""
+    <div class="card">
 
-    ("🔑", "Rent",
-     "Residential and commercial rental properties."),
+    <h2>🏠 Buy</h2>
 
-    ("🎥", "Photo & Video",
-     "Property photos, videos and location visibility."),
+    <p>
+    Find homes, apartments,
+    villas and plots.
+    </p>
 
-    ("🛠️", "Home Services",
-     "Architects, contractors and construction services.")
-]
+    </div>
+    """, unsafe_allow_html=True)
 
 
-for col, feature in zip(
-    [f1, f2, f3, f4],
-    features
-):
+with f2:
 
-    with col:
+    st.markdown("""
+    <div class="card">
 
-        icon, title, description = feature
+    <h2>🔑 Rent</h2>
 
-        st.markdown(
-            f"""
-            <div class="card">
+    <p>
+    Find residential and
+    commercial rental properties.
+    </p>
 
-            <h1>{icon}</h1>
+    </div>
+    """, unsafe_allow_html=True)
 
-            <h2>{title}</h2>
 
-            <p>{description}</p>
+with f3:
 
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+    st.markdown("""
+    <div class="card">
+
+    <h2>📢 Post Property</h2>
+
+    <p>
+    Post your property with
+    photos, videos and location.
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+
+with f4:
+
+    st.markdown("""
+    <div class="card">
+
+    <h2>🛡️ Trusted</h2>
+
+    <p>
+    Build a trusted property
+    ecosystem for India.
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ============================================================
 # FOOTER
 # ============================================================
 
-st.markdown(
-    """
-    <div class="footer">
+st.markdown("""
+<div class="footer">
 
-    <h2>
-    🏠 FIRSTCHOICE INFRA PROPERTY HUB
-    </h2>
+<h2>
+🏠 FIRSTCHOICE INFRA PROPERTY HUB
+</h2>
 
-    <p>
-    Buy • Sell • Rent • Invest • Build • Discover
-    </p>
+<p>
+India's Next-Generation Real Estate Marketplace
+</p>
 
-    <p>
-    © FirstChoice Infra Property Hub
-    </p>
+<p>
+Buy • Sell • Rent • Invest • Build • Discover
+</p>
 
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+<hr>
+
+<p>
+© FirstChoice Infra Property Hub
+</p>
+
+</div>
+""", unsafe_allow_html=True)
