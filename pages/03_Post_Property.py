@@ -114,7 +114,9 @@ with st.sidebar:
 # LOGIN CHECK
 # ============================================================
 
-if not is_logged_in():
+if not st.session_state.get("logged_in", False):
+    st.warning("Please login first.")
+    st.stop()
 
     hero(
         "🔐 Login Required",
