@@ -1,16 +1,13 @@
 import streamlit as st
 import random
-import time
 import re
-
-from core.Ui import load_premium_ui, hero, section, footer
 
 
 # ============================================================
 # FIRSTCHOICE INFRA PROPERTY HUB
 # PAGE 01 — LOGIN & REGISTRATION
+# STANDALONE VERSION
 # ============================================================
-
 
 st.set_page_config(
     page_title="Login & Registration | FirstChoice Property Hub",
@@ -21,89 +18,365 @@ st.set_page_config(
 
 
 # ============================================================
-# LOAD PREMIUM UI
+# PREMIUM UI
 # ============================================================
 
-load_premium_ui()
+st.markdown("""
+<style>
+
+.stApp {
+    background:
+    radial-gradient(
+        circle at 10% 10%,
+        rgba(99,102,241,0.12),
+        transparent 30%
+    ),
+    radial-gradient(
+        circle at 90% 20%,
+        rgba(236,72,153,0.12),
+        transparent 30%
+    ),
+    linear-gradient(
+        135deg,
+        #F8FAFC,
+        #EEF2FF,
+        #FAF5FF,
+        #F0FDFA
+    );
+}
+
+header {
+    visibility: hidden;
+}
+
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+
+/* SIDEBAR */
+
+[data-testid="stSidebar"] {
+    background:
+    linear-gradient(
+        180deg,
+        #020617,
+        #0F172A,
+        #1E1B4B,
+        #312E81
+    );
+}
+
+[data-testid="stSidebar"] * {
+    color: white !important;
+}
+
+
+/* HERO */
+
+.fc-hero {
+    padding: 55px;
+    border-radius: 38px;
+    color: white;
+
+    background:
+    linear-gradient(
+        135deg,
+        #020617,
+        #172554,
+        #4C1D95,
+        #9D174D
+    );
+
+    box-shadow:
+    0 30px 80px
+    rgba(30,41,59,0.30);
+
+    margin-bottom: 35px;
+}
+
+.fc-hero h1 {
+    font-size: 48px;
+    font-weight: 900;
+}
+
+.fc-hero p {
+    font-size: 19px;
+    line-height: 1.7;
+}
+
+
+/* SECTION */
+
+.fc-section {
+    padding: 25px 30px;
+    border-radius: 28px;
+    color: white;
+
+    background:
+    linear-gradient(
+        135deg,
+        #1E3A8A,
+        #4338CA,
+        #7E22CE,
+        #BE185D
+    );
+
+    box-shadow:
+    0 18px 45px
+    rgba(79,70,229,0.22);
+
+    margin: 35px 0 25px 0;
+}
+
+.fc-section h2 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 900;
+}
+
+.fc-section p {
+    margin-top: 8px;
+    font-size: 16px;
+}
+
+
+/* CARD */
+
+.fc-card {
+    padding: 30px;
+    border-radius: 28px;
+
+    background:
+    rgba(255,255,255,0.90);
+
+    border:
+    1px solid
+    rgba(148,163,184,0.20);
+
+    box-shadow:
+    0 18px 45px
+    rgba(15,23,42,0.08);
+
+    margin-bottom: 20px;
+}
+
+.fc-card h3 {
+    color: #0F172A;
+    font-size: 23px;
+}
+
+.fc-card p {
+    color: #475569;
+    line-height: 1.7;
+}
+
+
+/* SUCCESS */
+
+.fc-success {
+    padding: 28px;
+    border-radius: 28px;
+    color: white;
+
+    background:
+    linear-gradient(
+        135deg,
+        #047857,
+        #059669,
+        #10B981
+    );
+
+    box-shadow:
+    0 20px 50px
+    rgba(5,150,105,0.20);
+}
+
+
+/* WARNING */
+
+.fc-warning {
+    padding: 28px;
+    border-radius: 28px;
+    color: white;
+
+    background:
+    linear-gradient(
+        135deg,
+        #B45309,
+        #D97706,
+        #F59E0B
+    );
+}
+
+
+/* FOOTER */
+
+.fc-footer {
+    margin-top: 60px;
+    padding: 40px;
+    border-radius: 32px;
+    color: white;
+    text-align: center;
+
+    background:
+    linear-gradient(
+        135deg,
+        #020617,
+        #1E1B4B,
+        #312E81
+    );
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 
 # ============================================================
 # SESSION STATE
 # ============================================================
 
-if "mobile_otp" not in st.session_state:
-    st.session_state.mobile_otp = None
+defaults = {
+    "mobile_otp": None,
+    "email_otp": None,
+    "otp_sent": False,
+    "mobile_verified": False,
+    "email_verified": False,
+    "terms_accepted": False,
+    "account_created": False
+}
 
-if "email_otp" not in st.session_state:
-    st.session_state.email_otp = None
+for key, value in defaults.items():
 
-if "otp_sent" not in st.session_state:
-    st.session_state.otp_sent = False
+    if key not in st.session_state:
 
-if "mobile_verified" not in st.session_state:
-    st.session_state.mobile_verified = False
+        st.session_state[key] = value
 
-if "email_verified" not in st.session_state:
-    st.session_state.email_verified = False
 
-if "terms_accepted" not in st.session_state:
-    st.session_state.terms_accepted = False
+# ============================================================
+# SIDEBAR
+# ============================================================
 
-if "account_created" not in st.session_state:
-    st.session_state.account_created = False
+with st.sidebar:
+
+    st.markdown("""
+    <div style="
+        text-align:center;
+        padding:25px;
+    ">
+
+    <h1>🏠 FirstChoice</h1>
+
+    <h3>Property Hub</h3>
+
+    <hr>
+
+    <p>
+    India's Next-Generation<br>
+    Real Estate Ecosystem
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("### 📌 Navigation")
+
+    st.page_link(
+        "app.py",
+        label="🏠 Home"
+    )
+
+    st.page_link(
+        "pages/01_Login_Register.py",
+        label="🔐 Login & Registration"
+    )
+
+    st.page_link(
+        "pages/02_Property_Search.py",
+        label="🔎 Property Search"
+    )
+
+    st.page_link(
+        "pages/03_Post_Property.py",
+        label="🏡 Post Property"
+    )
 
 
 # ============================================================
 # HERO
 # ============================================================
 
-hero(
-    "🔐 Welcome to FirstChoice Property Hub",
-    "Secure Login & Registration — Your trusted gateway to India's next-generation real estate ecosystem."
-)
+st.markdown("""
+<div class="fc-hero">
+
+<h1>
+🔐 Welcome to FirstChoice Property Hub
+</h1>
+
+<p>
+Secure Login & Registration
+</p>
+
+<p>
+Your trusted gateway to India's next-generation
+real estate ecosystem.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
 
 
 # ============================================================
-# PAGE INTRO
+# INTRO
 # ============================================================
 
-st.markdown(
-    """
-    <div class="fc-card">
+st.markdown("""
+<div class="fc-card">
 
-    <h3>🏠 Create Your FirstChoice Account</h3>
+<h3>
+🏠 Create Your FirstChoice Account
+</h3>
 
-    <p>
-    Register once and explore properties, post listings,
-    connect with buyers, owners, agents, builders and
-    real estate service professionals.
-    </p>
+<p>
+Register once and explore properties, post listings,
+connect with buyers, owners, agents, builders and
+real estate service professionals.
+</p>
 
-    <p>
-    🔐 Mobile verification and Email verification are required
-    for account security.
-    </p>
+<p>
+🔐 Mobile verification and Email verification
+are required for account security.
+</p>
 
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+</div>
+""", unsafe_allow_html=True)
 
 
 # ============================================================
 # ACCOUNT TYPE
 # ============================================================
 
-section(
-    "👤 Select Your Account Type",
-    "Choose the account category that best describes you."
-)
+st.markdown("""
+<div class="fc-section">
+
+<h2>
+👤 Select Your Account Type
+</h2>
+
+<p>
+Choose the account category that best describes you.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
 
 
 account_type = st.selectbox(
-
     "Account Type",
-
     [
         "Buyer",
         "Owner / Seller",
@@ -120,7 +393,6 @@ account_type = st.selectbox(
         "Fabrication Service",
         "Other Service Provider"
     ]
-
 )
 
 
@@ -128,10 +400,19 @@ account_type = st.selectbox(
 # PERSONAL INFORMATION
 # ============================================================
 
-section(
-    "📝 Personal & Business Information",
-    "Enter your basic information to create your account."
-)
+st.markdown("""
+<div class="fc-section">
+
+<h2>
+📝 Personal & Business Information
+</h2>
+
+<p>
+Enter your basic information to create your account.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
 
 
 col1, col2 = st.columns(2)
@@ -154,13 +435,22 @@ with col2:
 
 
 # ============================================================
-# CONTACT INFORMATION
+# CONTACT
 # ============================================================
 
-section(
-    "📱 Contact Verification",
-    "Your mobile number and email address are required for secure account verification."
-)
+st.markdown("""
+<div class="fc-section">
+
+<h2>
+📱 Contact Verification
+</h2>
+
+<p>
+Mobile number and Email ID are required.
+</p>
+
+</div>
+""", unsafe_allow_html=True)
 
 
 col1, col2 = st.columns(2)
@@ -184,7 +474,7 @@ with col2:
 
 
 # ============================================================
-# VALIDATION FUNCTIONS
+# VALIDATION
 # ============================================================
 
 def valid_mobile(number):
@@ -210,23 +500,6 @@ def valid_email(email_address):
 # SEND OTP
 # ============================================================
 
-st.markdown(
-    """
-    <div class="fc-card">
-
-    <h3>🔐 Secure OTP Verification</h3>
-
-    <p>
-    OTP verification will be required for both your mobile
-    number and email address.
-    </p>
-
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-
 if st.button(
     "📩 SEND MOBILE & EMAIL OTP",
     use_container_width=True
@@ -238,26 +511,19 @@ if st.button(
             "Please enter your full name."
         )
 
-    elif not valid_mobile(
-        mobile_number
-    ):
+    elif not valid_mobile(mobile_number):
 
         st.error(
             "Please enter a valid 10-digit Indian mobile number."
         )
 
-    elif not valid_email(
-        email
-    ):
+    elif not valid_email(email):
 
         st.error(
-            "Please enter a valid email address."
+            "Please enter a valid Email ID."
         )
 
     else:
-
-        # DEMO OTP
-        # Production में actual SMS और Email API जोड़ी जाएगी.
 
         st.session_state.mobile_otp = str(
             random.randint(
@@ -284,8 +550,7 @@ if st.button(
         )
 
         st.info(
-            "Demo Mode: OTP values are shown below. "
-            "Production version में OTP SMS और Email पर भेजा जाएगा."
+            "DEMO MODE: Production में OTP SMS और Email पर भेजा जाएगा."
         )
 
         st.code(
@@ -303,23 +568,31 @@ Email OTP: {st.session_state.email_otp}
 
 if st.session_state.otp_sent:
 
-    section(
-        "🔑 Verify Your OTP",
-        "Enter the OTP received on your mobile and email."
-    )
+    st.markdown("""
+    <div class="fc-section">
+
+    <h2>
+    🔑 Verify Your OTP
+    </h2>
+
+    <p>
+    Enter the OTP received on your mobile and email.
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
 
 
-    otp_col1, otp_col2 = st.columns(2)
+    otp1, otp2 = st.columns(2)
 
 
-    with otp_col1:
+    with otp1:
 
         mobile_otp_input = st.text_input(
             "📱 Mobile OTP",
             placeholder="Enter 6-digit mobile OTP",
             max_chars=6
         )
-
 
         if st.button(
             "✅ VERIFY MOBILE OTP",
@@ -344,14 +617,13 @@ if st.session_state.otp_sent:
                 )
 
 
-    with otp_col2:
+    with otp2:
 
         email_otp_input = st.text_input(
             "📧 Email OTP",
             placeholder="Enter 6-digit email OTP",
             max_chars=6
         )
-
 
         if st.button(
             "✅ VERIFY EMAIL OTP",
@@ -382,10 +654,10 @@ if st.session_state.otp_sent:
 
 if st.session_state.otp_sent:
 
-    status1, status2 = st.columns(2)
+    c1, c2 = st.columns(2)
 
 
-    with status1:
+    with c1:
 
         if st.session_state.mobile_verified:
 
@@ -400,7 +672,7 @@ if st.session_state.otp_sent:
             )
 
 
-    with status2:
+    with c2:
 
         if st.session_state.email_verified:
 
@@ -416,7 +688,7 @@ if st.session_state.otp_sent:
 
 
 # ============================================================
-# TERMS & CONDITIONS
+# TERMS
 # ============================================================
 
 if (
@@ -424,107 +696,88 @@ if (
     and st.session_state.email_verified
 ):
 
-    section(
-        "📜 Terms & Conditions",
-        "Please read and accept the terms before creating your account."
-    )
+    st.markdown("""
+    <div class="fc-section">
+
+    <h2>
+    📜 Terms & Conditions
+    </h2>
+
+    <p>
+    You must accept the Terms & Conditions before creating your account.
+    </p>
+
+    </div>
+    """, unsafe_allow_html=True)
 
 
     with st.expander(
-        "📖 Read FirstChoice Property Hub Terms & Conditions"
+        "📖 Read Terms & Conditions"
     ):
 
-        st.markdown(
-            """
-            ### 1. Account Responsibility
+        st.markdown("""
+        ### 1. Account Responsibility
 
-            The user is responsible for providing accurate,
-            complete and updated information.
+        Users must provide accurate and updated information.
 
-            ### 2. Property Information
+        ### 2. Property Listings
 
-            Any property information, photographs, videos,
-            documents or location details uploaded by the user
-            must be accurate and legally permitted to be shared.
+        All property information, photos, videos and documents
+        must be accurate and legally permitted.
 
-            ### 3. User Conduct
+        ### 3. Prohibited Content
 
-            Users must not upload fraudulent, illegal,
-            misleading or abusive content.
+        Fraudulent, misleading, illegal or abusive content
+        is strictly prohibited.
 
-            ### 4. Property Transactions
+        ### 4. Transactions
 
-            FirstChoice Property Hub is a technology platform
-            connecting property users and service providers.
-            Unless specifically stated, the platform is not
-            itself a party to private property transactions.
+        FirstChoice Property Hub is a technology platform
+        connecting property users and service providers.
 
-            ### 5. Payments
+        ### 5. Payments
 
-            Any premium subscription or paid service must be
-            used according to the applicable plan terms.
+        Paid services are subject to applicable plan conditions.
 
-            ### 6. Refunds
+        ### 6. Account Security
 
-            Refund eligibility, if applicable, will depend on
-            the specific service and refund policy.
+        Users are responsible for protecting their account.
 
-            ### 7. Content
+        ### 7. Suspension
 
-            Users grant the platform permission to display
-            submitted listing content for platform services.
+        Accounts violating platform policies may be restricted.
 
-            ### 8. Account Security
+        ### 8. Privacy
 
-            Users must keep their account credentials secure
-            and must immediately report suspicious activity.
+        Personal information will be handled according to
+        the applicable Privacy Policy.
 
-            ### 9. Suspension
+        ### 9. Service Availability
 
-            Accounts may be suspended or restricted for
-            violations of platform policies or applicable law.
+        The platform may experience maintenance or technical
+        interruptions.
 
-            ### 10. Privacy
+        ### 10. Legal Compliance
 
-            Personal information will be handled according to
-            the platform's applicable Privacy Policy.
+        Users must comply with applicable laws and regulations.
 
-            ### 11. Service Availability
+        ### 11. Policy Changes
 
-            The platform may occasionally experience
-            maintenance, technical issues or interruptions.
+        Terms and policies may be updated when required.
 
-            ### 12. Legal Compliance
+        ### 12. Acceptance
 
-            Users must comply with all applicable laws,
-            regulations and property-related requirements.
+        Creating an account confirms acceptance of the
+        applicable Terms & Conditions and Privacy Policy.
 
-            ### 13. Changes
-
-            FirstChoice Property Hub may update its terms,
-            policies and services when required.
-
-            ### 14. Acceptance
-
-            By creating an account, the user confirms that
-            they have read, understood and accepted the
-            applicable Terms & Conditions and Privacy Policy.
-
-            ---
-            
-            **Important:**
-            
-            This is a software-level draft and should be
-            reviewed and finalized by a qualified legal
-            professional before production launch.
-            """
-        )
+        **Legal Notice:**
+        Production launch से पहले Terms & Conditions और
+        Privacy Policy को qualified legal professional से review करवाना चाहिए.
+        """)
 
 
     st.session_state.terms_accepted = st.checkbox(
-
         "☑️ I have read and agree to the Terms & Conditions and Privacy Policy."
-
     )
 
 
@@ -539,23 +792,20 @@ if (
 
     if st.session_state.terms_accepted:
 
-        st.markdown(
-            """
-            <div class="fc-success">
+        st.markdown("""
+        <div class="fc-success">
 
-            <h2>
-            ✅ All Verification Completed
-            </h2>
+        <h2>
+        ✅ Verification Completed
+        </h2>
 
-            <p>
-            Your mobile number, email address and
-            Terms & Conditions acceptance have been verified.
-            </p>
+        <p>
+        Mobile number, Email ID and Terms & Conditions
+        have been successfully verified.
+        </p>
 
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        </div>
+        """, unsafe_allow_html=True)
 
 
         if st.button(
@@ -566,7 +816,7 @@ if (
             st.session_state.account_created = True
 
             st.success(
-                "🎉 Your FirstChoice Property Hub account has been created successfully!"
+                "🎉 Account created successfully!"
             )
 
             st.balloons()
@@ -585,30 +835,23 @@ if (
 
 if st.session_state.account_created:
 
-    st.markdown(
-        """
-        <div class="fc-card">
+    st.markdown("""
+    <div class="fc-card">
 
-        <h2>
-        🎉 Welcome to FirstChoice Property Hub
-        </h2>
+    <h2>
+    🎉 Welcome to FirstChoice Property Hub
+    </h2>
 
-        <p>
-        Your account registration process is complete.
-        </p>
+    <p>
+    Your registration process is complete.
+    </p>
 
-        <p>
-        You can now continue to explore the platform.
-        </p>
-
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    </div>
+    """, unsafe_allow_html=True)
 
 
     if st.button(
-        "🏠 GO TO PROPERTY SEARCH",
+        "🔎 GO TO PROPERTY SEARCH",
         use_container_width=True
     ):
 
@@ -618,29 +861,50 @@ if st.session_state.account_created:
 
 
 # ============================================================
-# SECURITY NOTICE
+# SECURITY
 # ============================================================
 
-st.markdown(
-    """
-    <div class="fc-warning">
+st.markdown("""
+<div class="fc-warning">
 
-    <h3>🛡️ Account Security</h3>
+<h3>
+🛡️ Account Security
+</h3>
 
-    <p>
-    Never share your OTP with anyone.
-    FirstChoice Property Hub support staff will never
-    ask you to share your OTP or password.
-    </p>
+<p>
+Never share your OTP with anyone.
+FirstChoice Property Hub support staff will never
+ask you for your OTP or password.
+</p>
 
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+</div>
+""", unsafe_allow_html=True)
 
 
 # ============================================================
 # FOOTER
 # ============================================================
 
-footer()
+st.markdown("""
+<div class="fc-footer">
+
+<h2>
+🏠 FIRSTCHOICE INFRA PROPERTY HUB
+</h2>
+
+<p>
+Buy • Sell • Rent • Invest • Build • Discover
+</p>
+
+<p>
+India's Next-Generation Real Estate Ecosystem
+</p>
+
+<hr>
+
+<p>
+© FirstChoice Infra Property Hub
+</p>
+
+</div>
+""", unsafe_allow_html=True)
