@@ -1,7 +1,6 @@
 import streamlit as st
 import random
 from datetime import datetime
-
 from core.Ui import (
     load_premium_ui,
     hero,
